@@ -2,17 +2,13 @@
 
 namespace Jot\HfOAuth2;
 
+use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Router\DispatcherFactory;
 use League\OAuth2\Server\AuthorizationServer;
-use Psr\Container\ContainerInterface;
 
 class ConfigProvider
 {
-
-    #[Inject]
-    protected ContainerInterface $container;
 
     public function __invoke(): array
     {
@@ -44,7 +40,8 @@ class ConfigProvider
 
     private function generateMigrationFiles(): void
     {
-        $config = $this->container->get(ConfigInterface::class)->get('hf_elastic');
+        $container = ApplicationContext::getContainer();
+        $config = $container->get(ConfigInterface::class)->get('hf_elastic');
         $prefix = ($config['prefix'] ?? null) ? sprintf('%s_', $config['prefix']) : '';
 
         foreach (glob(__DIR__ . '/../migrations/stubs/*.stub') as $file) {
