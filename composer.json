@@ -21,7 +21,7 @@
   ],
   "extra": {
     "hyperf": {
-      "config": "Jot\\HfOauth2\\ConfigProvider"
+      "config": "Jot\\HfOAuth2\\ConfigProvider"
     }
   },
   "require": {
