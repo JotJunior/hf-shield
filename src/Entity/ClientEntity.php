@@ -12,14 +12,17 @@ declare(strict_types=1);
 
 namespace Jot\HfOAuth2\Entity;
 
+use Jot\HfRepository\Entity;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\Traits\ClientTrait;
 use League\OAuth2\Server\Entities\Traits\EntityTrait;
 
-class ClientEntity implements ClientEntityInterface
+class ClientEntity extends Entity implements ClientEntityInterface
 {
     use EntityTrait;
     use ClientTrait;
+
+    protected ?string $secret = null;
 
     public function setName(string $name): void
     {
@@ -35,4 +38,17 @@ class ClientEntity implements ClientEntityInterface
     {
         $this->isConfidential = true;
     }
+
+    public function getSecret(): ?string
+    {
+        return $this->secret;
+    }
+
+    public function setSecret(?string $secret): ClientEntity
+    {
+        $this->secret = $secret;
+        return $this;
+    }
+
+
 }

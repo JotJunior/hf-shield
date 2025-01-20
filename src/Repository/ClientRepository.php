@@ -23,22 +23,14 @@ use function password_verify;
 
 class ClientRepository extends Repository implements ClientRepositoryInterface
 {
-    private const CLIENT_NAME = 'My Awesome App';
-    private const REDIRECT_URI = 'http://foo/bar';
 
     /**
      * {@inheritdoc}
      */
     public function getClientEntity(string $clientIdentifier): ?ClientEntityInterface
     {
-        $client = new ClientEntity();
-
-        $client->setIdentifier($clientIdentifier);
-        $client->setName(self::CLIENT_NAME);
-        $client->setRedirectUri(self::REDIRECT_URI);
-        $client->setConfidential();
-
-        return $client;
+        $data = $this->find($clientIdentifier);
+        return new ClientEntity($data->toArray());
     }
 
     /**
@@ -46,24 +38,15 @@ class ClientRepository extends Repository implements ClientRepositoryInterface
      */
     public function validateClient($clientIdentifier, $clientSecret, $grantType): bool
     {
-        $clients = [
-            'myawesomeapp' => [
-                'secret'          => password_hash('abc123', PASSWORD_BCRYPT),
-                'name'            => self::CLIENT_NAME,
-                'redirect_uri'    => self::REDIRECT_URI,
-                'is_confidential' => true,
-            ],
-        ];
-
-        // Check if client is registered
-        if (array_key_exists($clientIdentifier, $clients) === false) {
+        if ($grantType !== 'client_credentials') {
             return false;
         }
 
-        if (password_verify($clientSecret, $clients[$clientIdentifier]['secret']) === false) {
+        $client = $this->find($clientIdentifier);
+        if (empty($client)) {
             return false;
         }
 
-        return true;
+        return password_verify($clientSecret, $client->getSecret());
     }
 }

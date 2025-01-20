@@ -24,7 +24,7 @@ class RefreshTokenRepository extends Repository implements RefreshTokenRepositor
      */
     public function persistNewRefreshToken(RefreshTokenEntityInterface $refreshTokenEntity): void
     {
-        // Some logic to persist the refresh token in a database
+        $this->create($refreshTokenEntity);
     }
 
     /**
@@ -32,7 +32,7 @@ class RefreshTokenRepository extends Repository implements RefreshTokenRepositor
      */
     public function revokeRefreshToken($tokenId): void
     {
-        // Some logic to revoke the refresh token in a database
+        $this->delete($tokenId);
     }
 
     /**
@@ -40,7 +40,7 @@ class RefreshTokenRepository extends Repository implements RefreshTokenRepositor
      */
     public function isRefreshTokenRevoked($tokenId): bool
     {
-        return false; // The refresh token has not been revoked
+        return $this->exists($tokenId);
     }
 
     /**

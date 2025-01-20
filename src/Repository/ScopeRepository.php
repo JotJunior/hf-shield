@@ -25,23 +25,15 @@ class ScopeRepository extends Repository implements ScopeRepositoryInterface
     /**
      * {@inheritdoc}
      */
-    public function getScopeEntityByIdentifier($scopeIdentifier): ?ScopeEntityInterface
+    public function getScopeEntityByIdentifier(string $identifier): ?ScopeEntityInterface
     {
-        $scopes = [
-            'basic' => [
-                'description' => 'Basic details about you',
-            ],
-            'email' => [
-                'description' => 'Your email address',
-            ],
-        ];
-
-        if (array_key_exists($scopeIdentifier, $scopes) === false) {
+        $scope = $this->find($identifier);
+        if (empty($scope)) {
             return null;
         }
 
         $scope = new ScopeEntity();
-        $scope->setIdentifier($scopeIdentifier);
+        $scope->setIdentifier($scope->getId());
 
         return $scope;
     }
@@ -50,14 +42,17 @@ class ScopeRepository extends Repository implements ScopeRepositoryInterface
      * {@inheritdoc}
      */
     public function finalizeScopes(
-        array $scopes,
-        $grantType,
+        array                 $scopes,
+        string                $grantType,
         ClientEntityInterface $clientEntity,
-        $userIdentifier = null,
-        $authCodeId = null
-    ): array {
+        string|null           $userIdentifier = null,
+        ?string               $authCodeId = null
+    ): array
+    {
+
+
         // Example of programatically modifying the final scope of the access token
-        if ((int) $userIdentifier === 1) {
+        if ((int)$userIdentifier === 1) {
             $scope = new ScopeEntity();
             $scope->setIdentifier('email');
             $scopes[] = $scope;

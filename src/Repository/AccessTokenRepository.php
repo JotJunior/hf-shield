@@ -25,7 +25,7 @@ class AccessTokenRepository extends Repository implements AccessTokenRepositoryI
      */
     public function persistNewAccessToken(AccessTokenEntityInterface $accessTokenEntity): void
     {
-        // Some logic here to save the access token to a database
+        $this->create($accessTokenEntity);
     }
 
     /**
@@ -33,7 +33,7 @@ class AccessTokenRepository extends Repository implements AccessTokenRepositoryI
      */
     public function revokeAccessToken($tokenId): void
     {
-        // Some logic here to revoke the access token
+        $this->delete($tokenId);
     }
 
     /**
@@ -41,7 +41,7 @@ class AccessTokenRepository extends Repository implements AccessTokenRepositoryI
      */
     public function isAccessTokenRevoked($tokenId): bool
     {
-        return false; // Access token hasn't been revoked
+        return !$this->exists($tokenId);
     }
 
     /**
@@ -58,7 +58,7 @@ class AccessTokenRepository extends Repository implements AccessTokenRepositoryI
         }
 
         if ($userIdentifier !== null) {
-            $accessToken->setUserIdentifier((string) $userIdentifier);
+            $accessToken->setUserIdentifier((string)$userIdentifier);
         }
 
         return $accessToken;

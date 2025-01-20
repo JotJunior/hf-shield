@@ -12,9 +12,10 @@ declare(strict_types=1);
 
 namespace Jot\HfOAuth2\Entity;
 
+use Jot\HfRepository\Entity;
 use League\OAuth2\Server\Entities\UserEntityInterface;
 
-class UserEntity implements UserEntityInterface
+class UserEntity extends Entity implements UserEntityInterface
 {
     /**
      * Return the user's identifier.
