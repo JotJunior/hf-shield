@@ -5,7 +5,7 @@ use Jot\HfElastic\Migration\Mapping;
 
 return new class extends Migration {
 
-    public const INDEX_NAME = '{{prefix}}users';
+    public const INDEX_NAME = 'aev1_users';
 
     public function up(): void
     {
@@ -24,6 +24,7 @@ return new class extends Migration {
         $profiles->keyword('name');
         $index->nested($profiles);
 
+        $index->alias('user.identifier')->path('id');
         $index->defaults();
 
         $index->settings([

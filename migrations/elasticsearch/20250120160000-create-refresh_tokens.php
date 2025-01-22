@@ -5,7 +5,7 @@ use Jot\HfElastic\Migration\Mapping;
 
 return new class extends Migration {
 
-    public const INDEX_NAME = '{{prefix}}refresh_tokens';
+    public const INDEX_NAME = 'aev1_refresh_tokens';
 
     public function up(): void
     {
@@ -14,6 +14,7 @@ return new class extends Migration {
         $index->keyword('id');
         $index->keyword('access_token');
         $index->dateNanos('expiry_date_time');
+        $index->alias('refresh_token.identifier')->path('id');
         $index->defaults();
 
         $index->settings([

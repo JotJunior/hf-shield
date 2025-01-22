@@ -5,7 +5,7 @@ use Jot\HfElastic\Migration\Mapping;
 
 return new class extends Migration {
 
-    public const INDEX_NAME = '{{prefix}}clients';
+    public const INDEX_NAME = 'aev1_clients';
 
     public function up(): void
     {
@@ -16,6 +16,7 @@ return new class extends Migration {
         $index->keyword('redirect_uri');
         $index->keyword('secret');
         $index->boolean('confidential');
+        $index->alias('client.identifier')->path('id');
         $index->defaults();
 
         $index->settings([

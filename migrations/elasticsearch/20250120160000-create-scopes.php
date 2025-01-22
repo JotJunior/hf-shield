@@ -5,7 +5,7 @@ use Jot\HfElastic\Migration\Mapping;
 
 return new class extends Migration {
 
-    public const INDEX_NAME = '{{prefix}}scopes';
+    public const INDEX_NAME = 'aev1_scopes';
 
     public function up(): void
     {
@@ -13,6 +13,7 @@ return new class extends Migration {
 
         $index->keyword('id');
         $index->keyword('name')->normalizer('normalizer_ascii_lower');
+        $index->alias('scope.identifier')->path('id');
         $index->defaults();
 
         $index->settings([

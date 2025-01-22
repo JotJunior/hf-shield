@@ -5,7 +5,7 @@ use Jot\HfElastic\Migration\Mapping;
 
 return new class extends Migration {
 
-    public const INDEX_NAME = '{{prefix}}access_tokens';
+    public const INDEX_NAME = 'aev1_access_tokens';
 
     public function up(): void
     {
@@ -31,6 +31,7 @@ return new class extends Migration {
         $scopes->keyword('name')->normalizer('normalizer_ascii_lower');
         $index->nested($scopes);
 
+        $index->alias('access_token.identifier')->path('id');
         $index->defaults();
 
         $index->settings([
