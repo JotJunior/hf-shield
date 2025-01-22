@@ -23,4 +23,10 @@ class AuthCodeEntity extends Entity implements AuthCodeEntityInterface
     use EntityTrait;
     use TokenEntityTrait;
     use AuthCodeTrait;
+
+    public function getIdentifier(): string
+    {
+        return $this->id;
+    }
+
 }

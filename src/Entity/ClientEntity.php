@@ -22,6 +22,11 @@ class ClientEntity extends Entity implements ClientEntityInterface
     use EntityTrait;
     use ClientTrait;
 
+    public function getIdentifier(): string
+    {
+        return $this->id;
+    }
+
     protected ?string $secret = null;
 
     public function setName(string $name): void

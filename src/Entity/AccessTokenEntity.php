@@ -23,4 +23,10 @@ class AccessTokenEntity extends Entity implements AccessTokenEntityInterface
     use AccessTokenTrait;
     use TokenEntityTrait;
     use EntityTrait;
+
+    public function getIdentifier(): string
+    {
+        return $this->id;
+    }
+
 }

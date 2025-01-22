@@ -17,6 +17,7 @@ return new class extends Migration {
         $index->keyword('phone');
         $index->keyword('picture');
         $index->keyword('privileges');
+        $index->keyword('password');
 
         $profiles = new Migration\ElasticType\NestedType('profiles');
         $profiles->keyword('id');

@@ -21,4 +21,10 @@ class RefreshTokenEntity extends Entity implements RefreshTokenEntityInterface
 {
     use RefreshTokenTrait;
     use EntityTrait;
+
+    public function getIdentifier(): string
+    {
+        return $this->id;
+    }
+
 }

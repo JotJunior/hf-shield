@@ -2,9 +2,7 @@
 
 namespace Jot\HfOAuth2;
 
-use Hyperf\Context\ApplicationContext;
-use Hyperf\Contract\ConfigInterface;
-use Hyperf\HttpServer\Router\DispatcherFactory;
+use Hyperf\HttpServer\Router\DispatcherFactory as Dispatcher;
 use League\OAuth2\Server\AuthorizationServer;
 
 class ConfigProvider
@@ -16,7 +14,7 @@ class ConfigProvider
         return [
             'dependencies' => [
                 AuthorizationServer::class => AuthorizationServerFactory::class,
-                DispatcherFactory::class => DispatcherFactory::class,
+                Dispatcher::class => DispatcherFactory::class,
             ],
             'listeners' => [],
             'commands' => [],
@@ -28,26 +26,24 @@ class ConfigProvider
                     'source' => __DIR__ . '/../publish/hf_oauth2.php',
                     'destination' => BASE_PATH . '/config/autoload/hf_oauth2.php',
                 ],
-                [
-                    'id' => 'migration',
-                    'description' => 'The migration for hf_oauth2.',
-                    'source' => __DIR__ . '/../migrations/elasticsearch',
-                    'destination' => BASE_PATH . '/migrations/elasticsearch',
-                ],
             ],
         ];
     }
 
     private function generateMigrationFiles(): void
     {
-        $container = ApplicationContext::getContainer();
-        $config = $container->get(ConfigInterface::class)->get('hf_elastic');
+        if (!file_exists(BASE_PATH . '/config/autoload/hf_elastic.php')) {
+            return;
+        }
+        $config = include BASE_PATH . '/config/autoload/hf_elastic.php';
         $prefix = ($config['prefix'] ?? null) ? sprintf('%s_', $config['prefix']) : '';
-
+        if (!is_dir(BASE_PATH . '/migrations/elasticsearch')) {
+            mkdir(BASE_PATH . '/migrations/elasticsearch', 0755, true);
+        }
         foreach (glob(__DIR__ . '/../migrations/stubs/*.stub') as $file) {
             $content = file_get_contents($file);
-            $migration = str_replace('.stub', '.php', basename($file, '.stub'));
-            $filename = sprintf('%s/../migrations/elasticsearch/%s', __DIR__, $migration);
+            $migration = str_replace('.stub', '.php', basename($file));
+            $filename = sprintf('%s/migrations/elasticsearch/20250120160000-create-%s', BASE_PATH, $migration);
             file_put_contents($filename, str_replace('{{prefix}}', $prefix, $content));
         }
     }

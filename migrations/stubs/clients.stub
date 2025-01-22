@@ -14,6 +14,7 @@ return new class extends Migration {
         $index->keyword('id');
         $index->keyword('name')->normalizer('normalizer_ascii_lower');
         $index->keyword('redirect_uri');
+        $index->keyword('secret');
         $index->boolean('confidential');
         $index->defaults();
 

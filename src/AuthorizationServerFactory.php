@@ -94,7 +94,8 @@ class AuthorizationServerFactory
     {
         return make(AuthCodeGrant::class, [
                 'authCodeRepository' => make(AuthCodeRepository::class),
-                'refreshTokenRepository' => make(RefreshTokenRepository::class), new \DateInterval('PT10M')
+                'refreshTokenRepository' => make(RefreshTokenRepository::class),
+                'authCodeTTL' => $this->tokenExpireDays,
             ]
         );
     }
@@ -110,7 +111,7 @@ class AuthorizationServerFactory
     {
         $repository = make(RefreshTokenRepository::class);
         $grant = make(RefreshTokenGrant::class, [
-            'repository' => $repository
+            'refreshTokenRepository' => $repository
         ]);
         $grant->setRefreshTokenTTL($this->tokenExpireDays);
         return $grant;
@@ -162,7 +163,7 @@ class AuthorizationServerFactory
             make(AccessTokenRepository::class),
             make(ScopeRepository::class),
             $this->makeCryptKey(),
-            $this->config->get('hf_oauth2.encryption_key', 'Top6z4p1Gn0pAZpARdlVdu5Dzg84PmsTbWLf1eb4jF2oXcoFDf')
+            $this->config->get('hf_oauth2.encryption_key')
         );
     }
 

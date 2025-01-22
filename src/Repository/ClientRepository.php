@@ -24,6 +24,8 @@ use function password_verify;
 class ClientRepository extends Repository implements ClientRepositoryInterface
 {
 
+    protected string $entity = ClientEntity::class;
+
     /**
      * {@inheritdoc}
      */
@@ -38,10 +40,6 @@ class ClientRepository extends Repository implements ClientRepositoryInterface
      */
     public function validateClient($clientIdentifier, $clientSecret, $grantType): bool
     {
-        if ($grantType !== 'client_credentials') {
-            return false;
-        }
-
         $client = $this->find($clientIdentifier);
         if (empty($client)) {
             return false;

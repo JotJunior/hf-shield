@@ -20,19 +20,17 @@ use Jot\HfOAuth2\Entity\UserEntity;
 
 class UserRepository extends Repository implements UserRepositoryInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getUserEntityByUserCredentials(
         $username,
         $password,
         $grantType,
         ClientEntityInterface $clientEntity
-    ): ?UserEntityInterface {
-        if ($username === 'alex' && $password === 'whisky') {
-            return new UserEntity();
+    ): ?UserEntityInterface
+    {
+        $user = $this->first(['email' => $username]);
+        if (empty($user)) {
+            return null;
         }
-
-        return null;
+        return new UserEntity($user->toArray());
     }
 }
