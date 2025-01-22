@@ -5,7 +5,8 @@ use Jot\HfElastic\Migration\Mapping;
 
 return new class extends Migration {
 
-    public const INDEX_NAME = 'aev1_access_tokens';
+    public const INDEX_NAME = 'access_tokens';
+    public bool $addPrefix = true;
 
     public function up(): void
     {
