@@ -1,9 +1,10 @@
 <?php
 
+use Hyperf\Context\ApplicationContext;
 use Jot\HfElastic\Migration;
 use Jot\HfElastic\Migration\Mapping;
 
-return new class extends Migration {
+return new class(ApplicationContext::getContainer()) extends Migration {
 
     public const INDEX_NAME = 'refresh_tokens';
     public bool $addPrefix = true;
