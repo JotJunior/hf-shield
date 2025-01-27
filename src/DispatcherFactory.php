@@ -13,12 +13,10 @@ class DispatcherFactory extends Dispatcher
     {
         parent::initConfigRoute();
 
-        Router::addRoute(['POST'], '/v1/oauth/token', '\Jot\HfOAuth2\Controller\AccessTokenController@issueToken');
-        Router::addGroup('/v1/oauth', function (RouteCollector $router) {
-            $router->addRoute('GET', '/tokens', '\Jot\HfOAuth2\Controller\AuthorizedAccessTokenController@forUser');
-            $router->addRoute('DELETE', '/tokens/{token_id}', '\Jot\HfOAuth2\Controller\AuthorizedAccessTokenController@destroy');
+        Router::addRoute(['POST'], '/oauth/token', '\Jot\HfOAuth2\Controller\AccessTokenController@issueToken');
+        Router::addGroup('/oauth', function (RouteCollector $router) {
+            $router->addRoute('GET', '/tokens', '\Jot\HfOAuth2\Controller\AccessTokenController@forUser');
+            $router->addRoute('DELETE', '/tokens/{token_id}', '\Jot\HfOAuth2\Controller\AccessTokenController@destroy');
         });
     }
-
-
 }

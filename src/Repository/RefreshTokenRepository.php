@@ -12,12 +12,11 @@ declare(strict_types=1);
 
 namespace Jot\HfOAuth2\Repository;
 
-use Jot\HfRepository\Repository;
 use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
 use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
 use Jot\HfOAuth2\Entity\RefreshTokenEntity;
 
-class RefreshTokenRepository extends Repository implements RefreshTokenRepositoryInterface
+class RefreshTokenRepository extends AbstractRepository implements RefreshTokenRepositoryInterface
 {
     /**
      * {@inheritdoc}

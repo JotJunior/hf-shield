@@ -12,7 +12,6 @@ declare(strict_types=1);
 
 namespace Jot\HfOAuth2\Repository;
 
-use Jot\HfRepository\Repository;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\ScopeEntityInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
@@ -20,11 +19,8 @@ use Jot\HfOAuth2\Entity\ScopeEntity;
 
 use function array_key_exists;
 
-class ScopeRepository extends Repository implements ScopeRepositoryInterface
+class ScopeRepository extends AbstractRepository implements ScopeRepositoryInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getScopeEntityByIdentifier(string $identifier): ?ScopeEntityInterface
     {
         $scope = $this->find($identifier);
@@ -38,9 +34,6 @@ class ScopeRepository extends Repository implements ScopeRepositoryInterface
         return $scope;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function finalizeScopes(
         array                 $scopes,
         string                $grantType,
@@ -49,8 +42,6 @@ class ScopeRepository extends Repository implements ScopeRepositoryInterface
         ?string               $authCodeId = null
     ): array
     {
-
-
         // Example of programatically modifying the final scope of the access token
         if ((int)$userIdentifier === 1) {
             $scope = new ScopeEntity();

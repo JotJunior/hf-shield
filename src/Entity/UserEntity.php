@@ -17,8 +17,24 @@ use League\OAuth2\Server\Entities\UserEntityInterface;
 
 class UserEntity extends Entity implements UserEntityInterface
 {
+
+    private ?string $password = null;
+    private ?string $passwordSalt = null;
+
     public function getIdentifier(): string
     {
         return $this->id;
     }
+
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function getPasswordSalt(): ?string
+    {
+        return $this->passwordSalt;
+    }
+
+
 }

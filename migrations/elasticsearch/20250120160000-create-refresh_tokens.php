@@ -16,13 +16,13 @@ return new class(ApplicationContext::getContainer()) extends Migration {
         $index->keyword('id');
         $index->keyword('access_token');
         $index->dateNanos('expiry_date_time');
-        $index->alias('refresh_token.identifier')->path('id');
+        $index->alias('refresh_token_identifier')->path('id');
         $index->defaults();
 
         $index->settings([
             'index' => [
-                'number_of_shards' => 3,
-                'number_of_replicas' => 1,
+                'number_of_shards' => $this->settings['index']['number_of_shards'],
+                'number_of_replicas' => $this->settings['index']['number_of_replicas'],
             ],
             "analysis" => [
                 "normalizer" => [

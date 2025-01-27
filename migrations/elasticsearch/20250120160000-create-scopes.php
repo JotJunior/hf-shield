@@ -15,13 +15,13 @@ return new class(ApplicationContext::getContainer()) extends Migration {
 
         $index->keyword('id');
         $index->keyword('name')->normalizer('normalizer_ascii_lower');
-        $index->alias('scope.identifier')->path('id');
+        $index->alias('scope_identifier')->path('id');
         $index->defaults();
 
         $index->settings([
             'index' => [
-                'number_of_shards' => 3,
-                'number_of_replicas' => 1,
+                'number_of_shards' => $this->settings['index']['number_of_shards'],
+                'number_of_replicas' => $this->settings['index']['number_of_replicas'],
             ],
             "analysis" => [
                 "normalizer" => [

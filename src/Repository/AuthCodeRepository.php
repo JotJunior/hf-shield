@@ -12,12 +12,11 @@ declare(strict_types=1);
 
 namespace Jot\HfOAuth2\Repository;
 
-use Jot\HfRepository\Repository;
 use League\OAuth2\Server\Entities\AuthCodeEntityInterface;
 use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
 use Jot\HfOAuth2\Entity\AuthCodeEntity;
 
-class AuthCodeRepository extends Repository implements AuthCodeRepositoryInterface
+class AuthCodeRepository extends AbstractRepository implements AuthCodeRepositoryInterface
 {
     /**
      * {@inheritdoc}

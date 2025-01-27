@@ -12,32 +12,26 @@ declare(strict_types=1);
 
 namespace Jot\HfOAuth2\Repository;
 
-use Jot\HfRepository\Repository;
+use League\OAuth2\Server\CryptTrait;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 use Jot\HfOAuth2\Entity\ClientEntity;
 
-use function array_key_exists;
-use function password_hash;
 use function password_verify;
 
-class ClientRepository extends Repository implements ClientRepositoryInterface
+class ClientRepository extends AbstractRepository implements ClientRepositoryInterface
 {
+
+    use CryptTrait;
 
     protected string $entity = ClientEntity::class;
 
-    /**
-     * {@inheritdoc}
-     */
     public function getClientEntity(string $clientIdentifier): ?ClientEntityInterface
     {
         $data = $this->find($clientIdentifier);
         return new ClientEntity($data->toArray());
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function validateClient($clientIdentifier, $clientSecret, $grantType): bool
     {
         $client = $this->find($clientIdentifier);
@@ -45,6 +39,6 @@ class ClientRepository extends Repository implements ClientRepositoryInterface
             return false;
         }
 
-        return password_verify($clientSecret, $client->getSecret());
+        return hash_equals($client->getSecret(), hash_hmac('sha256', $clientSecret, $this->config['encryption_key']));
     }
 }

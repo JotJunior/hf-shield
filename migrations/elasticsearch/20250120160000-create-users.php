@@ -13,26 +13,39 @@ return new class(ApplicationContext::getContainer()) extends Migration {
     {
         $index = new Mapping(name: self::INDEX_NAME);
 
+        // basic user data
         $index->keyword('id');
         $index->keyword('name')->normalizer('normalizer_ascii_lower');
         $index->keyword('email');
         $index->keyword('phone');
         $index->keyword('picture');
         $index->keyword('privileges');
+        $index->keyword('password_salt');
         $index->keyword('password');
 
+        // attached profiles
         $profiles = new Migration\ElasticType\NestedType('profiles');
         $profiles->keyword('id');
         $profiles->keyword('name');
         $index->nested($profiles);
 
-        $index->alias('user.identifier')->path('id');
+        // oauth client
+        $client = new Migration\ElasticType\ObjectType('client');
+        $client->keyword('id');
+        $client->keyword('name')->normalizer('normalizer_ascii_lower');
+        $index->object($client);
+
+        // user allowed scopes
+        $index->keyword('scopes');
+
+        $index->alias('client_identifier')->path('client.id');
+        $index->alias('user_identifier')->path('id');
         $index->defaults();
 
         $index->settings([
             'index' => [
-                'number_of_shards' => 3,
-                'number_of_replicas' => 1,
+                'number_of_shards' => $this->settings['index']['number_of_shards'],
+                'number_of_replicas' => $this->settings['index']['number_of_replicas'],
             ],
             "analysis" => [
                 "normalizer" => [
