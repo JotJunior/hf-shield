@@ -1,13 +1,5 @@
 <?php
 
-/**
- * @author      Alex Bilbie <hello@alexbilbie.com>
- * @copyright   Copyright (c) Alex Bilbie
- * @license     http://mit-license.org/
- *
- * @link        https://github.com/thephpleague/oauth2-server
- */
-
 declare(strict_types=1);
 
 namespace Jot\HfOAuth2\Repository;
@@ -15,9 +7,13 @@ namespace Jot\HfOAuth2\Repository;
 use League\OAuth2\Server\Entities\AuthCodeEntityInterface;
 use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
 use Jot\HfOAuth2\Entity\AuthCodeEntity;
+use function Hyperf\Support\make;
 
 class AuthCodeRepository extends AbstractRepository implements AuthCodeRepositoryInterface
 {
+
+    protected string $entity = AuthCodeEntity::class;
+
     /**
      * {@inheritdoc}
      */
@@ -47,6 +43,6 @@ class AuthCodeRepository extends AbstractRepository implements AuthCodeRepositor
      */
     public function getNewAuthCode(): AuthCodeEntityInterface
     {
-        return new AuthCodeEntity();
+        return make(AuthCodeEntity::class, []);
     }
 }

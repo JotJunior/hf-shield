@@ -13,11 +13,12 @@ declare(strict_types=1);
 namespace Jot\HfOAuth2\Entity;
 
 use Jot\HfRepository\Entity;
+use Jot\HfRepository\EntityInterface;
 use League\OAuth2\Server\Entities\ScopeEntityInterface;
 use League\OAuth2\Server\Entities\Traits\EntityTrait;
 use League\OAuth2\Server\Entities\Traits\ScopeTrait;
 
-class ScopeEntity extends Entity implements ScopeEntityInterface
+class ScopeEntity extends Entity implements ScopeEntityInterface, EntityInterface
 {
     use EntityTrait;
     use ScopeTrait;

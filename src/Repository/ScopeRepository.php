@@ -1,13 +1,5 @@
 <?php
 
-/**
- * @author      Alex Bilbie <hello@alexbilbie.com>
- * @copyright   Copyright (c) Alex Bilbie
- * @license     http://mit-license.org/
- *
- * @link        https://github.com/thephpleague/oauth2-server
- */
-
 declare(strict_types=1);
 
 namespace Jot\HfOAuth2\Repository;
@@ -18,9 +10,12 @@ use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
 use Jot\HfOAuth2\Entity\ScopeEntity;
 
 use function array_key_exists;
+use function Hyperf\Support\make;
 
 class ScopeRepository extends AbstractRepository implements ScopeRepositoryInterface
 {
+    protected string $entity = ScopeEntity::class;
+
     public function getScopeEntityByIdentifier(string $identifier): ?ScopeEntityInterface
     {
         $scope = $this->find($identifier);
@@ -28,10 +23,7 @@ class ScopeRepository extends AbstractRepository implements ScopeRepositoryInter
             return null;
         }
 
-        $scope = new ScopeEntity();
-        $scope->setIdentifier($scope->getId());
-
-        return $scope;
+        return make($this->entity, ['data' => $scope->toArray()]);
     }
 
     public function finalizeScopes(
@@ -42,12 +34,6 @@ class ScopeRepository extends AbstractRepository implements ScopeRepositoryInter
         ?string               $authCodeId = null
     ): array
     {
-        // Example of programatically modifying the final scope of the access token
-        if ((int)$userIdentifier === 1) {
-            $scope = new ScopeEntity();
-            $scope->setIdentifier('email');
-            $scopes[] = $scope;
-        }
 
         return $scopes;
     }

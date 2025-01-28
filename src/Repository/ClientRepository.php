@@ -1,13 +1,5 @@
 <?php
 
-/**
- * @author      Alex Bilbie <hello@alexbilbie.com>
- * @copyright   Copyright (c) Alex Bilbie
- * @license     http://mit-license.org/
- *
- * @link        https://github.com/thephpleague/oauth2-server
- */
-
 declare(strict_types=1);
 
 namespace Jot\HfOAuth2\Repository;
@@ -17,6 +9,7 @@ use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 use Jot\HfOAuth2\Entity\ClientEntity;
 
+use function Hyperf\Support\make;
 use function password_verify;
 
 class ClientRepository extends AbstractRepository implements ClientRepositoryInterface
@@ -29,7 +22,7 @@ class ClientRepository extends AbstractRepository implements ClientRepositoryInt
     public function getClientEntity(string $clientIdentifier): ?ClientEntityInterface
     {
         $data = $this->find($clientIdentifier);
-        return new ClientEntity($data->toArray());
+        return make(ClientEntity::class, ['data' => $data->toArray()]);
     }
 
     public function validateClient($clientIdentifier, $clientSecret, $grantType): bool

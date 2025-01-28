@@ -31,7 +31,12 @@
   },
   "extra": {
     "hyperf": {
-      "config": "Jot\\HfOAuth2\\ConfigProvider"
+      "config": "Jot\\HfOAuth2\\ConfigProvider",
+      "annotations": {
+        "scan": [
+          "src"
+        ]
+      }
     }
   }
 }

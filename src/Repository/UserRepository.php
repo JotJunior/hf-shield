@@ -1,13 +1,5 @@
 <?php
 
-/**
- * @author      Alex Bilbie <hello@alexbilbie.com>
- * @copyright   Copyright (c) Alex Bilbie
- * @license     http://mit-license.org/
- *
- * @link        https://github.com/thephpleague/oauth2-server
- */
-
 declare(strict_types=1);
 
 namespace Jot\HfOAuth2\Repository;
@@ -16,9 +8,12 @@ use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\UserEntityInterface;
 use League\OAuth2\Server\Repositories\UserRepositoryInterface;
 use Jot\HfOAuth2\Entity\UserEntity;
+use function Hyperf\Support\make;
 
 class UserRepository extends AbstractRepository implements UserRepositoryInterface
 {
+    protected string $entity = UserEntity::class;
+
     public function getUserEntityByUserCredentials(
         $username,
         $password,
@@ -38,6 +33,6 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
             return null;
         }
 
-        return new UserEntity($user->toArray());
+        return make($this->entity, [$user->toArray()]);
     }
 }

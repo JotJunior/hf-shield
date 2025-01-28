@@ -15,8 +15,12 @@ class DispatcherFactory extends Dispatcher
 
         Router::addRoute(['POST'], '/oauth/token', '\Jot\HfOAuth2\Controller\AccessTokenController@issueToken');
         Router::addGroup('/oauth', function (RouteCollector $router) {
-            $router->addRoute('GET', '/tokens', '\Jot\HfOAuth2\Controller\AccessTokenController@forUser');
-            $router->addRoute('DELETE', '/tokens/{token_id}', '\Jot\HfOAuth2\Controller\AccessTokenController@destroy');
+            $router->addRoute('DELETE', '/tokens', '\Jot\HfOAuth2\Controller\AccessTokenController@revokeToken');
+
+            $router->addRoute('POST', '/users', '\Jot\HfOAuth2\Controller\UserController@createUser');
+            $router->addRoute('POST', '/clients', '\Jot\HfOAuth2\Controller\UserController@createClient');
+
         });
+
     }
 }

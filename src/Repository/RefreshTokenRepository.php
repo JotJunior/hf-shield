@@ -1,13 +1,5 @@
 <?php
 
-/**
- * @author      Alex Bilbie <hello@alexbilbie.com>
- * @copyright   Copyright (c) Alex Bilbie
- * @license     http://mit-license.org/
- *
- * @link        https://github.com/thephpleague/oauth2-server
- */
-
 declare(strict_types=1);
 
 namespace Jot\HfOAuth2\Repository;
@@ -15,9 +7,13 @@ namespace Jot\HfOAuth2\Repository;
 use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
 use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
 use Jot\HfOAuth2\Entity\RefreshTokenEntity;
+use function Hyperf\Support\make;
 
 class RefreshTokenRepository extends AbstractRepository implements RefreshTokenRepositoryInterface
 {
+
+    protected string $entity = RefreshTokenEntity::class;
+
     /**
      * {@inheritdoc}
      */
@@ -47,6 +43,6 @@ class RefreshTokenRepository extends AbstractRepository implements RefreshTokenR
      */
     public function getNewRefreshToken(): ?RefreshTokenEntityInterface
     {
-        return new RefreshTokenEntity();
+        return make(RefreshTokenEntity::class, []);
     }
 }

@@ -26,7 +26,7 @@ class CreateClientCommand extends HyperfCommand
         $this->addArgument('redirect-uri', InputArgument::REQUIRED | InputArgument::IS_ARRAY, 'Redirect URI');
         $this->addOption('user-id', 'U', InputOption::VALUE_OPTIONAL, 'User ID');
         $this->addOption('confidential', 'P', InputOption::VALUE_NONE, 'Define if client is personal access client');
-        $this->addOption('allowed-grant-type', 'A', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Allowed grant type');
+        $this->addOption('allowed-grant-type', 'G', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Allowed grant type');
         $this->addOption('allowed-scope', 'A', InputOption::VALUE_REQUIRED | InputOption::VALUE_IS_ARRAY, 'Allowed scope');
     }
 

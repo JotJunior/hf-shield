@@ -1,25 +1,27 @@
 <?php
 
-/**
- * @author      Alex Bilbie <hello@alexbilbie.com>
- * @copyright   Copyright (c) Alex Bilbie
- * @license     http://mit-license.org/
- *
- * @link        https://github.com/thephpleague/oauth2-server
- */
-
 declare(strict_types=1);
 
 namespace Jot\HfOAuth2\Entity;
 
 use Jot\HfRepository\Entity;
+use Jot\HfValidator\Validator;
 use League\OAuth2\Server\Entities\UserEntityInterface;
 
 class UserEntity extends Entity implements UserEntityInterface
 {
 
-    private ?string $password = null;
-    private ?string $passwordSalt = null;
+    protected ?string $name = null;
+
+    #[Validator\Unique(index: 'users', field: 'phone')]
+    protected ?string $phone = null;
+
+    #[Validator\Unique(index: 'users', field: 'email')]
+    protected ?string $email = null;
+
+    #[Validator\Password(minLength: 10)]
+    protected ?string $password = null;
+    protected ?string $passwordSalt = null;
 
     public function getIdentifier(): string
     {

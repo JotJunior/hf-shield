@@ -1,13 +1,5 @@
 <?php
 
-/**
- * @author      Alex Bilbie <hello@alexbilbie.com>
- * @copyright   Copyright (c) Alex Bilbie
- * @license     http://mit-license.org/
- *
- * @link        https://github.com/thephpleague/oauth2-server
- */
-
 declare(strict_types=1);
 
 namespace Jot\HfOAuth2\Repository;
@@ -16,9 +8,12 @@ use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
 use Jot\HfOAuth2\Entity\AccessTokenEntity;
+use function Hyperf\Support\make;
 
 class AccessTokenRepository extends AbstractRepository implements AccessTokenRepositoryInterface
 {
+    protected string $entity = AccessTokenEntity::class;
+
     public function persistNewAccessToken(AccessTokenEntityInterface $accessTokenEntity): void
     {
         $this->create($accessTokenEntity);
@@ -36,18 +31,10 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
 
     public function getNewToken(ClientEntityInterface $clientEntity, array $scopes, $userIdentifier = null): AccessTokenEntityInterface
     {
-        $accessToken = new AccessTokenEntity();
-
-        $accessToken->setClient($clientEntity);
-
-        foreach ($scopes as $scope) {
-            $accessToken->addScope($scope);
-        }
-
-        if ($userIdentifier !== null) {
-            $accessToken->setUserIdentifier((string)$userIdentifier);
-        }
-
-        return $accessToken;
+        return make(AccessTokenEntity::class, [
+            'user' => $userIdentifier ? ['id' => $userIdentifier] : null,
+            'client' => $clientEntity->toArray(),
+            'scopes' => $scopes,
+        ]);
     }
 }
