@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Jot\HfOAuth2\Repository;
 
+use Jot\HfOAuth2\Entity\RefreshToken\RefreshToken;
 use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
 use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
 use Jot\HfOAuth2\Entity\RefreshTokenEntity;
@@ -12,35 +13,34 @@ use function Hyperf\Support\make;
 class RefreshTokenRepository extends AbstractRepository implements RefreshTokenRepositoryInterface
 {
 
-    protected string $entity = RefreshTokenEntity::class;
+    protected string $entity = RefreshToken::class;
 
-    /**
-     * {@inheritdoc}
-     */
     public function persistNewRefreshToken(RefreshTokenEntityInterface $refreshTokenEntity): void
     {
-        $this->create($refreshTokenEntity);
+        $entity = make($this->entity, [
+            'data' => [
+                'id' => $refreshTokenEntity->getIdentifier(),
+                'access_token' => [
+                    'id' => $refreshTokenEntity->getAccessToken()->getIdentifier(),
+                    'expiry_date_time' => $refreshTokenEntity->getAccessToken()->getExpiryDateTime()->format('Y-m-d\TH:i:s.uP'),
+                ],
+                'expiry_date_time' => $refreshTokenEntity->getExpiryDateTime()->format('Y-m-d\TH:i:s.uP'),
+            ]
+        ]);
+
+        $r = parent::create($entity);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function revokeRefreshToken($tokenId): void
     {
         $this->delete($tokenId);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isRefreshTokenRevoked($tokenId): bool
     {
         return $this->exists($tokenId);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNewRefreshToken(): ?RefreshTokenEntityInterface
     {
         return make(RefreshTokenEntity::class, []);

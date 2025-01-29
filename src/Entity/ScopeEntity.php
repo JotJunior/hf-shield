@@ -23,6 +23,8 @@ class ScopeEntity extends Entity implements ScopeEntityInterface, EntityInterfac
     use EntityTrait;
     use ScopeTrait;
 
+    protected ?string $id = null;
+
     public function getIdentifier(): string
     {
         return $this->id;

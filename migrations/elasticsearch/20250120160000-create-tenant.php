@@ -7,14 +7,13 @@ use Jot\HfElastic\Migration\Mapping;
 
 return new class(ApplicationContext::getContainer()) extends Migration {
 
-    public const INDEX_NAME = 'users';
+    public const INDEX_NAME = 'tenants';
     public bool $addPrefix = true;
 
     public function up(): void
     {
         $index = new Mapping(name: self::INDEX_NAME);
 
-        // basic user data
         $index->keyword('id');
         $index->keyword('name')->normalizer('normalizer_ascii_lower');
         $index->keyword('domains');

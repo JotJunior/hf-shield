@@ -25,6 +25,7 @@ return new class(ApplicationContext::getContainer()) extends Migration {
         $client->keyword('id');
         $client->keyword('name')->normalizer('normalizer_ascii_lower');
         $client->keyword('redirect_uri');
+        $index->object($client);
 
         $index->boolean('confidential');
 

@@ -3,6 +3,10 @@
 namespace Jot\HfOAuth2\Controller;
 
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\DeleteMapping;
+use Hyperf\HttpServer\Annotation\PostMapping;
+use Hyperf\HttpServer\Annotation\PutMapping;
+use Hyperf\RateLimit\Annotation\RateLimit;
 use Hyperf\Stringable\Str;
 use Jot\HfOAuth2\Entity\UserEntity;
 use Jot\HfOAuth2\Repository\UserRepository;
@@ -10,7 +14,7 @@ use Jot\HfRepository\Exception\EntityValidationWithErrorsException;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use function Hyperf\Support\make;
 
-#[Controller]
+#[Controller(prefix: '/oauth')]
 class UserController extends AbstractController
 {
 
@@ -22,6 +26,8 @@ class UserController extends AbstractController
      *
      * @return PsrResponseInterface Returns a response containing the saved user data or validation errors.
      */
+    #[PostMapping(path: 'users')]
+    #[RateLimit(create: 1, capacity: 2)]
     public function createUser(): PsrResponseInterface
     {
         $userData = $this->request->all();
@@ -31,27 +37,19 @@ class UserController extends AbstractController
         return $this->saveUser($user);
     }
 
+    #[PutMapping(path: 'users/{id}')]
+    #[RateLimit(create: 1, capacity: 2)]
     public function updateUser(string $id): PsrResponseInterface
     {
-        try {
-            $userData = $this->request->all();
-            $userData['id'] = $id;
-            $user = make(UserEntity::class, ['data' => $userData]);
-            $user->setEntityState('update');
-            if (!$user->validate()) {
-                return $this->response->withStatus(400)->json($user->getErrors());
-            }
-            $updatedUser = $this->repository()->update($user);
-            return $this->response->json($updatedUser->toArray());
-        } catch (\Throwable $e) {
-            $errorResponse = [
-                'error' => $e->getMessage(),
-                'messages' => method_exists($e, 'getErrors') ? $e->getErrors() : [],
-                'trace' => $e->getTrace()
-            ];
-            return $this->response->withStatus(500)->json($errorResponse);
+        $userData = $this->request->all();
+        $userData['id'] = $id;
+        $user = make(UserEntity::class, ['data' => $userData]);
+        $user->setEntityState('update');
+        if (!$user->validate()) {
+            return $this->response->withStatus(400)->json($user->getErrors());
         }
-
+        $updatedUser = $this->repository()->update($user);
+        return $this->response->json($updatedUser->toArray());
     }
 
     /**
@@ -59,27 +57,17 @@ class UserController extends AbstractController
      *
      * @param UserEntity $user The user entity to be saved.
      * @return PsrResponseInterface Returns a JSON response containing the created user data or an error message on failure.
+     * @throws EntityValidationWithErrorsException
      */
+    #[DeleteMapping(path: 'users/{id}')]
+    #[RateLimit(create: 1, capacity: 2)]
     private function saveUser(UserEntity $user): PsrResponseInterface
     {
-        try {
-            if (!$user->validate()) {
-                throw new EntityValidationWithErrorsException($user->getErrors());
-            }
-            $user->createHash($user->getPassword(), $user->getPasswordSalt());
-
-            $createdUser = $this->repository()->create($user);
-            $userData = $createdUser
-                ->hide(['password_salt', 'password'])
-                ->toArray();
-            return $this->response->json($userData);
-        } catch (\Throwable $e) {
-            $errorResponse = [
-                'error' => $e->getMessage(),
-                'messages' => method_exists($e, 'getErrors') ? $e->getErrors() : []
-            ];
-            return $this->response->withStatus(500)->json($errorResponse);
-        }
+        $createdUser = $this->repository()->createUser($user);
+        $userData = $createdUser
+            ->hide(['password_salt', 'password'])
+            ->toArray();
+        return $this->response->json($userData);
     }
 
 }

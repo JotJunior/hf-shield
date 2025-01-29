@@ -2,21 +2,25 @@
 
 namespace Jot\HfOAuth2\Controller;
 
-use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\DeleteMapping;
+use Hyperf\HttpServer\Annotation\RequestMapping;
+use Hyperf\HttpServer\Contract\RequestInterface;
+use Hyperf\RateLimit\Annotation\RateLimit;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use Jot\HfOAuth2\Repository\AccessTokenRepository;
 use Psr\Http\Message\ServerRequestInterface;
 
-#[Controller]
+#[Controller(prefix: '/oauth')]
 class AccessTokenController extends AbstractController
 {
 
-    #[Inject]
-    protected AccessTokenRepository $tokens;
+    protected string $repository = AccessTokenRepository::class;
 
-    public function issueToken(ServerRequestInterface $request): PsrResponseInterface
+    #[RequestMapping(path: 'token', methods: 'POST')]
+    #[RateLimit(create: 1, capacity: 2)]
+    public function issueToken(RequestInterface $request): PsrResponseInterface
     {
         try {
             return $this->server->respondToAccessTokenRequest($request, $this->response);
@@ -33,21 +37,18 @@ class AccessTokenController extends AbstractController
                 ->json([
                     'error' => $e->getMessage(),
                     'class' => get_class($e),
-                    'trace' => $e->getTraceAsString(),
+                    'trace' => $e->getTrace(),
                 ]);
         }
     }
 
-    /**
-     * Revokes an access token based on the provided server request.
-     *
-     * @param ServerRequestInterface $request The incoming server request containing the token information to be revoked.
-     * @return PsrResponseInterface The response indicating the result of the revocation process.
-     */
-    public function revokeToken(ServerRequestInterface $request): PsrResponseInterface
+    #[DeleteMapping(path: 'token/{id}')]
+    #[RateLimit(create: 1, capacity: 2)]
+    public function revokeToken($id, ServerRequestInterface $request): PsrResponseInterface
     {
-        $this->tokens->revokeAccessToken($request->getAttribute('oauth_access_token_id'));
+        $this->repository()->revokeAccessToken($id);
         return $this->response->withStatus(204)->raw('');
     }
+
 
 }

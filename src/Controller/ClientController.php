@@ -13,6 +13,8 @@ use function Hyperf\Support\make;
 class ClientController extends AbstractController
 {
 
+    protected string $repository = ClientRepository::class;
+
     /**
      * Creates a new client, validates the client data, and saves the client if validation passes.
      *

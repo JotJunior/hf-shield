@@ -13,16 +13,16 @@ class DispatcherFactory extends Dispatcher
     {
         parent::initConfigRoute();
 
-        Router::addRoute(['POST'], '/oauth/token', '\Jot\HfOAuth2\Controller\AccessTokenController@issueToken');
-        Router::addGroup('/oauth', function (RouteCollector $router) {
-            $router->addRoute('DELETE', '/tokens', '\Jot\HfOAuth2\Controller\AccessTokenController@revokeToken');
-
-            $router->addRoute('POST', '/users', '\Jot\HfOAuth2\Controller\UserController@createUser');
-            $router->addRoute('PUT', '/users/{id}', '\Jot\HfOAuth2\Controller\UserController@updateUser');
-            
-            $router->addRoute('POST', '/clients', '\Jot\HfOAuth2\Controller\UserController@createClient');
-
-        });
+//        Router::addRoute(['POST'], '/oauth/token', '\Jot\HfOAuth2\Controller\AccessTokenController@issueToken');
+//        Router::addGroup('/oauth', function (RouteCollector $router) {
+//            $router->addRoute('DELETE', '/tokens', '\Jot\HfOAuth2\Controller\AccessTokenController@revokeToken');
+//
+//            $router->addRoute('POST', '/users', '\Jot\HfOAuth2\Controller\UserController@createUser');
+//            $router->addRoute('PUT', '/users/{id}', '\Jot\HfOAuth2\Controller\UserController@updateUser');
+//
+//            $router->addRoute('POST', '/clients', '\Jot\HfOAuth2\Controller\UserController@createClient');
+//
+//        });
 
     }
 }

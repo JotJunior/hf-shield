@@ -3,6 +3,7 @@
 namespace Jot\HfOAuth2;
 
 use Hyperf\HttpServer\Router\DispatcherFactory as Dispatcher;
+use Jot\HfOAuth2\Exception\Handler\OAuth2ExceptionHandler;
 use League\OAuth2\Server\AuthorizationServer;
 
 class ConfigProvider
@@ -17,7 +18,13 @@ class ConfigProvider
             ],
             'listeners' => [],
             'commands' => [],
-            'annotations' => [],
+            'annotations' => [
+                'scan' => [
+                    'paths' => [
+                        __DIR__,
+                    ],
+                ],
+            ],
             'publish' => [
                 [
                     'id' => 'config',

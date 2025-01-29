@@ -26,7 +26,7 @@ class AbstractController
         protected RequestInterface       $request,
         protected ResponseInterface      $response,
         protected AuthorizationServer    $server,
-        private readonly ConfigInterface $configService
+        protected readonly ConfigInterface $configService
     )
     {
         $this->config = $this->configService->get('hf_oauth2');
@@ -38,5 +38,7 @@ class AbstractController
     {
         return $this->repositoryInstance;
     }
+
+
 
 }
