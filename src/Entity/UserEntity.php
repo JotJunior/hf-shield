@@ -11,17 +11,24 @@ use League\OAuth2\Server\Entities\UserEntityInterface;
 class UserEntity extends Entity implements UserEntityInterface
 {
 
+    #[Validator\Required]
     protected ?string $name = null;
 
     #[Validator\Unique(index: 'users', field: 'phone')]
+    #[Validator\Required]
     protected ?string $phone = null;
 
     #[Validator\Unique(index: 'users', field: 'email')]
+    #[Validator\Email(checkDomain: false)]
+    #[Validator\Required(skipUpdates: false)]
     protected ?string $email = null;
 
-    #[Validator\Password(minLength: 10)]
+    #[Validator\Required]
+    #[Validator\Password(requireLower: true, requireUpper: true, requireNumber: true, requireSpecial: true, minLength: 8)]
     protected ?string $password = null;
     protected ?string $passwordSalt = null;
+    #[Validator\Exists(index: 'clients', field: 'id')]
+    protected ?ClientEntity $client = null;
 
     public function getIdentifier(): string
     {

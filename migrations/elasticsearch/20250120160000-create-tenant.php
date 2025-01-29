@@ -2,30 +2,25 @@
 
 use Hyperf\Context\ApplicationContext;
 use Jot\HfElastic\Migration;
+use Jot\HfElastic\Migration\ElasticType\ObjectType;
 use Jot\HfElastic\Migration\Mapping;
 
 return new class(ApplicationContext::getContainer()) extends Migration {
 
-    public const INDEX_NAME = 'clients';
+    public const INDEX_NAME = 'users';
     public bool $addPrefix = true;
 
     public function up(): void
     {
         $index = new Mapping(name: self::INDEX_NAME);
 
+        // basic user data
         $index->keyword('id');
         $index->keyword('name')->normalizer('normalizer_ascii_lower');
-        $index->keyword('redirect_uri');
-        $index->keyword('secret');
-        $index->boolean('confidential');
+        $index->keyword('domains');
+        $index->ip('ips');
 
-        $tenant = new Migration\ElasticType\ObjectType('tenant');
-        $tenant->keyword('id');
-        $tenant->keyword('name');
-        $index->object($tenant);
-
-        $index->alias('client_identifier')->path('id');
-        $index->alias('tenant_identifier')->path('tenant.id');
+        $index->alias('tenant_identifier')->path('id');
         $index->defaults();
 
         $index->settings([

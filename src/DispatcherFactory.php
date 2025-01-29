@@ -18,6 +18,8 @@ class DispatcherFactory extends Dispatcher
             $router->addRoute('DELETE', '/tokens', '\Jot\HfOAuth2\Controller\AccessTokenController@revokeToken');
 
             $router->addRoute('POST', '/users', '\Jot\HfOAuth2\Controller\UserController@createUser');
+            $router->addRoute('PUT', '/users/{id}', '\Jot\HfOAuth2\Controller\UserController@updateUser');
+            
             $router->addRoute('POST', '/clients', '\Jot\HfOAuth2\Controller\UserController@createClient');
 
         });

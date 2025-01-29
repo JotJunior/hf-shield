@@ -2,6 +2,7 @@
 
 use Hyperf\Context\ApplicationContext;
 use Jot\HfElastic\Migration;
+use Jot\HfElastic\Migration\ElasticType\ObjectType;
 use Jot\HfElastic\Migration\Mapping;
 
 return new class(ApplicationContext::getContainer()) extends Migration {
@@ -18,10 +19,17 @@ return new class(ApplicationContext::getContainer()) extends Migration {
         $index->keyword('name')->normalizer('normalizer_ascii_lower');
         $index->keyword('email');
         $index->keyword('phone');
+        $index->keyword('federal_document');
         $index->keyword('picture');
         $index->keyword('privileges');
         $index->keyword('password_salt');
         $index->keyword('password');
+
+        // user tenant
+        $tenant = new ObjectType('tenant');
+        $tenant->keyword('id');
+        $tenant->keyword('name');
+        $index->object($tenant);
 
         // attached profiles
         $profiles = new Migration\ElasticType\NestedType('profiles');
@@ -39,6 +47,7 @@ return new class(ApplicationContext::getContainer()) extends Migration {
         $index->keyword('scopes');
 
         $index->alias('client_identifier')->path('client.id');
+        $index->alias('tenant_identifier')->path('tenant.id');
         $index->alias('user_identifier')->path('id');
         $index->defaults();
 
