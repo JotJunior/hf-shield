@@ -2,9 +2,12 @@
 
 namespace Jot\HfOAuth2;
 
-use Hyperf\HttpServer\Router\DispatcherFactory as Dispatcher;
-use Jot\HfOAuth2\Exception\Handler\OAuth2ExceptionHandler;
+use Jot\HfOAuth2\Aspect\ScopeAspect;
+use Jot\HfOAuth2\Command\OAuthScopeCommand;
+use Jot\HfOAuth2\Command\OAuthUserCommand;
+use Jot\HfOAuth2\Exception\Handler\AuthExceptionHandler;
 use League\OAuth2\Server\AuthorizationServer;
+use League\OAuth2\Server\ResourceServer;
 
 class ConfigProvider
 {
@@ -12,18 +15,30 @@ class ConfigProvider
     public function __invoke(): array
     {
         return [
-            'dependencies' => [
-                AuthorizationServer::class => AuthorizationServerFactory::class,
-                Dispatcher::class => DispatcherFactory::class,
-            ],
-            'listeners' => [],
-            'commands' => [],
             'annotations' => [
                 'scan' => [
                     'paths' => [
                         __DIR__,
                     ],
                 ],
+            ],
+            'listeners' => [
+                AllowedScopesListener::class,
+            ],
+            'dependencies' => [
+                AuthorizationServer::class => AuthorizationServerFactory::class,
+                ResourceServer::class => ResourceServerFactory::class
+            ],
+            'commands' => [
+                OAuthScopeCommand::class,
+                OAuthUserCommand::class,
+            ],
+            'exceptions' => [
+                'handler' => [
+                    'http' => [
+                        AuthExceptionHandler::class,
+                    ]
+                ]
             ],
             'publish' => [
                 [
