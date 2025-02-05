@@ -1,8 +1,8 @@
 <?php
 
-namespace Jot\HfOAuth2;
+namespace Jot\HfShield;
 
-use Jot\HfOAuth2\Annotation\Scope;
+use Jot\HfShield\Annotation\Scope;
 
 class AllowedScopes
 {

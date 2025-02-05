@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Jot\HfOAuth2\Command;
+namespace Jot\HfShield\Command;
 
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Command\Annotation\Command;

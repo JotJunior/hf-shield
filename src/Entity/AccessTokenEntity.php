@@ -3,10 +3,10 @@
 
 declare(strict_types=1);
 
-namespace Jot\HfOAuth2\Entity;
+namespace Jot\HfShield\Entity;
 
 use Hyperf\Stringable\Str;
-use Jot\HfOAuth2\Entity\AccessToken\Tenant;
+use Jot\HfShield\Entity\AccessToken\Tenant;
 use Lcobucci\JWT\Token;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\Traits\AccessTokenTrait;

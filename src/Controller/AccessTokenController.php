@@ -1,6 +1,6 @@
 <?php
 
-namespace Jot\HfOAuth2\Controller;
+namespace Jot\HfShield\Controller;
 
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\DeleteMapping;
@@ -9,7 +9,7 @@ use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\RateLimit\Annotation\RateLimit;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
-use Jot\HfOAuth2\Repository\AccessTokenRepository;
+use Jot\HfShield\Repository\AccessTokenRepository;
 use Psr\Http\Message\ServerRequestInterface;
 
 #[Controller(prefix: '/oauth')]

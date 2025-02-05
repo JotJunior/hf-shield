@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Jot\HfOAuth2\Repository;
+namespace Jot\HfShield\Repository;
 
-use Jot\HfOAuth2\Entity\Tenant\Tenant;
+use Jot\HfShield\Entity\Tenant\Tenant;
 
 class TenantRepository extends AbstractRepository
 {

@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Jot\HfOAuth2\Entity\AccessToken;
+namespace Jot\HfShield\Entity\AccessToken;
 
 use Jot\HfRepository\Entity;
 use Hyperf\Swagger\Annotation as SA;
 
-#[SA\Schema(schema: "jot.hfoauth2.entity.accesstoken.tenant")]
+#[SA\Schema(schema: "jot.shield.entity.accesstoken.tenant")]
 class Tenant extends Entity
 {
 

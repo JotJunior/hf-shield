@@ -1,6 +1,6 @@
 <?php
 
-namespace Jot\HfOAuth2\Repository;
+namespace Jot\HfShield\Repository;
 
 use Hyperf\Contract\ConfigInterface;
 use Jot\HfRepository\Repository;

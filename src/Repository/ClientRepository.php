@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Jot\HfOAuth2\Repository;
+namespace Jot\HfShield\Repository;
 
-use Jot\HfOAuth2\Entity\Client\Client;
+use Jot\HfShield\Entity\Client\Client;
 use League\OAuth2\Server\CryptTrait;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
-use Jot\HfOAuth2\Entity\ClientEntity;
+use Jot\HfShield\Entity\ClientEntity;
 
 class ClientRepository extends AbstractRepository implements ClientRepositoryInterface
 {

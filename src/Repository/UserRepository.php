@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Jot\HfOAuth2\Repository;
+namespace Jot\HfShield\Repository;
 
-use Jot\HfOAuth2\Entity\User\User;
+use Jot\HfShield\Entity\User\User;
 use Jot\HfRepository\Entity;
 use Jot\HfRepository\EntityInterface;
 use Jot\HfRepository\Exception\EntityValidationWithErrorsException;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\UserEntityInterface;
 use League\OAuth2\Server\Repositories\UserRepositoryInterface;
-use Jot\HfOAuth2\Entity\UserEntity;
+use Jot\HfShield\Entity\UserEntity;
 use function Hyperf\Support\make;
 
 class UserRepository extends AbstractRepository implements UserRepositoryInterface

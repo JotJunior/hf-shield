@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Jot\HfOAuth2\Entity\AuthCode;
+namespace Jot\HfShield\Entity\AuthCode;
 
 use Jot\HfRepository\Entity;
 use Jot\HfRepository\Trait\HasTimestamps;
@@ -18,9 +18,9 @@ class AuthCode extends Entity
     #[SA\Property(
         property: "access_token",
         ref: "#/components/schemas/app.entity.authcode.accesstoken",
-        x: ["php_type" => "\Jot\HfOAuth2\Entity\AuthCode\AccessToken"]
+        x: ["php_type" => "\Jot\HfShield\Entity\AuthCode\AccessToken"]
     )]
-    protected ?\Jot\HfOAuth2\Entity\AuthCode\AccessToken $accessToken = null;
+    protected ?\Jot\HfShield\Entity\AuthCode\AccessToken $accessToken = null;
 
     #[SA\Property(
         property: "access_token_identifier",

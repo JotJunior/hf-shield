@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Jot\HfOAuth2\Entity\User;
+namespace Jot\HfShield\Entity\User;
 
 use Jot\HfRepository\Entity;
 use Jot\HfRepository\Trait\HasTimestamps;
 use Jot\HfRepository\Trait\HasLogicRemoval;
 use Hyperf\Swagger\Annotation as SA;
 
-#[SA\Schema(schema: "jot.hfoauth2.entity.user.profile")]
+#[SA\Schema(schema: "jot.shield.entity.user.profile")]
 class Profile extends Entity
 {
 

@@ -1,11 +1,11 @@
 <?php
 
-namespace Jot\HfOAuth2;
+namespace Jot\HfShield;
 
-use Jot\HfOAuth2\Aspect\ScopeAspect;
-use Jot\HfOAuth2\Command\OAuthScopeCommand;
-use Jot\HfOAuth2\Command\OAuthUserCommand;
-use Jot\HfOAuth2\Exception\Handler\AuthExceptionHandler;
+use Jot\HfShield\Aspect\ScopeAspect;
+use Jot\HfShield\Command\OAuthScopeCommand;
+use Jot\HfShield\Command\OAuthUserCommand;
+use Jot\HfShield\Exception\Handler\AuthExceptionHandler;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\ResourceServer;
 

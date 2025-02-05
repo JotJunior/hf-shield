@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Jot\HfOAuth2\Repository;
+namespace Jot\HfShield\Repository;
 
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\ScopeEntityInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
-use Jot\HfOAuth2\Entity\ScopeEntity;
-use Jot\HfOAuth2\Entity\Scope\Scope;
+use Jot\HfShield\Entity\ScopeEntity;
+use Jot\HfShield\Entity\Scope\Scope;
 
 use function Hyperf\Support\make;
 

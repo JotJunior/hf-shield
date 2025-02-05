@@ -10,7 +10,7 @@
 
 declare(strict_types=1);
 
-namespace Jot\HfOAuth2\Entity;
+namespace Jot\HfShield\Entity;
 
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\Traits\ClientTrait;

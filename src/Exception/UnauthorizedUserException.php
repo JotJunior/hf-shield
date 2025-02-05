@@ -1,6 +1,6 @@
 <?php
 
-namespace Jot\HfOAuth2\Exception;
+namespace Jot\HfShield\Exception;
 
 class UnauthorizedUserException extends \RuntimeException
 {

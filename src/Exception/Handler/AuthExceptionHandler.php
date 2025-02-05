@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Jot\HfOAuth2\Exception\Handler;
+namespace Jot\HfShield\Exception\Handler;
 
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\ExceptionHandler\ExceptionHandler;
 use Hyperf\HttpMessage\Stream\SwooleStream;
-use Jot\HfOAuth2\Exception\MissingResourceScopeException;
-use Jot\HfOAuth2\Exception\UnauthorizedAccessException;
-use Jot\HfOAuth2\Exception\UnauthorizedClientException;
-use Jot\HfOAuth2\Exception\UnauthorizedUserException;
+use Jot\HfShield\Exception\MissingResourceScopeException;
+use Jot\HfShield\Exception\UnauthorizedAccessException;
+use Jot\HfShield\Exception\UnauthorizedClientException;
+use Jot\HfShield\Exception\UnauthorizedUserException;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
 

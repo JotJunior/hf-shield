@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Jot\HfOAuth2\Command;
+namespace Jot\HfShield\Command;
 
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Command\Annotation\Command;
 use Hyperf\Di\Annotation\AnnotationCollector;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Stringable\Str;
-use Jot\HfOAuth2\Entity\Scope\Scope;
+use Jot\HfShield\Entity\Scope\Scope;
 use Jot\HfRepository\Command\HfFriendlyLinesTrait;
-use Jot\HfOAuth2\Repository\ScopeRepository;
+use Jot\HfShield\Repository\ScopeRepository;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use function Hyperf\Support\make;
@@ -90,7 +90,7 @@ class OAuthScopeCommand extends HyperfCommand
 
     protected function sync(): void
     {
-        $collectedAnnotations = AnnotationCollector::getMethodsByAnnotation(\Jot\HfOAuth2\Annotation\Scope::class);
+        $collectedAnnotations = AnnotationCollector::getMethodsByAnnotation(\Jot\HfShield\Annotation\Scope::class);
 
         foreach ($collectedAnnotations as $annotationData) {
             $scopes = (array)$annotationData['annotation']->allow;

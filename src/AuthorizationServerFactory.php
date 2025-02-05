@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Jot\HfOAuth2;
+namespace Jot\HfShield;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Contract\ConfigInterface;
-use Jot\HfOAuth2\Repository\AccessTokenRepository;
-use Jot\HfOAuth2\Repository\AuthCodeRepository;
-use Jot\HfOAuth2\Repository\ClientRepository;
-use Jot\HfOAuth2\Repository\RefreshTokenRepository;
-use Jot\HfOAuth2\Repository\ScopeRepository;
-use Jot\HfOAuth2\Repository\UserRepository;
+use Jot\HfShield\Repository\AccessTokenRepository;
+use Jot\HfShield\Repository\AuthCodeRepository;
+use Jot\HfShield\Repository\ClientRepository;
+use Jot\HfShield\Repository\RefreshTokenRepository;
+use Jot\HfShield\Repository\ScopeRepository;
+use Jot\HfShield\Repository\UserRepository;
 use Psr\Container\ContainerInterface;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Grant\AuthCodeGrant;

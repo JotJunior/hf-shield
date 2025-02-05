@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Jot\HfOAuth2;
+namespace Jot\HfShield;
 
 use Hyperf\Di\Annotation\AnnotationCollector;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
-use Jot\HfOAuth2\Annotation\Scope;
+use Jot\HfShield\Annotation\Scope;
 use Psr\Container\ContainerInterface;
 
 #[Listener]

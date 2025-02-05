@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Jot\HfOAuth2\Repository;
+namespace Jot\HfShield\Repository;
 
-use Jot\HfOAuth2\Entity\RefreshToken\RefreshToken;
+use Jot\HfShield\Entity\RefreshToken\RefreshToken;
 use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
 use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
-use Jot\HfOAuth2\Entity\RefreshTokenEntity;
+use Jot\HfShield\Entity\RefreshTokenEntity;
 use function Hyperf\Support\make;
 
 class RefreshTokenRepository extends AbstractRepository implements RefreshTokenRepositoryInterface

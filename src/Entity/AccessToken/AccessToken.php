@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Jot\HfOAuth2\Entity\AccessToken;
+namespace Jot\HfShield\Entity\AccessToken;
 
 use Jot\HfRepository\Entity;
 use Jot\HfRepository\Trait\HasTimestamps;
 use Jot\HfRepository\Trait\HasLogicRemoval;
 use Hyperf\Swagger\Annotation as SA;
 
-#[SA\Schema(schema: "jot.hfoauth2.entity.accesstoken.access_token")]
+#[SA\Schema(schema: "jot.shield.entity.accesstoken.access_token")]
 class AccessToken extends Entity
 {
 
@@ -25,10 +25,10 @@ class AccessToken extends Entity
 
     #[SA\Property(
         property: "client",
-        ref: "#/components/schemas/jot.hfoauth2.entity.accesstoken.client",
-        x: ["php_type" => "\Jot\HfOAuth2\Entity\AccessToken\Client"]
+        ref: "#/components/schemas/jot.shield.entity.accesstoken.client",
+        x: ["php_type" => "\Jot\HfShield\Entity\AccessToken\Client"]
     )]
-    protected ?\Jot\HfOAuth2\Entity\AccessToken\Client $client = null;
+    protected ?\Jot\HfShield\Entity\AccessToken\Client $client = null;
 
     #[SA\Property(
         property: "confidential",
@@ -73,8 +73,8 @@ class AccessToken extends Entity
     #[SA\Property(
         property: "scopes",
         type: "array",
-        items: new SA\Items(ref: "#/components/schemas/jot.hfoauth2.entity.accesstoken.scope"),
-        x: ["php_type" => "\Jot\HfOAuth2\Entity\AccessToken\Scope[]"]
+        items: new SA\Items(ref: "#/components/schemas/jot.shield.entity.accesstoken.scope"),
+        x: ["php_type" => "\Jot\HfShield\Entity\AccessToken\Scope[]"]
     )]
     protected ?array $scopes = null;
 
@@ -89,10 +89,10 @@ class AccessToken extends Entity
 
     #[SA\Property(
         property: "user",
-        ref: "#/components/schemas/jot.hfoauth2.entity.accesstoken.user",
-        x: ["php_type" => "\Jot\HfOAuth2\Entity\AccessToken\User"]
+        ref: "#/components/schemas/jot.shield.entity.accesstoken.user",
+        x: ["php_type" => "\Jot\HfShield\Entity\AccessToken\User"]
     )]
-    protected ?\Jot\HfOAuth2\Entity\AccessToken\User $user = null;
+    protected ?\Jot\HfShield\Entity\AccessToken\User $user = null;
 
 
 

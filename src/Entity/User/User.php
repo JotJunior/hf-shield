@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Jot\HfOAuth2\Entity\User;
+namespace Jot\HfShield\Entity\User;
 
 use Hyperf\Stringable\Str;
 use Jot\HfRepository\Entity;
@@ -11,18 +11,18 @@ use Jot\HfRepository\Trait\HasLogicRemoval;
 use Jot\HfValidator\Annotation as Validator;
 use Hyperf\Swagger\Annotation as SA;
 
-#[SA\Schema(schema: "jot.hfoauth2.entity.user.user")]
+#[SA\Schema(schema: "jot.shield.entity.user.user")]
 class User extends Entity
 {
     use HasLogicRemoval, HasTimestamps;
 
     #[SA\Property(
         property: "client",
-        ref: "#/components/schemas/jot.hfoauth2.entity.user.client",
-        x: ["php_type" => "\Jot\HfOAuth2\Entity\User\Client"]
+        ref: "#/components/schemas/jot.shield.entity.user.client",
+        x: ["php_type" => "\Jot\HfShield\Entity\User\Client"]
     )]
     #[Validator\Exists(index: 'clients', field: 'id')]
-    protected ?\Jot\HfOAuth2\Entity\User\Client $client = null;
+    protected ?\Jot\HfShield\Entity\User\Client $client = null;
 
     #[SA\Property(
         property: "client_identifier",
@@ -123,8 +123,8 @@ class User extends Entity
     #[SA\Property(
         property: "profiles",
         type: "array",
-        items: new SA\Items(ref: "#/components/schemas/jot.hfoauth2.entity.user.profile"),
-        x: ["php_type" => "\Jot\HfOAuth2\Entity\User\Profile[]"]
+        items: new SA\Items(ref: "#/components/schemas/jot.shield.entity.user.profile"),
+        x: ["php_type" => "\Jot\HfShield\Entity\User\Profile[]"]
     )]
     protected ?array $profiles = null;
 
@@ -145,12 +145,12 @@ class User extends Entity
 
     #[SA\Property(
         property: "tenant",
-        ref: "#/components/schemas/jot.hfoauth2.entity.user.tenant",
-        x: ["php_type" => "\Jot\HfOAuth2\Entity\User\Tenant"]
+        ref: "#/components/schemas/jot.shield.entity.user.tenant",
+        x: ["php_type" => "\Jot\HfShield\Entity\User\Tenant"]
     )]
     #[Validator\Exists(index: 'tenants', field: 'id')]
     #[Validator\Required(onCreate: true, onUpdate: false)]
-    protected ?\Jot\HfOAuth2\Entity\User\Tenant $tenant = null;
+    protected ?\Jot\HfShield\Entity\User\Tenant $tenant = null;
 
     #[SA\Property(
         property: "tenant_identifier",

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Jot\HfOAuth2\Entity\RefreshToken;
+namespace Jot\HfShield\Entity\RefreshToken;
 
 use Jot\HfRepository\Entity;
 use Jot\HfRepository\Trait\HasTimestamps;
 use Jot\HfRepository\Trait\HasLogicRemoval;
 use Hyperf\Swagger\Annotation as SA;
 
-#[SA\Schema(schema: "jot.hfoauth2.entity.refreshtoken.refresh_token")]
+#[SA\Schema(schema: "jot.shield.entity.refreshtoken.refresh_token")]
 class RefreshToken extends Entity
 {
 
@@ -17,10 +17,10 @@ class RefreshToken extends Entity
 
     #[SA\Property(
         property: "access_token",
-        ref: "#/components/schemas/jot.hfoauth2.entity.refreshtoken.accesstoken",
-        x: ["php_type" => "\Jot\HfOAuth2\Entity\RefreshToken\AccessToken"]
+        ref: "#/components/schemas/jot.shield.entity.refreshtoken.accesstoken",
+        x: ["php_type" => "\Jot\HfShield\Entity\RefreshToken\AccessToken"]
     )]
-    protected ?\Jot\HfOAuth2\Entity\RefreshToken\AccessToken $accessToken = null;
+    protected ?\Jot\HfShield\Entity\RefreshToken\AccessToken $accessToken = null;
 
     #[SA\Property(
         property: "access_token_identifier",

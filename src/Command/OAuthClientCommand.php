@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Jot\HfOAuth2\Command;
+namespace Jot\HfShield\Command;
 
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Command\Annotation\Command;
 use Hyperf\Di\Annotation\Inject;
-use Jot\HfOAuth2\Entity\User\User;
-use Jot\HfOAuth2\Repository\ClientRepository;
+use Jot\HfShield\Entity\User\User;
+use Jot\HfShield\Repository\ClientRepository;
 use Jot\HfRepository\Command\HfFriendlyLinesTrait;
 use Jot\HfRepository\Exception\EntityValidationWithErrorsException;
 use Psr\Container\ContainerInterface;

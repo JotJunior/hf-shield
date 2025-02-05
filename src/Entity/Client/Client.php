@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Jot\HfOAuth2\Entity\Client;
+namespace Jot\HfShield\Entity\Client;
 
 use Jot\HfRepository\Entity;
 use Jot\HfRepository\Trait\HasTimestamps;
 use Jot\HfRepository\Trait\HasLogicRemoval;
 use Hyperf\Swagger\Annotation as SA;
 
-#[SA\Schema(schema: "jot.hfoauth2.entity.client.client")]
+#[SA\Schema(schema: "jot.shield.entity.client.client")]
 class Client extends Entity
 {
 

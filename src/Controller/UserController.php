@@ -1,6 +1,6 @@
 <?php
 
-namespace Jot\HfOAuth2\Controller;
+namespace Jot\HfShield\Controller;
 
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\DeleteMapping;
@@ -8,10 +8,10 @@ use Hyperf\HttpServer\Annotation\Middleware;
 use Hyperf\HttpServer\Annotation\PostMapping;
 use Hyperf\HttpServer\Annotation\PutMapping;
 use Hyperf\RateLimit\Annotation\RateLimit;
-use Jot\HfOAuth2\Annotation\Scope;
-use Jot\HfOAuth2\Entity\User\User;
-use Jot\HfOAuth2\Middleware\CheckCredentials;
-use Jot\HfOAuth2\Repository\UserRepository;
+use Jot\HfShield\Annotation\Scope;
+use Jot\HfShield\Entity\User\User;
+use Jot\HfShield\Middleware\CheckCredentials;
+use Jot\HfShield\Repository\UserRepository;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use function Hyperf\Support\make;
 

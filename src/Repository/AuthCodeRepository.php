@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Jot\HfOAuth2\Repository;
+namespace Jot\HfShield\Repository;
 
-use Jot\HfOAuth2\Entity\AuthCode\AuthCode;
+use Jot\HfShield\Entity\AuthCode\AuthCode;
 use League\OAuth2\Server\Entities\AuthCodeEntityInterface;
 use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
-use Jot\HfOAuth2\Entity\AuthCodeEntity;
+use Jot\HfShield\Entity\AuthCodeEntity;
 use function Hyperf\Support\make;
 
 class AuthCodeRepository extends AbstractRepository implements AuthCodeRepositoryInterface

@@ -1,6 +1,6 @@
 <?php
 
-namespace Jot\HfOAuth2\Controller;
+namespace Jot\HfShield\Controller;
 
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\ContainerInterface;

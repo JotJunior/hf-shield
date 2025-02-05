@@ -1,6 +1,6 @@
 <?php
 
-namespace Jot\HfOAuth2\Annotation;
+namespace Jot\HfShield\Annotation;
 
 use Attribute;
 use Hyperf\Di\Annotation\AbstractAnnotation;

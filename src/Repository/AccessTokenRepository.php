@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Jot\HfOAuth2\Repository;
+namespace Jot\HfShield\Repository;
 
-use Jot\HfOAuth2\Entity\AccessToken\AccessToken;
-use Jot\HfOAuth2\Entity\AccessTokenEntity;
+use Jot\HfShield\Entity\AccessToken\AccessToken;
+use Jot\HfShield\Entity\AccessTokenEntity;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;

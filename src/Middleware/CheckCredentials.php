@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Jot\HfOAuth2\Middleware;
+namespace Jot\HfShield\Middleware;
 
 use Hyperf\HttpServer\Router\Dispatched;
 use Hyperf\HttpServer\Router\Handler;
-use Jot\HfOAuth2\AllowedScopes;
-use Jot\HfOAuth2\Exception\MissingResourceScopeException;
-use Jot\HfOAuth2\Exception\UnauthorizedAccessException;
-use Jot\HfOAuth2\Exception\UnauthorizedClientException;
-use Jot\HfOAuth2\Exception\UnauthorizedUserException;
-use Jot\HfOAuth2\Repository\AccessTokenRepository;
+use Jot\HfShield\AllowedScopes;
+use Jot\HfShield\Exception\MissingResourceScopeException;
+use Jot\HfShield\Exception\UnauthorizedAccessException;
+use Jot\HfShield\Exception\UnauthorizedClientException;
+use Jot\HfShield\Exception\UnauthorizedUserException;
+use Jot\HfShield\Repository\AccessTokenRepository;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use League\OAuth2\Server\ResourceServer;
 use Psr\Container\ContainerInterface;

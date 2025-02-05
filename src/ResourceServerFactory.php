@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Jot\HfOAuth2;
+namespace Jot\HfShield;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Contract\ConfigInterface;
-use Jot\HfOAuth2\Repository\AccessTokenRepository;
+use Jot\HfShield\Repository\AccessTokenRepository;
 use League\OAuth2\Server\CryptTrait;
 use Psr\Container\ContainerInterface;
 use League\OAuth2\Server\ResourceServer;
