@@ -22,7 +22,7 @@ class ClientController extends AbstractController
 
     protected string $repository = ClientRepository::class;
 
-    #[PostMapping(path: '/clients')]
+    #[PostMapping(path: 'clients')]
     #[RateLimit(create: 1, capacity: 2)]
     #[Scope(allow: 'oauth:client:create')]
     #[Middleware(CheckCredentials::class)]
