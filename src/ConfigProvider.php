@@ -43,13 +43,13 @@ class ConfigProvider
             'publish' => [
                 [
                     'id' => 'config',
-                    'description' => 'The config for hf_oauth2.',
-                    'source' => __DIR__ . '/../publish/hf_oauth2.php',
-                    'destination' => BASE_PATH . '/config/autoload/hf_oauth2.php',
+                    'description' => 'The config for hf_shield.',
+                    'source' => __DIR__ . '/../publish/hf_shield.php',
+                    'destination' => BASE_PATH . '/config/autoload/hf_shield.php',
                 ],
                 [
                     'id' => 'migrations',
-                    'description' => 'The elasticsearch migration files for hf_oauth2.',
+                    'description' => 'The elasticsearch migration files for hf_shield.',
                     'source' => __DIR__ . '/../migrations',
                     'destination' => BASE_PATH . '/migrations',
                 ],

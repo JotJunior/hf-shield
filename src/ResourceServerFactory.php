@@ -42,7 +42,7 @@ class ResourceServerFactory
 
     protected function makeCryptKey(): CryptKey
     {
-        $key = str_replace('\\n', "\n", $this->config->get('hf_oauth2.public_key'));
+        $key = str_replace('\\n', "\n", $this->config->get('hf_shield.public_key'));
         return make(CryptKey::class, [
             'keyPath' => $key,
             'passPhrase' => null,

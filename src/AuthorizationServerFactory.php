@@ -52,10 +52,10 @@ class AuthorizationServerFactory
     {
         $this->container = $container;
         $this->config = $config;
-        $this->tokenExpireDays = new \DateInterval($this->config->get('hf_oauth2.token_days', 'P1D'));
-        $this->refreshTokenExpireDays = new \DateInterval($this->config->get('hf_oauth2.refresh_token_days', 'P1M'));
-        $this->implicitGrantEnabled = $this->config->get('hf_oauth2.implicit_grant_enabled', false);
-        $this->defaultScope = $this->config->get('hf_oauth2.default_scope', 'default');
+        $this->tokenExpireDays = new \DateInterval($this->config->get('hf_shield.token_days', 'P1D'));
+        $this->refreshTokenExpireDays = new \DateInterval($this->config->get('hf_shield.refresh_token_days', 'P1M'));
+        $this->implicitGrantEnabled = $this->config->get('hf_shield.implicit_grant_enabled', false);
+        $this->defaultScope = $this->config->get('hf_shield.default_scope', 'default');
     }
 
     /**
@@ -72,7 +72,7 @@ class AuthorizationServerFactory
     public function __invoke()
     {
         return tap($this->makeAuthorizationServer(), function (AuthorizationServer $server) {
-            $server->setDefaultScope($this->config->get('hf_oauth2.default_scope', 'default'));
+            $server->setDefaultScope($this->config->get('hf_shield.default_scope', 'default'));
             $server->enableGrantType($this->makeAuthCodeGrant(), $this->tokenExpireDays);
             $server->enableGrantType($this->makeRefreshTokenGrant(), $this->refreshTokenExpireDays);
             $server->enableGrantType($this->makePasswordGrant(), $this->tokenExpireDays);
@@ -163,7 +163,7 @@ class AuthorizationServerFactory
             make(AccessTokenRepository::class),
             make(ScopeRepository::class),
             $this->makeCryptKey(),
-            $this->config->get('hf_oauth2.encryption_key')
+            $this->config->get('hf_shield.encryption_key')
         );
     }
 
@@ -175,7 +175,7 @@ class AuthorizationServerFactory
      */
     protected function makeCryptKey(): CryptKey
     {
-        $key = str_replace('\\n', "\n", $this->config->get('hf_oauth2.private_key'));
+        $key = str_replace('\\n', "\n", $this->config->get('hf_shield.private_key'));
         return make(CryptKey::class, [
             'keyPath' => $key,
             'passPhrase' => null,

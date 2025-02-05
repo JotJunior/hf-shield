@@ -17,7 +17,7 @@ class AbstractRepository extends Repository
     public function __construct(protected ContainerInterface $container)
     {
         parent::__construct($container);
-        $this->config = $container->get(ConfigInterface::class)->get('hf_oauth2', []);
+        $this->config = $container->get(ConfigInterface::class)->get('hf_shield', []);
         $this->setEncryptionKey($this->config['encryption_key']);
     }
 

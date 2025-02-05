@@ -29,7 +29,7 @@ class AbstractController
         protected readonly ConfigInterface $configService
     )
     {
-        $this->config = $this->configService->get('hf_oauth2');
+        $this->config = $this->configService->get('hf_shield');
         $this->setEncryptionKey($this->config['encryption_key']);
         $this->repositoryInstance = $this->container->get($this->repository);
     }
