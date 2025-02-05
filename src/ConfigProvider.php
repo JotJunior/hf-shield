@@ -2,7 +2,6 @@
 
 namespace Jot\HfShield;
 
-use Jot\HfShield\Aspect\ScopeAspect;
 use Jot\HfShield\Command\OAuthScopeCommand;
 use Jot\HfShield\Command\OAuthUserCommand;
 use Jot\HfShield\Exception\Handler\AuthExceptionHandler;
