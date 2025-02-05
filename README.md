@@ -14,18 +14,18 @@ hierarquia de escopos e fluxo de autenticação.
 
 ## Introdução
 
-O **hf-oauth2** é um módulo projetado para facilitar a implementação de autenticação e controle de acesso baseado em
+O **hf-shield** é um módulo projetado para facilitar a implementação de autenticação e controle de acesso baseado em
 escopos. Ele segue as diretrizes do protocolo OAuth 2.0 e é especialmente útil para sistemas distribuídos, multi-tenant
 e APIs que demandam hierarquias complexas de permissões.
 
-Com fluxos customizáveis e validações bem definidas, o **hf-oauth2** oferece uma maneira segura e escalável de garantir
+Com fluxos customizáveis e validações bem definidas, o **hf-shield** oferece uma maneira segura e escalável de garantir
 o acesso a recursos, com validações focadas em tokens, usuários e clientes.
 
 ## Instalação
 
 Certifique-se de que o seu projeto utiliza o PHP 8.2 ou superior para garantir a compatibilidade total.
 
-Para começar a usar o **hf-oauth2**, sugerimos primeiro instalar o `hyperf/hyperf-skeleton`.
+Para começar a usar o **hf-shield**, sugerimos primeiro instalar o `hyperf/hyperf-skeleton`.
 
 ```shell
 composer create-project hyperf/hyperf-skeleton my-project
@@ -42,7 +42,7 @@ Após a instalação, entre no diretório do projeto e instale este módulo:
 
 ```bash
 cd my-project
-composer require jot/hf-oauth2
+composer require jot/hf-shield
 ```
 
 ---
@@ -116,7 +116,7 @@ php bin/hyperf.php vendor:publish hyperf/rate-limit
 E por fim, adicione as configurações para o funcionamento deste módulo:
 
 ```shell
-php bin/hyperf.php vendor:publish jot/hf-oauth2
+php bin/hyperf.php vendor:publish jot/hf-shield
 ```
 
 **Exemplo de `config/autoload/hf_oauth2.php`:**
@@ -150,7 +150,7 @@ php bin/hyperf.php elastic:migrate
 
 ### Hierarquia dos escopos de validação da API
 
-O diagrama a seguir descreve como a hierarquia de escopos funciona no **hf-oauth2**:
+O diagrama a seguir descreve como a hierarquia de escopos funciona no **hf-shield**:
 
 ```mermaid
 flowchart TD
@@ -184,7 +184,7 @@ api-shopping:order:list
 
 ### Fluxo de autenticação
 
-O fluxo de autenticação esperado pelo **hf-oauth2** é descrito no diagrama abaixo:
+O fluxo de autenticação esperado pelo **hf-shield** é descrito no diagrama abaixo:
 
 ```mermaid
 flowchart TD
