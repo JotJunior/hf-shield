@@ -40,7 +40,7 @@ return new class(ApplicationContext::getContainer()) extends Migration {
         $scopes = new Migration\ElasticType\NestedType('scopes');
         $scopes->keyword('id');
         $scopes->keyword('name')->normalizer('normalizer_ascii_lower');
-        $scopes->keyword('tenant_id');
+        $scopes->keyword('tenant_identifier');
         $index->nested($scopes);
 
         $index->alias('client_identifier')->path('client.id');

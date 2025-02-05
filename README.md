@@ -1,6 +1,6 @@
 # hf-shield
 
-Um módulo para gerenciamento e validação de autenticação e autorização utilizando OAuth 2.0, com suporte robusto para
+Um módulo para gerenciamento, validação de autenticação e autorização utilizando OAuth 2.0, com suporte robusto para
 hierarquia de escopos e fluxo de autenticação.
 
 ## Índice
@@ -189,15 +189,15 @@ O fluxo de autenticação esperado pelo **hf-shield** é descrito no diagrama ab
 ```mermaid
 flowchart TD
     start((REQUEST))
-    validateToken[Verificar Assinatura, Validade e Metadados do Token]
-    invalidToken[HTTP 401UnauthorizedAccessException]
-    checkResourceScopes[Verifica se o Recurso tem Escopos Vinculados]
+    validateToken[Verificar assinatura, validade e metadados do token]
+    invalidToken[HTTP 401: UnauthorizedAccessException]
+    checkResourceScopes[Verifica se o recurso tem escopos vinculados]
     missingResourceScope[HTTP 400: MissingResourceScopeException]
-    checkTokenScopes[Verifica se o token possui os Escopos Necessários]
+    checkTokenScopes[Verifica se o token possui os escopos necessários]
     unauthorizedToken[HTTP 401: UnauthorizedAccessException]
-    validateClient[Verifica se o Client é Válido e Ativo]
+    validateClient[Verifica se o cliente é válido e ativo]
     invalidClient[HTTP 401: UnauthorizedClientException]
-    validateUser[Verifica se o Usuárioé Válido e possui Escopos]
+    validateUser[Verifica se o Usuário é válido, ativo e possui os escopos necessários]
     unauthorizedUser[HTTP 401: UnauthorizedUserException]
     success[HTTP 200: Usuário pode acessar o recurso desejado]
     response((RESPONSE))
