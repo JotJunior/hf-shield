@@ -14,7 +14,7 @@ class AbstractRepository extends Repository
     protected array $config = [];
 
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(protected ContainerInterface $container)
     {
         parent::__construct($container);
         $this->config = $container->get(ConfigInterface::class)->get('hf_oauth2', []);

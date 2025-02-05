@@ -8,22 +8,23 @@ use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\ScopeEntityInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
 use Jot\HfOAuth2\Entity\ScopeEntity;
+use Jot\HfOAuth2\Entity\Scope\Scope;
 
-use function array_key_exists;
 use function Hyperf\Support\make;
 
 class ScopeRepository extends AbstractRepository implements ScopeRepositoryInterface
 {
-    protected string $entity = ScopeEntity::class;
+    protected string $entity = Scope::class;
 
     public function getScopeEntityByIdentifier(string $identifier): ?ScopeEntityInterface
     {
+        /** @var Scope $scope */
         $scope = $this->find($identifier);
         if (empty($scope)) {
             return null;
         }
 
-        return make($this->entity, ['data' => $scope->toArray()]);
+        return (new ScopeEntity())->setIdentifier($scope->getId());
     }
 
     public function finalizeScopes(

@@ -4,34 +4,57 @@ declare(strict_types=1);
 
 namespace Jot\HfOAuth2\Repository;
 
+use Jot\HfOAuth2\Entity\Client\Client;
 use League\OAuth2\Server\CryptTrait;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 use Jot\HfOAuth2\Entity\ClientEntity;
 
-use function Hyperf\Support\make;
-use function password_verify;
-
 class ClientRepository extends AbstractRepository implements ClientRepositoryInterface
 {
 
+    private const HASH_ALGORITHM = 'sha256';
+
     use CryptTrait;
 
-    protected string $entity = ClientEntity::class;
+    protected string $entity = Client::class;
 
     public function getClientEntity(string $clientIdentifier): ?ClientEntityInterface
     {
-        $data = $this->find($clientIdentifier);
-        return make(ClientEntity::class, ['data' => $data->toArray()]);
+        /** @var Client $client */
+        $client = $this->find($clientIdentifier);
+
+        if (empty($client)) {
+            return null;
+        }
+
+        $clientData = $client->toArray();
+
+        return (new ClientEntity())
+            ->setIdentifier($clientData['id'])
+            ->setName($clientData['name'])
+            ->setRedirectUri($clientData['redirect_uri']);
     }
 
-    public function validateClient($clientIdentifier, $clientSecret, $grantType): bool
+
+    public function validateClient(string $clientIdentifier, ?string $clientSecret, ?string $grantType): bool
     {
-        $client = $this->find($clientIdentifier);
-        if (empty($client)) {
+        $foundClient = $this->find($clientIdentifier);
+
+        if ($foundClient === null) {
             return false;
         }
 
-        return hash_equals($client->getSecret(), hash_hmac('sha256', $clientSecret, $this->config['encryption_key']));
+        return $this->isClientSecretValid($foundClient->getSecret(), $clientSecret);
+    }
+
+    private function isClientSecretValid(?string $storedSecret, string $providedSecret): bool
+    {
+        if ($storedSecret === null) {
+            return false;
+        }
+
+        $hashedProvidedSecret = hash_hmac(self::HASH_ALGORITHM, $providedSecret, $this->config['encryption_key']);
+        return hash_equals($storedSecret, $hashedProvidedSecret);
     }
 }

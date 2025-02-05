@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Jot\HfOAuth2\Repository;
 
+use Jot\HfOAuth2\Entity\AuthCode\AuthCode;
 use League\OAuth2\Server\Entities\AuthCodeEntityInterface;
 use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
 use Jot\HfOAuth2\Entity\AuthCodeEntity;
@@ -12,35 +13,35 @@ use function Hyperf\Support\make;
 class AuthCodeRepository extends AbstractRepository implements AuthCodeRepositoryInterface
 {
 
-    protected string $entity = AuthCodeEntity::class;
+    protected string $entity = AuthCode::class;
 
-    /**
-     * {@inheritdoc}
-     */
     public function persistNewAuthCode(AuthCodeEntityInterface $authCodeEntity): void
     {
-        $this->create($authCodeEntity);
+        $authCode = make(AuthCode::class, [
+            'id' => $authCodeEntity->getIdentifier(),
+            'redirect_uri' => $authCodeEntity->getRedirectUri(),
+            'user' => [
+                'id' => $authCodeEntity->getUserIdentifier()
+            ],
+            'client' => [
+                'id' => $authCodeEntity->getClient()->getIdentifier(),
+                'name' => $authCodeEntity->getClient()->getName(),
+            ],
+            'expiry_date_time' => $authCodeEntity->getExpiryDateTime()->format('Y-m-d\TH:i:s.uP'),
+        ]);
+        $this->create($authCode);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function revokeAuthCode($codeId): void
     {
         $this->delete($codeId);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function isAuthCodeRevoked($codeId): bool
     {
         return !$this->exists($codeId);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getNewAuthCode(): AuthCodeEntityInterface
     {
         return make(AuthCodeEntity::class, []);

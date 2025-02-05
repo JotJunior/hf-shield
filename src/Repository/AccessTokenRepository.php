@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Jot\HfOAuth2\Repository;
 
 use Jot\HfOAuth2\Entity\AccessToken\AccessToken;
+use Jot\HfOAuth2\Entity\AccessTokenEntity;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
-use Jot\HfOAuth2\Entity\AccessTokenEntity;
 use function Hyperf\Support\make;
 
 class AccessTokenRepository extends AbstractRepository implements AccessTokenRepositoryInterface
@@ -52,6 +52,40 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
             $newToken->addScope($scope);
         }
         return $newToken;
+    }
+
+    public function isUserValid(string $userId, string|array $scope): bool
+    {
+        $query = $this->queryBuilder
+            ->from('users')
+            ->where('id', $userId)
+            ->where('status', '=', 'active');
+
+        $this->addScopeConditions($query, $scope);
+
+        return $query->count() === 1;
+    }
+
+    private function addScopeConditions($query, string|array $scope): void
+    {
+        $isArrayScope = is_array($scope);
+
+        if ($isArrayScope) {
+            foreach ($scope as $item) {
+                $query->whereNested('scopes', fn($query) => $query->where('scopes.id', $item));
+            }
+        } else {
+            $query->whereNested('scopes', fn($query) => $query->where('scopes.id', $scope));
+        }
+    }
+
+    public function isClientValid(string $clientId): bool
+    {
+        return $this->queryBuilder
+                ->from('clients')
+                ->where('id', $clientId)
+                ->where('status', '=', 'active')
+                ->count() === 1;
     }
 
 }
