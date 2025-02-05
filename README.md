@@ -1,4 +1,4 @@
-# hf-oauth2
+# hf-shield
 
 Um módulo para gerenciamento e validação de autenticação e autorização utilizando OAuth 2.0, com suporte robusto para
 hierarquia de escopos e fluxo de autenticação.

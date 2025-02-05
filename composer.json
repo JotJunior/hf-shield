@@ -1,6 +1,6 @@
 {
-  "name": "jot/hf-oauth2",
-  "description": "OAuth2 routes and middleware",
+  "name": "jot/hf-shield",
+  "description": "OAuth2 routes, middlewares and validators",
   "type": "library",
   "license": "MIT",
   "keywords": [
