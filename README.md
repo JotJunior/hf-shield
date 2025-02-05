@@ -160,12 +160,12 @@ flowchart TD
     token[Token]
     scope[Scope]
 %% Relações hierárquicas revisadas:
-    tenant -->|Possui um \n ou mais| client
+    tenant -->|Possui um ou mais| client
     client -->|É usado para criar| token
     token -->|É criado por| user
-    token -->|Contém escopos \n autorizados do Client| scope
-    client -->|Vincula escopos \n considerando o Tenant| scope
-    user -->|Relacionado com \n escopos do Tenant| scope
+    token -->|Contém escopos autorizados do Client| scope
+    client -->|Vincula escopos considerando o Tenant| scope
+    user -->|Relacionado com escopos do Tenant| scope
 ```
 
 ### Regras de nomenclatura dos escopos
@@ -189,17 +189,17 @@ O fluxo de autenticação esperado pelo **hf-oauth2** é descrito no diagrama ab
 ```mermaid
 flowchart TD
     start((REQUEST))
-    validateToken[Verificar Assinatura,\nValidade e Metadados do Token]
-    invalidToken[HTTP 401\nUnauthorizedAccessException]
-    checkResourceScopes[Verifica se o\nRecurso tem Escopos Vinculados]
-    missingResourceScope[HTTP 400\nMissingResourceScopeException]
-    checkTokenScopes[Verifica se o\nToken possui os Escopos Necessários]
-    unauthorizedToken[HTTP 401\nUnauthorizedAccessException]
-    validateClient[Verifica se o Client\né Válido e Ativo]
-    invalidClient[HTTP 401\nUnauthorizedClientException]
-    validateUser[Verifica se o Usuário\né Válido e possui Escopos]
-    unauthorizedUser[HTTP 401\nUnauthorizedUserException]
-    success[HTTP 200\nUsuário pode acessar\n o recurso desejado]
+    validateToken[Verificar Assinatura, Validade e Metadados do Token]
+    invalidToken[HTTP 401UnauthorizedAccessException]
+    checkResourceScopes[Verifica se o Recurso tem Escopos Vinculados]
+    missingResourceScope[HTTP 400: MissingResourceScopeException]
+    checkTokenScopes[Verifica se o token possui os Escopos Necessários]
+    unauthorizedToken[HTTP 401: UnauthorizedAccessException]
+    validateClient[Verifica se o Client é Válido e Ativo]
+    invalidClient[HTTP 401: UnauthorizedClientException]
+    validateUser[Verifica se o Usuárioé Válido e possui Escopos]
+    unauthorizedUser[HTTP 401: UnauthorizedUserException]
+    success[HTTP 200: Usuário pode acessar o recurso desejado]
     response((RESPONSE))
 %% Fluxo principal
     start --> validateToken
