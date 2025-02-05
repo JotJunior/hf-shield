@@ -9,13 +9,12 @@ use Jot\HfRepository\Trait\HasTimestamps;
 use Jot\HfRepository\Trait\HasLogicRemoval;
 use Hyperf\Swagger\Annotation as SA;
 
-#[SA\Schema(schema: "app.entity.user.tenant")]
+#[SA\Schema(schema: "jot.hfoauth2.entity.user.tenant")]
 class Tenant extends Entity
 {
 
-    
 
-        #[SA\Property(
+    #[SA\Property(
         property: "id",
         type: "string",
         example: ""
@@ -28,7 +27,6 @@ class Tenant extends Entity
         example: ""
     )]
     protected ?string $name = null;
-
 
 
 }

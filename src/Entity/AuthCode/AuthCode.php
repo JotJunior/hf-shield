@@ -2,20 +2,27 @@
 
 declare(strict_types=1);
 
-namespace Jot\HfOAuth2\Entity\AccessToken;
+namespace Jot\HfOAuth2\Entity\AuthCode;
 
 use Jot\HfRepository\Entity;
 use Jot\HfRepository\Trait\HasTimestamps;
 use Jot\HfRepository\Trait\HasLogicRemoval;
 use Hyperf\Swagger\Annotation as SA;
 
-#[SA\Schema(schema: "jot.hfoauth2.entity.accesstoken.access_token")]
-class AccessToken extends Entity
+#[SA\Schema(schema: "app.entity.authcode.auth_code")]
+class AuthCode extends Entity
 {
 
     use HasLogicRemoval, HasTimestamps;
 
-        #[SA\Property(
+    #[SA\Property(
+        property: "access_token",
+        ref: "#/components/schemas/app.entity.authcode.accesstoken",
+        x: ["php_type" => "\Jot\HfOAuth2\Entity\AuthCode\AccessToken"]
+    )]
+    protected ?\Jot\HfOAuth2\Entity\AuthCode\AccessToken $accessToken = null;
+
+    #[SA\Property(
         property: "access_token_identifier",
         type: "string",
         readOnly: true,
@@ -24,18 +31,12 @@ class AccessToken extends Entity
     protected ?string $accessTokenIdentifier = null;
 
     #[SA\Property(
-        property: "client",
-        ref: "#/components/schemas/jot.hfoauth2.entity.accesstoken.client",
-        x: ["php_type" => "\Jot\HfOAuth2\Entity\AccessToken\Client"]
+        property: "auth_code_identifier",
+        type: "string",
+        readOnly: true,
+        example: ""
     )]
-    protected ?\Jot\HfOAuth2\Entity\AccessToken\Client $client = null;
-
-    #[SA\Property(
-        property: "confidential",
-        type: "boolean",
-        example: true
-    )]
-    protected ?bool $confidential = null;
+    protected ?string $authCodeIdentifier = null;
 
     #[SA\Property(
         property: "created_at",
@@ -71,14 +72,6 @@ class AccessToken extends Entity
     protected ?string $id = null;
 
     #[SA\Property(
-        property: "scopes",
-        type: "array",
-        items: new SA\Items(ref: "#/components/schemas/jot.hfoauth2.entity.accesstoken.scope"),
-        x: ["php_type" => "\Jot\HfOAuth2\Entity\AccessToken\Scope[]"]
-    )]
-    protected ?array $scopes = null;
-
-    #[SA\Property(
         property: "updated_at",
         type: "string",
         format: "string",
@@ -86,14 +79,6 @@ class AccessToken extends Entity
         x: ["php_type" => "\DateTime"]
     )]
     protected ?\DateTimeInterface $updatedAt = null;
-
-    #[SA\Property(
-        property: "user",
-        ref: "#/components/schemas/jot.hfoauth2.entity.accesstoken.user",
-        x: ["php_type" => "\Jot\HfOAuth2\Entity\AccessToken\User"]
-    )]
-    protected ?\Jot\HfOAuth2\Entity\AccessToken\User $user = null;
-
 
 
 }

@@ -4,22 +4,24 @@ declare(strict_types=1);
 
 namespace Jot\HfOAuth2\Entity\User;
 
+use Hyperf\Stringable\Str;
 use Jot\HfRepository\Entity;
 use Jot\HfRepository\Trait\HasTimestamps;
 use Jot\HfRepository\Trait\HasLogicRemoval;
+use Jot\HfValidator\Annotation as Validator;
 use Hyperf\Swagger\Annotation as SA;
 
-#[SA\Schema(schema: "app.entity.user.user")]
+#[SA\Schema(schema: "jot.hfoauth2.entity.user.user")]
 class User extends Entity
 {
-
     use HasLogicRemoval, HasTimestamps;
 
-        #[SA\Property(
+    #[SA\Property(
         property: "client",
         ref: "#/components/schemas/jot.hfoauth2.entity.user.client",
         x: ["php_type" => "\Jot\HfOAuth2\Entity\User\Client"]
     )]
+    #[Validator\Exists(index: 'clients', field: 'id')]
     protected ?\Jot\HfOAuth2\Entity\User\Client $client = null;
 
     #[SA\Property(
@@ -28,6 +30,7 @@ class User extends Entity
         readOnly: true,
         example: ""
     )]
+    #[Validator\Exists(index: 'clients', field: 'id')]
     protected ?string $clientIdentifier = null;
 
     #[SA\Property(
@@ -52,6 +55,9 @@ class User extends Entity
         type: "string",
         example: ""
     )]
+    #[Validator\Email]
+    #[Validator\Unique(index: 'users', field: 'email')]
+    #[Validator\Required(onCreate: true, onUpdate: false)]
     protected ?string $email = null;
 
     #[SA\Property(
@@ -59,6 +65,9 @@ class User extends Entity
         type: "string",
         example: ""
     )]
+    #[Validator\CPF]
+    #[Validator\Unique(index: 'users', field: 'federal_document')]
+    #[Validator\Required(onCreate: true, onUpdate: false)]
     protected ?string $federalDocument = null;
 
     #[SA\Property(
@@ -74,6 +83,7 @@ class User extends Entity
         type: "string",
         example: ""
     )]
+    #[Validator\Required(onCreate: true, onUpdate: false)]
     protected ?string $name = null;
 
     #[SA\Property(
@@ -81,6 +91,8 @@ class User extends Entity
         type: "string",
         example: ""
     )]
+    #[Validator\Password]
+    #[Validator\Required(onCreate: true, onUpdate: false)]
     protected ?string $password = null;
 
     #[SA\Property(
@@ -95,6 +107,9 @@ class User extends Entity
         type: "string",
         example: ""
     )]
+    #[Validator\Phone(countryCode: 'BR')]
+    #[Validator\Unique(index: 'users', field: 'phone')]
+    #[Validator\Required(onCreate: true, onUpdate: false)]
     protected ?string $phone = null;
 
     #[SA\Property(
@@ -102,14 +117,8 @@ class User extends Entity
         type: "string",
         example: ""
     )]
+    #[Validator\Url]
     protected ?string $picture = null;
-
-    #[SA\Property(
-        property: "privilege",
-        type: "string",
-        example: ""
-    )]
-    protected ?string $privileges = null;
 
     #[SA\Property(
         property: "profiles",
@@ -121,16 +130,26 @@ class User extends Entity
 
     #[SA\Property(
         property: "scope",
+        type: "array",
+        example: ""
+    )]
+    protected ?array $scopes = null;
+
+    #[SA\Property(
+        property: "status",
         type: "string",
         example: ""
     )]
-    protected ?string $scopes = null;
+    #[Validator\Enum(values: ["active", "inactive", "pending"])]
+    protected ?string $status = null;
 
     #[SA\Property(
         property: "tenant",
         ref: "#/components/schemas/jot.hfoauth2.entity.user.tenant",
         x: ["php_type" => "\Jot\HfOAuth2\Entity\User\Tenant"]
     )]
+    #[Validator\Exists(index: 'tenants', field: 'id')]
+    #[Validator\Required(onCreate: true, onUpdate: false)]
     protected ?\Jot\HfOAuth2\Entity\User\Tenant $tenant = null;
 
     #[SA\Property(
@@ -158,6 +177,21 @@ class User extends Entity
     )]
     protected ?string $userIdentifier = null;
 
+    public function addSalt(): User
+    {
+        $this->passwordSalt = Str::uuid()->toString();
+        return $this;
+    }
 
+
+    public function getPasswordSalt(): ?string
+    {
+        return $this->passwordSalt;
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
 
 }

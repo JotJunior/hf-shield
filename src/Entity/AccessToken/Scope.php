@@ -9,7 +9,7 @@ use Jot\HfRepository\Trait\HasTimestamps;
 use Jot\HfRepository\Trait\HasLogicRemoval;
 use Hyperf\Swagger\Annotation as SA;
 
-#[SA\Schema(schema: "app.entity.accesstoken.scope")]
+#[SA\Schema(schema: "jot.hfoauth2.entity.accesstoken.scope")]
 class Scope extends Entity
 {
 

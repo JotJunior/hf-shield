@@ -2,33 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Jot\HfOAuth2\Entity\Client;
+namespace Jot\HfOAuth2\Entity\Scope;
 
 use Jot\HfRepository\Entity;
 use Jot\HfRepository\Trait\HasTimestamps;
 use Jot\HfRepository\Trait\HasLogicRemoval;
 use Hyperf\Swagger\Annotation as SA;
 
-#[SA\Schema(schema: "jot.hfoauth2.entity.client.client")]
-class Client extends Entity
+#[SA\Schema(schema: "jot.hfoauth2.entity.scope.scope")]
+class Scope extends Entity
 {
 
     use HasLogicRemoval, HasTimestamps;
-
-    #[SA\Property(
-        property: "client_identifier",
-        type: "string",
-        readOnly: true,
-        example: ""
-    )]
-    protected ?string $clientIdentifier = null;
-
-    #[SA\Property(
-        property: "confidential",
-        type: "boolean",
-        example: true
-    )]
-    protected ?bool $confidential = null;
 
     #[SA\Property(
         property: "created_at",
@@ -63,18 +48,12 @@ class Client extends Entity
     protected ?string $name = null;
 
     #[SA\Property(
-        property: "redirect_uri",
+        property: "scope_identifier",
         type: "string",
+        readOnly: true,
         example: ""
     )]
-    protected ?string $redirectUri = null;
-
-    #[SA\Property(
-        property: "secret",
-        type: "string",
-        example: ""
-    )]
-    protected ?string $secret = null;
+    protected ?string $scopeIdentifier = null;
 
     #[SA\Property(
         property: "updated_at",
@@ -85,9 +64,5 @@ class Client extends Entity
     )]
     protected ?\DateTimeInterface $updatedAt = null;
 
-    public function getSecret(): ?string
-    {
-        return $this->secret;
-    }
 
 }

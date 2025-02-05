@@ -12,48 +12,52 @@ declare(strict_types=1);
 
 namespace Jot\HfOAuth2\Entity;
 
-use Jot\HfRepository\Entity;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\Traits\ClientTrait;
 use League\OAuth2\Server\Entities\Traits\EntityTrait;
 
-class ClientEntity extends Entity implements ClientEntityInterface
+class ClientEntity implements ClientEntityInterface
 {
     use EntityTrait;
     use ClientTrait;
 
+    protected string $identifier;
+    protected string $name;
+    protected string|array $redirectUri;
+
     public function getIdentifier(): string
     {
-        return $this->id;
+        return $this->identifier;
     }
 
-    protected ?string $secret = null;
-
-    public function setName(string $name): void
+    public function setIdentifier(string $identifier): ClientEntity
     {
-        $this->name = $name;
-    }
-
-    public function setRedirectUri(string $uri): void
-    {
-        $this->redirectUri = $uri;
-    }
-
-    public function setConfidential(): void
-    {
-        $this->isConfidential = true;
-    }
-
-    public function getSecret(): ?string
-    {
-        return $this->secret;
-    }
-
-    public function setSecret(?string $secret): ClientEntity
-    {
-        $this->secret = $secret;
+        $this->identifier = $identifier;
         return $this;
     }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): ClientEntity
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    public function getRedirectUri(): array|string
+    {
+        return $this->redirectUri;
+    }
+
+    public function setRedirectUri(array|string $redirectUri): ClientEntity
+    {
+        $this->redirectUri = $redirectUri;
+        return $this;
+    }
+
 
 
 }

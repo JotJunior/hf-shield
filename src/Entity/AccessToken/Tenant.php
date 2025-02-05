@@ -5,17 +5,14 @@ declare(strict_types=1);
 namespace Jot\HfOAuth2\Entity\AccessToken;
 
 use Jot\HfRepository\Entity;
-use Jot\HfRepository\Trait\HasTimestamps;
-use Jot\HfRepository\Trait\HasLogicRemoval;
 use Hyperf\Swagger\Annotation as SA;
 
-#[SA\Schema(schema: "jot.hfoauth2.entity.accesstoken.client")]
-class Client extends Entity
+#[SA\Schema(schema: "jot.hfoauth2.entity.accesstoken.tenant")]
+class Tenant extends Entity
 {
 
-    
 
-        #[SA\Property(
+    #[SA\Property(
         property: "id",
         type: "string",
         example: ""
@@ -28,14 +25,6 @@ class Client extends Entity
         example: ""
     )]
     protected ?string $name = null;
-
-    #[SA\Property(
-        property: "redirect_uri",
-        type: "string",
-        example: ""
-    )]
-    protected ?string $redirectUri = null;
-
 
 
 }

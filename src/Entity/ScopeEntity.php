@@ -12,22 +12,26 @@ declare(strict_types=1);
 
 namespace Jot\HfOAuth2\Entity;
 
-use Jot\HfRepository\Entity;
-use Jot\HfRepository\EntityInterface;
 use League\OAuth2\Server\Entities\ScopeEntityInterface;
 use League\OAuth2\Server\Entities\Traits\EntityTrait;
 use League\OAuth2\Server\Entities\Traits\ScopeTrait;
 
-class ScopeEntity extends Entity implements ScopeEntityInterface, EntityInterface
+class ScopeEntity implements ScopeEntityInterface
 {
     use EntityTrait;
     use ScopeTrait;
 
-    protected ?string $id = null;
+    protected string $identifier;
 
     public function getIdentifier(): string
     {
-        return $this->id;
+        return $this->identifier;
+    }
+
+    public function setIdentifier(string $identifier): self
+    {
+        $this->identifier = $identifier;
+        return $this;
     }
 
 }

@@ -9,13 +9,13 @@ use Jot\HfRepository\Trait\HasTimestamps;
 use Jot\HfRepository\Trait\HasLogicRemoval;
 use Hyperf\Swagger\Annotation as SA;
 
-#[SA\Schema(schema: "app.entity.tenant.tenant")]
+#[SA\Schema(schema: "jot.hfoauth2.entity.tenant.tenant")]
 class Tenant extends Entity
 {
 
     use HasLogicRemoval, HasTimestamps;
 
-        #[SA\Property(
+    #[SA\Property(
         property: "created_at",
         type: "string",
         format: "string",
@@ -34,10 +34,10 @@ class Tenant extends Entity
 
     #[SA\Property(
         property: "domain",
-        type: "string",
+        type: "array",
         example: ""
     )]
-    protected ?string $domains = null;
+    protected null|string|array $domains = null;
 
     #[SA\Property(
         property: "id",
@@ -48,11 +48,11 @@ class Tenant extends Entity
     protected ?string $id = null;
 
     #[SA\Property(
-        property: "ip",
-        type: "string",
+        property: "ips",
+        type: "array",
         example: ""
     )]
-    protected ?string $ips = null;
+    protected null|string|array $ips = null;
 
     #[SA\Property(
         property: "name",
@@ -77,7 +77,6 @@ class Tenant extends Entity
         x: ["php_type" => "\DateTime"]
     )]
     protected ?\DateTimeInterface $updatedAt = null;
-
 
 
 }
