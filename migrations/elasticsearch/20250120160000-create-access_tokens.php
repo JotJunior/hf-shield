@@ -35,6 +35,7 @@ return new class(ApplicationContext::getContainer()) extends Migration {
         $index->nested($scopes);
 
         $index->alias('access_token_identifier')->path('id');
+        $index->alias('client_identifier')->path('client.id');
         $index->defaults();
 
         $index->settings([

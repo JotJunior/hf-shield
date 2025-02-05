@@ -6,7 +6,7 @@ use Jot\HfElastic\Migration\Mapping;
 
 return new class(ApplicationContext::getContainer()) extends Migration {
 
-    public const INDEX_NAME = 'clients';
+    public const INDEX_NAME = 'auth_codes';
     public bool $addPrefix = true;
 
     public function up(): void
@@ -14,26 +14,20 @@ return new class(ApplicationContext::getContainer()) extends Migration {
         $index = new Mapping(name: self::INDEX_NAME);
 
         $index->keyword('id');
-        $index->keyword('name')->normalizer('normalizer_ascii_lower');
-        $index->keyword('redirect_uri');
-        $index->keyword('secret');
-        $index->boolean('confidential');
-        $index->keyword('status');
 
-        // client attached tenant
-        $tenant = new Migration\ElasticType\ObjectType('tenant');
-        $tenant->keyword('id');
-        $tenant->keyword('name');
-        $index->object($tenant);
+        $user = new Migration\ElasticType\ObjectType('user');
+        $user->keyword('id');
+        $user->keyword('name')->normalizer('normalizer_ascii_lower');
+        $index->object($user);
 
-        // enabled scopes
-        $scopes = new Migration\ElasticType\NestedType('scopes');
-        $scopes->keyword('id');
-        $scopes->keyword('name')->normalizer('normalizer_ascii_lower');
-        $index->nested($scopes);
+        $client = new Migration\ElasticType\ObjectType('client');
+        $client->keyword('id');
+        $client->keyword('name')->normalizer('normalizer_ascii_lower');
+        $index->object($client);
 
-        $index->alias('client_identifier')->path('id');
-        $index->alias('tenant_identifier')->path('tenant.id');
+        $index->dateNanos('expiry_date_time');
+        $index->alias('auth_code_identifier')->path('id');
+        $index->alias('client_identifier')->path('client.id');
         $index->defaults();
 
         $index->settings([

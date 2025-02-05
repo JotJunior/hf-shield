@@ -2,7 +2,6 @@
 
 use Hyperf\Context\ApplicationContext;
 use Jot\HfElastic\Migration;
-use Jot\HfElastic\Migration\ElasticType\ObjectType;
 use Jot\HfElastic\Migration\Mapping;
 
 return new class(ApplicationContext::getContainer()) extends Migration {
@@ -21,21 +20,15 @@ return new class(ApplicationContext::getContainer()) extends Migration {
         $index->keyword('phone');
         $index->keyword('federal_document');
         $index->keyword('picture');
-        $index->keyword('privileges');
         $index->keyword('password_salt');
         $index->keyword('password');
+        $index->keyword('status');
 
         // user tenant
-        $tenant = new ObjectType('tenant');
+        $tenant = new Migration\ElasticType\NestedType('tenant');
         $tenant->keyword('id');
         $tenant->keyword('name');
-        $index->object($tenant);
-
-        // attached profiles
-        $profiles = new Migration\ElasticType\NestedType('profiles');
-        $profiles->keyword('id');
-        $profiles->keyword('name');
-        $index->nested($profiles);
+        $index->nested($tenant);
 
         // oauth client
         $client = new Migration\ElasticType\ObjectType('client');
@@ -43,11 +36,14 @@ return new class(ApplicationContext::getContainer()) extends Migration {
         $client->keyword('name')->normalizer('normalizer_ascii_lower');
         $index->object($client);
 
-        // user allowed scopes
-        $index->keyword('scopes');
+        // enabled scopes
+        $scopes = new Migration\ElasticType\NestedType('scopes');
+        $scopes->keyword('id');
+        $scopes->keyword('name')->normalizer('normalizer_ascii_lower');
+        $scopes->keyword('tenant_id');
+        $index->nested($scopes);
 
         $index->alias('client_identifier')->path('client.id');
-        $index->alias('tenant_identifier')->path('tenant.id');
         $index->alias('user_identifier')->path('id');
         $index->defaults();
 
