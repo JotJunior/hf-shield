@@ -18,7 +18,7 @@ class AbstractRepository extends Repository
     {
         parent::__construct($container);
         $this->config = $container->get(ConfigInterface::class)->get('hf_shield', []);
-        $this->setEncryptionKey($this->config['encryption_key']);
+        $this->setEncryptionKey($this->config['encryption_key'] ?? null);
     }
 
 }
