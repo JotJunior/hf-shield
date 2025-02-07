@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Jot\HfShield\Command;
 
-use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Command\Annotation\Command;
+use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Di\Annotation\Inject;
-use Jot\HfShield\Entity\Tenant\Tenant;
 use Jot\HfRepository\Command\HfFriendlyLinesTrait;
-use Jot\HfShield\Repository\TenantRepository;
 use Jot\HfRepository\Exception\EntityValidationWithErrorsException;
+use Jot\HfShield\Entity\Tenant\Tenant;
+use Jot\HfShield\Repository\TenantRepository;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use function Hyperf\Support\make;
@@ -64,10 +64,10 @@ class OAuthTenantCommand extends HyperfCommand
     protected function create(): void
     {
         $name = $this->ask('Name: <fg=yellow>(*)</>');
-        $ips = $this->ask('IPs: <fg=yellow>(*)</> separate by comma');
-        $domains = $this->ask('Domains: <fg=yellow>(*) separate by comma</>');
+        $ips = $this->ask('IPs: <fg=yellow>(*)</> <fg=white>[separate by comma]</>');
+        $domains = $this->ask('Domains: <fg=yellow>(*)</> <fg=white>[separate by comma]</>');
 
-        $scope = make(Tenant::class, [
+        $tenant = make(Tenant::class, [
             'data' => [
                 'name' => $name,
                 'ips' => explode(',', str_replace(' ', '', $ips)),
@@ -76,8 +76,8 @@ class OAuthTenantCommand extends HyperfCommand
         ]);
 
         try {
-            $this->repository->create($scope);
-            $this->success('Tenant created successfully.');
+            $result = $this->repository->create($tenant)->toArray();
+            $this->success('Tenant ID: %s', [$result['id']]);
         } catch (EntityValidationWithErrorsException $th) {
             foreach ($th->getErrors() as $field => $message) {
                 $this->failed('%s: %s', [$field, $message[0]]);

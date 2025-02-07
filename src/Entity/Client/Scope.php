@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Jot\HfShield\Entity\User;
+namespace Jot\HfShield\Entity\Client;
 
 use Jot\HfRepository\Entity;
 use Jot\HfRepository\Trait\HasTimestamps;
 use Jot\HfRepository\Trait\HasLogicRemoval;
 use Hyperf\Swagger\Annotation as SA;
 
-#[SA\Schema(schema: "jot.shield.entity.user.profile")]
-class Profile extends Entity
+#[SA\Schema(schema: "jot.hfshield.entity.client.scope")]
+class Scope extends Entity
 {
 
     

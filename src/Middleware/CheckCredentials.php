@@ -23,10 +23,10 @@ use Psr\Http\Server\RequestHandlerInterface;
 class CheckCredentials implements MiddlewareInterface
 {
 
-    protected const ATTR_ACCESS_TOKEN_ID = 'oauth_access_token_id';
-    protected const ATTR_CLIENT_ID = 'oauth_client_id';
-    protected const ATTR_USER_ID = 'oauth_user_id';
-    protected const ATTR_SCOPES = 'oauth_scopes';
+    public const ATTR_ACCESS_TOKEN_ID = 'oauth_access_token_id';
+    public const ATTR_CLIENT_ID = 'oauth_client_id';
+    public const ATTR_USER_ID = 'oauth_user_id';
+    public const ATTR_SCOPES = 'oauth_scopes';
 
     public function __construct(
         protected ContainerInterface     $container,
@@ -56,12 +56,14 @@ class CheckCredentials implements MiddlewareInterface
         } catch (OAuthServerException $e) {
             throw new UnauthorizedAccessException();
         }
+
         $this->collectResourceScopes();
         if (empty($this->resourceScopes)) {
             throw new MissingResourceScopeException();
         }
 
         $this->validateRequestAttributes();
+
         return $handler->handle($request);
     }
 

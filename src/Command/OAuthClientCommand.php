@@ -4,19 +4,18 @@ declare(strict_types=1);
 
 namespace Jot\HfShield\Command;
 
-use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Command\Annotation\Command;
 use Hyperf\Di\Annotation\Inject;
-use Jot\HfShield\Entity\User\User;
-use Jot\HfShield\Repository\ClientRepository;
 use Jot\HfRepository\Command\HfFriendlyLinesTrait;
 use Jot\HfRepository\Exception\EntityValidationWithErrorsException;
+use Jot\HfShield\Entity\Client\Client;
+use Jot\HfShield\Repository\ClientRepository;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use function Hyperf\Support\make;
 
 #[Command]
-class OAuthClientCommand extends HyperfCommand
+class OAuthClientCommand extends AbstractCommand
 {
 
     use HfFriendlyLinesTrait;
@@ -62,21 +61,25 @@ class OAuthClientCommand extends HyperfCommand
 
     protected function create(): void
     {
+        $tenant = $this->selectTenant();
         $name = $this->ask('Name: <fg=yellow>(*)</>');
         $email = $this->ask('Redirect URI: <fg=yellow>(*)</>');
-        $tenant = $this->ask('Tenant ID: <fg=yellow>(*)</>');
 
-        $scope = make(User::class, [
+        $client = make(Client::class, [
             'data' => [
                 'name' => $name,
                 'redirect_uri' => $email,
                 'tenant' => ['id' => $tenant],
+                'status' => 'active',
             ]
         ]);
 
         try {
-            $this->repository->create($scope);
-            $this->success('User created successfully.');
+            list($plainSecret, $result) = $this->repository->createNewClient($client);
+            $clientId = $result->toArray()['id'];
+            $this->success('Client ID:     <fg=#FFCC00>%s</>', [$clientId]);
+            $this->success('Client Secret: <fg=#FFCC00>%s</>', [$plainSecret]);
+            $this->success('Save this secret in a safe place. You will not be able to retrieve it again.');
         } catch (EntityValidationWithErrorsException $th) {
             foreach ($th->getErrors() as $field => $message) {
                 $this->failed('%s: %s', [$field, $message[0]]);
@@ -84,15 +87,6 @@ class OAuthClientCommand extends HyperfCommand
             return;
         }
 
-    }
-
-    public function tabResult(array $items)
-    {
-        $lengths = [];
-        foreach ($items as $item) {
-            $lengths[] = max(strlen($item), 50);
-        }
-        return $lengths;
     }
 
 }

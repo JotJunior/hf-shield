@@ -7,8 +7,8 @@ namespace Jot\HfShield\Entity\User;
 use Hyperf\Swagger\Annotation as SA;
 use Jot\HfRepository\Entity;
 
-#[SA\Schema(schema: "jot.hfshield.entity.user.client")]
-class Client extends Entity
+#[SA\Schema(schema: "jot.hfshield.entity.user.scope")]
+class Scope extends Entity
 {
 
 
@@ -25,6 +25,15 @@ class Client extends Entity
         example: ""
     )]
     protected ?string $name = null;
+
+    #[SA\Property(
+        property: "tenant_identifier",
+        description: "An alias of tenant id",
+        type: "string",
+        readOnly: true,
+        example: ""
+    )]
+    protected ?string $tenantIdentifier = null;
 
 
 }

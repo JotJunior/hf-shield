@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Jot\HfShield\Repository;
 
-use Jot\HfShield\Entity\User\User;
 use Jot\HfRepository\Entity;
 use Jot\HfRepository\EntityInterface;
 use Jot\HfRepository\Exception\EntityValidationWithErrorsException;
+use Jot\HfShield\Entity\User\User;
+use Jot\HfShield\Entity\UserEntity;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\UserEntityInterface;
 use League\OAuth2\Server\Repositories\UserRepositoryInterface;
-use Jot\HfShield\Entity\UserEntity;
 use function Hyperf\Support\make;
 
 class UserRepository extends AbstractRepository implements UserRepositoryInterface
@@ -70,6 +70,8 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
      *
      * @param EntityInterface $entity The entity instance to be created.
      * @return EntityInterface Returns the created user entity instance with the inserted data.
+     *
+     * @throws EntityValidationWithErrorsException
      */
     public function create(EntityInterface $entity): EntityInterface
     {
@@ -117,36 +119,6 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
         );
     }
 
-    /**
-     * Retrieves a list of tenants from the database with specific attributes.
-     *
-     * @return array Returns an array containing the selected tenant data.
-     */
-    public function getTenantList(): array
-    {
-        return $this->queryBuilder
-            ->select(['id', 'name'])
-            ->from('tenants')
-            ->orderBy('name')
-            ->limit(1000)
-            ->execute();
-    }
-
-
-    /**
-     * Retrieves a list of scopes from the database with specific attributes.
-     *
-     * @return array Returns an array containing the selected scope data.
-     */
-    public function getScopeList(): array
-    {
-        return $this->queryBuilder
-            ->select(['id', 'name'])
-            ->from('scopes')
-            ->orderBy('name')
-            ->limit(1000)
-            ->execute();
-    }
 
     /**
      * Updates the scopes of a given user entity by merging the incoming scopes

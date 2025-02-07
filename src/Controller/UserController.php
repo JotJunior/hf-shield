@@ -3,11 +3,9 @@
 namespace Jot\HfShield\Controller;
 
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\DeleteMapping;
 use Hyperf\HttpServer\Annotation\Middleware;
-use Hyperf\HttpServer\Annotation\PostMapping;
-use Hyperf\HttpServer\Annotation\PutMapping;
 use Hyperf\RateLimit\Annotation\RateLimit;
+use Hyperf\Swagger\Annotation as SA;
 use Jot\HfShield\Annotation\Scope;
 use Jot\HfShield\Entity\User\User;
 use Jot\HfShield\Middleware\CheckCredentials;
@@ -15,13 +13,52 @@ use Jot\HfShield\Repository\UserRepository;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use function Hyperf\Support\make;
 
+#[SA\HyperfServer('http')]
+#[SA\Tag(
+    name: 'User',
+    description: 'Endpoints related to users management'
+)]
+#[SA\Schema(schema: "app.error.response", required: ["result", "error"],
+    properties: [
+        new SA\Property(property: "result", type: "string", example: "error"),
+        new SA\Property(property: "error", type: "string", example: "Error message"),
+        new SA\Property(property: "data", type: "string|array", example: null),
+    ],
+    type: "object"
+)]
 #[Controller(prefix: '/oauth')]
 class UserController extends AbstractController
 {
 
     protected string $repository = UserRepository::class;
 
-    #[PostMapping(path: 'users')]
+    #[SA\Post(
+        path: "/oauth/users",
+        description: "Create a new users.",
+        summary: "Create a New User",
+        requestBody: new SA\RequestBody(
+            required: true,
+            content: new SA\JsonContent(ref: "#/components/schemas/jot.hfshield.entity.user.user")
+        ),
+        tags: ["User"],
+        responses: [
+            new SA\Response(
+                response: 201,
+                description: "User created",
+                content: new SA\JsonContent(ref: "#/components/schemas/jot.hfshield.entity.user.user")
+            ),
+            new SA\Response(
+                response: 400,
+                description: "Bad request",
+                content: new SA\JsonContent(ref: "#/components/schemas/app.error.response")
+            ),
+            new SA\Response(
+                response: 500,
+                description: "Application error",
+                content: new SA\JsonContent(ref: "#/components/schemas/app.error.response")
+            )
+        ]
+    )]
     #[Scope(allow: 'oauth:user:create')]
     #[RateLimit(create: 1, capacity: 2)]
     #[Middleware(CheckCredentials::class)]
@@ -33,9 +70,6 @@ class UserController extends AbstractController
         return $this->saveUser($user);
     }
 
-    #[DeleteMapping(path: 'users/{id}')]
-    #[RateLimit(create: 1, capacity: 2)]
-    #[Scope(allow: 'oauth:user:delete')]
     private function saveUser(User $user): PsrResponseInterface
     {
         $createdUser = $this->repository()->create($user);
@@ -45,7 +79,47 @@ class UserController extends AbstractController
         return $this->response->json($userData);
     }
 
-    #[PutMapping(path: 'users/{id}')]
+    #[SA\Put(
+        path: "/oauth/users/{id}",
+        description: "Update the details of an existing users.",
+        summary: "Update an existing User",
+        requestBody: new SA\RequestBody(
+            required: true,
+            content: new SA\JsonContent(ref: "#/components/schemas/jot.hfshield.entity.user.user")
+        ),
+        tags: ["User"],
+        parameters: [
+            new SA\Parameter(
+                name: "id",
+                description: "Unique identifier of the users",
+                in: "path",
+                required: true,
+                schema: new SA\Schema(type: "string", example: "12345")
+            )
+        ],
+        responses: [
+            new SA\Response(
+                response: 200,
+                description: "User Updated",
+                content: new SA\JsonContent(ref: "#/components/schemas/jot.hfshield.entity.user.user")
+            ),
+            new SA\Response(
+                response: 400,
+                description: "Bad Request",
+                content: new SA\JsonContent(ref: "#/components/schemas/app.error.response")
+            ),
+            new SA\Response(
+                response: 404,
+                description: "User Not Found",
+                content: new SA\JsonContent(ref: "#/components/schemas/app.error.response")
+            ),
+            new SA\Response(
+                response: 500,
+                description: "Application error",
+                content: new SA\JsonContent(ref: "#/components/schemas/app.error.response")
+            )
+        ]
+    )]
     #[Scope(allow: 'oauth:user:update')]
     #[RateLimit(create: 1, capacity: 2)]
     #[Middleware(CheckCredentials::class)]

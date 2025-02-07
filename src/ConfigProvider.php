@@ -28,8 +28,8 @@ class ConfigProvider
             ],
             'listeners' => [
                 AllowedScopesListener::class,
-                RequiredConfigListener::class,
                 BootValidatorsListener::class,
+                RequiredConfigListener::class,
             ],
             'dependencies' => [
                 HttpServer::class => SwaggerHttpServer::class,

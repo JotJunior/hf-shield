@@ -5,21 +5,18 @@ declare(strict_types=1);
 namespace Jot\HfShield\Command;
 
 use Hyperf\Command\Annotation\Command;
-use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Di\Annotation\Inject;
+use Jot\HfRepository\Exception\EntityValidationWithErrorsException;
+use Jot\HfRepository\Exception\RepositoryUpdateException;
 use Jot\HfShield\Entity\User\User;
 use Jot\HfShield\Repository\UserRepository;
-use Jot\HfRepository\Command\HfFriendlyLinesTrait;
-use Jot\HfRepository\Exception\EntityValidationWithErrorsException;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use function Hyperf\Support\make;
 
 #[Command]
-class OAuthUserCommand extends HyperfCommand
+class OAuthUserCommand extends AbstractCommand
 {
-
-    use HfFriendlyLinesTrait;
 
     #[Inject]
     protected UserRepository $repository;
@@ -71,7 +68,7 @@ class OAuthUserCommand extends HyperfCommand
         }
 
         $scopes = [];
-        foreach ($this->repository->getScopeList()['data'] as $scope) {
+        foreach ($this->repository->retrieveScopeList()['data'] as $scope) {
             $selected = $this->ask(sprintf('Add scope %s? (y/n):', $scope['name']), 'n');
             if ($selected === 'y') {
                 $scopes[] = [
@@ -88,11 +85,8 @@ class OAuthUserCommand extends HyperfCommand
 
         try {
             $result = $this->repository->updateScopes($user, $scopes)->toArray();
-        } catch (EntityValidationWithErrorsException $th) {
+        } catch (RepositoryUpdateException $th) {
             $this->failed($th->getMessage());
-            foreach ($th->getErrors() as $field => $message) {
-                $this->failed('<fg=#FFCC00;options=bold>%s:</> %s', [$field, $message[0]]);
-            }
             return;
         } catch (\Throwable $th) {
             $this->failed('Error updating user: %s', [$th->getMessage()]);
@@ -106,27 +100,12 @@ class OAuthUserCommand extends HyperfCommand
 
     protected function create(): void
     {
-        $tenant = $this->ask('Tenant: <fg=yellow>(*)</> <fg=white>[Type "-" for get the tenant list]</>');
-        if ($tenant === '-') {
-            $tenants = [];
-            foreach ($this->repository->getTenantList()['data'] as $idx => $item) {
-                $tenants[] = $item;
-                $this->success('<fg=yellow>%d</> -  %s : %s', [$idx + 1, $item['id'], $item['name']]);
-            }
-            $pickedNumber = $this->ask('Pick a number: ');
-            $tenant = $tenants[(int)$pickedNumber - 1]['id'] ?? null;
-            if (!$tenant) {
-                $this->failed('Wrong tenant number.');
-                return;
-            }
-            $this->success('Tenant selected: %s', [$tenant]);
-        }
-
+        $tenant = $this->selectTenant();
+        $client = $this->selectClient($tenant);
         $name = $this->ask('Name: <fg=yellow>(*)</>');
         $email = $this->retryIf('exists', 'E-mail', 'email', ['tenant.id' => $tenant]);
         $phone = $this->retryIf('exists', 'Phone', 'phone', ['tenant.id' => $tenant]);
         $federalDocument = $this->retryIf('exists', 'Federal Document', 'federal_document', ['tenant.id' => $tenant]);
-        $client = $this->ask('Client:');
 
         do {
             $password = $this->secret('Password: <fg=yellow>(*)</>');
@@ -143,9 +122,10 @@ class OAuthUserCommand extends HyperfCommand
             'tenant' => ['id' => $tenant],
             'federal_document' => $federalDocument,
             'password' => $password,
+            'status' => 'active',
         ];
         if ($client) {
-            $payload['client'] = $client;
+            $payload['client'] = ['id' => $client];
         }
         $data = make(User::class, [
             'data' => $payload
@@ -163,41 +143,5 @@ class OAuthUserCommand extends HyperfCommand
 
     }
 
-    protected function retryIf(string $condition, string $label, string $field, array $conditions = [], bool $allowEmpty = false)
-    {
-        do {
-            $value = $this->ask(sprintf('%s:%s</>', $label, $allowEmpty ? '' : ' <fg=yellow>(*)'));
-            if (!$value && $allowEmpty) {
-                return $value;
-            }
-
-            $fieldExists = !empty($this->repository->first([$field => $value, ...$conditions]));
-
-            if ($this->validateCondition($fieldExists, $condition, $label, $value)) {
-                return $value;
-            }
-        } while (true);
-    }
-
-    private function validateCondition(bool $fieldExists, string $condition, string $label, string $value): bool
-    {
-        if ($condition === 'exists' && !$fieldExists) {
-            return true;
-        }
-
-        if ($condition === 'exists' && $fieldExists) {
-            $this->warning('%s %s is already used.', [$label, $value]);
-        }
-
-        if ($condition === 'missing' && $fieldExists) {
-            return true;
-        }
-
-        if ($condition === 'missing' && !$fieldExists) {
-            $this->warning('%s %s not found.', [$label, $value]);
-        }
-
-        return false;
-    }
 
 }

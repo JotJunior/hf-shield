@@ -2,17 +2,20 @@
 
 declare(strict_types=1);
 
-namespace Jot\HfShield\Entity\User;
+namespace Jot\HfShield\Entity\Client;
 
-use Hyperf\Swagger\Annotation as SA;
 use Jot\HfRepository\Entity;
+use Jot\HfRepository\Trait\HasTimestamps;
+use Jot\HfRepository\Trait\HasLogicRemoval;
+use Hyperf\Swagger\Annotation as SA;
 
-#[SA\Schema(schema: "jot.hfshield.entity.user.client")]
-class Client extends Entity
+#[SA\Schema(schema: "jot.hfshield.entity.client.tenant")]
+class Tenant extends Entity
 {
 
+    
 
-    #[SA\Property(
+        #[SA\Property(
         property: "id",
         type: "string",
         example: ""
@@ -25,6 +28,7 @@ class Client extends Entity
         example: ""
     )]
     protected ?string $name = null;
+
 
 
 }

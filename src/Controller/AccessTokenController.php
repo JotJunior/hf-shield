@@ -4,12 +4,15 @@ namespace Jot\HfShield\Controller;
 
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\DeleteMapping;
+use Hyperf\HttpServer\Annotation\Middleware;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\RateLimit\Annotation\RateLimit;
+use Jot\HfShield\Exception\UnauthorizedAccessException;
+use Jot\HfShield\Middleware\CheckCredentials;
+use Jot\HfShield\Repository\AccessTokenRepository;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
-use Jot\HfShield\Repository\AccessTokenRepository;
 use Psr\Http\Message\ServerRequestInterface;
 
 #[Controller(prefix: '/oauth')]
@@ -44,8 +47,12 @@ class AccessTokenController extends AbstractController
 
     #[DeleteMapping(path: 'token/{id}')]
     #[RateLimit(create: 1, capacity: 2)]
+    #[Middleware(CheckCredentials::class)]
     public function revokeToken($id, ServerRequestInterface $request): PsrResponseInterface
     {
+        if ($request->getAttribute(CheckCredentials::ATTR_USER_ID) !== $id) {
+            throw new UnauthorizedAccessException();
+        }
         $this->repository()->revokeAccessToken($id);
         return $this->response->withStatus(204)->raw('');
     }
