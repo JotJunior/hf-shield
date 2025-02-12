@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Jot\HfShield\Entity\User;
+namespace Jot\HfShield\Entity\JwtSignature;
 
 use Hyperf\Swagger\Annotation as SA;
 use Jot\HfRepository\Entity;
 
-#[SA\Schema(schema: "jot.hf-shield.entity.user.client")]
-class Client extends Entity
+#[SA\Schema(schema: "jot.hf-shield.entity.jwt_signature.scope")]
+class Scope extends Entity
 {
 
 
@@ -25,6 +25,15 @@ class Client extends Entity
         example: ""
     )]
     protected ?string $name = null;
+
+    #[SA\Property(
+        property: "tenant_identifier",
+        description: "An alias of tenant id",
+        type: "string",
+        readOnly: true,
+        example: ""
+    )]
+    protected ?string $tenantIdentifier = null;
 
 
 }

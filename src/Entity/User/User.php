@@ -11,14 +11,14 @@ use Jot\HfRepository\Trait\HasLogicRemoval;
 use Jot\HfRepository\Trait\HasTimestamps;
 use Jot\HfValidator\Annotation as Validator;
 
-#[SA\Schema(schema: "jot.hfshield.entity.user.user", description: "Entity representing a user.")]
+#[SA\Schema(schema: "jot.hf-shield.entity.user.user", description: "Entity representing a user.")]
 class User extends Entity
 {
     use HasLogicRemoval, HasTimestamps;
 
     #[SA\Property(
         property: "client",
-        ref: "#/components/schemas/jot.hfshield.entity.user.client",
+        ref: "#/components/schemas/jot.hf-shield.entity.user.client",
         description: "Reference to the client associated with the user.",
         x: ["php_type" => "\Jot\HfShield\Entity\User\Client"]
     )]
@@ -138,7 +138,7 @@ class User extends Entity
         property: "scopes",
         description: "Array of scopes defining the user permissions.",
         type: "array",
-        items: new SA\Items(ref: "#/components/schemas/jot.hfshield.entity.user.scope"),
+        items: new SA\Items(ref: "#/components/schemas/jot.hf-shield.entity.user.scope"),
         example: [
             ['id' => 'oauth:user:create'],
             ['id' => 'oauth:client:list'],
@@ -161,7 +161,7 @@ class User extends Entity
     #[SA\Property(
         property: "tenants",
         type: "array",
-        items: new SA\Items(ref: "#/components/schemas/jot.hfshield.entity.user.tenant"),
+        items: new SA\Items(ref: "#/components/schemas/jot.hf-shield.entity.user.tenant"),
         x: ["php_type" => "\App\Entity\User\Tenant[]"]
     )]
     #[Validator\Exists(index: 'tenants', field: 'id')]

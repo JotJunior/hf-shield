@@ -9,7 +9,7 @@ use Jot\HfRepository\Trait\HasTimestamps;
 use Jot\HfRepository\Trait\HasLogicRemoval;
 use Hyperf\Swagger\Annotation as SA;
 
-#[SA\Schema(schema: "jot.hfshield.entity.client.tenant")]
+#[SA\Schema(schema: "jot.hf-shield.entity.client.tenant")]
 class Tenant extends Entity
 {
 

@@ -20,7 +20,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class CheckCredentials implements MiddlewareInterface
+class BearerStrategy implements MiddlewareInterface
 {
 
     public const ATTR_ACCESS_TOKEN_ID = 'oauth_access_token_id';

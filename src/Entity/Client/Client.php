@@ -9,7 +9,7 @@ use Jot\HfRepository\Entity;
 use Jot\HfRepository\Trait\HasLogicRemoval;
 use Jot\HfRepository\Trait\HasTimestamps;
 
-#[SA\Schema(schema: "jot.hfshield.entity.client.client")]
+#[SA\Schema(schema: "jot.hf-shield.entity.client.client")]
 class Client extends Entity
 {
 
@@ -73,8 +73,8 @@ class Client extends Entity
     #[SA\Property(
         property: "scopes",
         type: "array",
-        items: new SA\Items(ref: "#/components/schemas/jot.hfshield.entity.client.scope"),
-        x: ["php_type" => "\App\Entity\Client\Scope[]"]
+        items: new SA\Items(ref: "#/components/schemas/jot.hf-shield.entity.client.scope"),
+        x: ["php_type" => "\Jot\HfShield\Entity\Client\Scope[]"]
     )]
     protected ?array $scopes = null;
 
@@ -94,10 +94,10 @@ class Client extends Entity
 
     #[SA\Property(
         property: "tenant",
-        ref: "#/components/schemas/jot.hfshield.entity.client.tenant",
-        x: ["php_type" => "\App\Entity\Client\Tenant"]
+        ref: "#/components/schemas/jot.hf-shield.entity.client.tenant",
+        x: ["php_type" => "\Jot\HfShield\Entity\Client\Tenant"]
     )]
-    protected ?\App\Entity\Client\Tenant $tenant = null;
+    protected ?\Jot\HfShield\Entity\Client\Tenant $tenant = null;
 
     #[SA\Property(
         property: "tenant_identifier",

@@ -8,7 +8,7 @@ use Hyperf\RateLimit\Annotation\RateLimit;
 use Hyperf\Swagger\Annotation as SA;
 use Jot\HfShield\Annotation\Scope;
 use Jot\HfShield\Entity\User\User;
-use Jot\HfShield\Middleware\CheckCredentials;
+use Jot\HfShield\Middleware\BearerStrategy;
 use Jot\HfShield\Repository\UserRepository;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use function Hyperf\Support\make;
@@ -17,14 +17,6 @@ use function Hyperf\Support\make;
 #[SA\Tag(
     name: 'User',
     description: 'Endpoints related to users management'
-)]
-#[SA\Schema(schema: "app.error.response", required: ["result", "error"],
-    properties: [
-        new SA\Property(property: "result", type: "string", example: "error"),
-        new SA\Property(property: "error", type: "string", example: "Error message"),
-        new SA\Property(property: "data", type: "string|array", example: null),
-    ],
-    type: "object"
 )]
 #[Controller(prefix: '/oauth')]
 class UserController extends AbstractController
@@ -36,32 +28,40 @@ class UserController extends AbstractController
         path: "/oauth/users",
         description: "Create a new users.",
         summary: "Create a New User",
+        security: [
+            ['shieldBearerAuth' => ['oauth:user:create']],
+        ],
         requestBody: new SA\RequestBody(
             required: true,
-            content: new SA\JsonContent(ref: "#/components/schemas/jot.hfshield.entity.user.user")
+            content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.entity.user.user")
         ),
         tags: ["User"],
         responses: [
             new SA\Response(
                 response: 201,
                 description: "User created",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hfshield.entity.user.user")
+                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.entity.user.user")
+            ),
+            new SA\Response(
+                response: 401,
+                description: "Unauthorized access",
+                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.auth-error.response")
             ),
             new SA\Response(
                 response: 400,
                 description: "Bad request",
-                content: new SA\JsonContent(ref: "#/components/schemas/app.error.response")
+                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.error.response")
             ),
             new SA\Response(
                 response: 500,
                 description: "Application error",
-                content: new SA\JsonContent(ref: "#/components/schemas/app.error.response")
+                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.error.response")
             )
         ]
     )]
     #[Scope(allow: 'oauth:user:create')]
     #[RateLimit(create: 1, capacity: 2)]
-    #[Middleware(CheckCredentials::class)]
+    #[Middleware(BearerStrategy::class)]
     public function createUser(): PsrResponseInterface
     {
         $userData = $this->request->all();
@@ -83,9 +83,12 @@ class UserController extends AbstractController
         path: "/oauth/users/{id}",
         description: "Update the details of an existing users.",
         summary: "Update an existing User",
+        security: [
+            ['shieldBearerAuth' => ['oauth:user:update']],
+        ],
         requestBody: new SA\RequestBody(
             required: true,
-            content: new SA\JsonContent(ref: "#/components/schemas/jot.hfshield.entity.user.user")
+            content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.entity.user.user")
         ),
         tags: ["User"],
         parameters: [
@@ -101,28 +104,33 @@ class UserController extends AbstractController
             new SA\Response(
                 response: 200,
                 description: "User Updated",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hfshield.entity.user.user")
+                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.entity.user.user")
             ),
             new SA\Response(
                 response: 400,
                 description: "Bad Request",
-                content: new SA\JsonContent(ref: "#/components/schemas/app.error.response")
+                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.error.response")
+            ),
+            new SA\Response(
+                response: 401,
+                description: "Unauthorized access",
+                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.auth-error.response")
             ),
             new SA\Response(
                 response: 404,
                 description: "User Not Found",
-                content: new SA\JsonContent(ref: "#/components/schemas/app.error.response")
+                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.error.response")
             ),
             new SA\Response(
                 response: 500,
                 description: "Application error",
-                content: new SA\JsonContent(ref: "#/components/schemas/app.error.response")
+                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.error.response")
             )
         ]
     )]
     #[Scope(allow: 'oauth:user:update')]
     #[RateLimit(create: 1, capacity: 2)]
-    #[Middleware(CheckCredentials::class)]
+    #[Middleware(BearerStrategy::class)]
     public function updateUser(string $id): PsrResponseInterface
     {
         $userData = $this->request->all();

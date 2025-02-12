@@ -8,7 +8,7 @@ use Hyperf\RateLimit\Annotation\RateLimit;
 use Hyperf\Swagger\Annotation as SA;
 use Jot\HfShield\Annotation\Scope;
 use Jot\HfShield\Entity\Client\Client;
-use Jot\HfShield\Middleware\CheckCredentials;
+use Jot\HfShield\Middleware\BearerStrategy;
 use Jot\HfShield\Repository\ClientRepository;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use function Hyperf\Support\make;
@@ -17,14 +17,6 @@ use function Hyperf\Support\make;
 #[SA\Tag(
     name: 'Client',
     description: 'Endpoints related to clients management'
-)]
-#[SA\Schema(schema: "app.error.response", required: ["result", "error"],
-    properties: [
-        new SA\Property(property: "result", type: "string", example: "error"),
-        new SA\Property(property: "error", type: "string", example: "Error message"),
-        new SA\Property(property: "data", type: "object|array", example: null),
-    ],
-    type: "object"
 )]
 #[Controller(prefix: '/oauth')]
 class ClientController extends AbstractController
@@ -36,32 +28,40 @@ class ClientController extends AbstractController
         path: "/oauth/clients",
         description: "Create a new client.",
         summary: "Create a New Client",
+        security: [
+            ['shieldBearerAuth' => ['oauth:client:create']],
+        ],
         requestBody: new SA\RequestBody(
             required: true,
-            content: new SA\JsonContent(ref: "#/components/schemas/jot.hfshield.entity.client.client")
+            content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.entity.client.client")
         ),
         tags: ["Client"],
         responses: [
             new SA\Response(
                 response: 201,
                 description: "Client created",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hfshield.entity.client.client")
+                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.entity.client.client")
             ),
             new SA\Response(
                 response: 400,
                 description: "Bad request",
-                content: new SA\JsonContent(ref: "#/components/schemas/app.error.response")
+                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.error.response")
+            ),
+            new SA\Response(
+                response: 401,
+                description: "Unauthorized access",
+                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.auth-error.response")
             ),
             new SA\Response(
                 response: 500,
                 description: "Application error",
-                content: new SA\JsonContent(ref: "#/components/schemas/app.error.response")
+                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.error.response")
             )
         ]
     )]
     #[RateLimit(create: 1, capacity: 2)]
     #[Scope(allow: 'oauth:client:create')]
-    #[Middleware(CheckCredentials::class)]
+    #[Middleware(BearerStrategy::class)]
     public function createClient(): PsrResponseInterface
     {
         $userData = $this->request->all();
@@ -83,6 +83,9 @@ class ClientController extends AbstractController
         path: "/oauth/clients",
         description: "Retrieve a list of clients with optional pagination.",
         summary: "Get Clients List",
+        security: [
+            ['shieldBearerAuth' => ['oauth:client:list']],
+        ],
         tags: ["Client"],
         parameters: [
             new SA\Parameter(
@@ -123,7 +126,7 @@ class ClientController extends AbstractController
                         new SA\Property(
                             property: "data",
                             type: "array",
-                            items: new SA\Items(ref: "#/components/schemas/jot.hfshield.entity.client.client")
+                            items: new SA\Items(ref: "#/components/schemas/jot.hf-shield.entity.client.client")
                         ),
                         new SA\Property(
                             property: "result",
@@ -143,18 +146,23 @@ class ClientController extends AbstractController
             new SA\Response(
                 response: 400,
                 description: "Bad Request",
-                content: new SA\JsonContent(ref: "#/components/schemas/app.error.response")
+                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.error.response")
+            ),
+            new SA\Response(
+                response: 401,
+                description: "Unauthorized access",
+                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.auth-error.response")
             ),
             new SA\Response(
                 response: 500,
                 description: "Application error",
-                content: new SA\JsonContent(ref: "#/components/schemas/app.error.response")
+                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.error.response")
             )
         ]
     )]
     #[RateLimit(create: 1, capacity: 2)]
     #[Scope(allow: 'oauth:client:list')]
-    #[Middleware(CheckCredentials::class)]
+    #[Middleware(BearerStrategy::class)]
     public function listClients(): PsrResponseInterface
     {
         $repository = $this->container->get(ClientRepository::class);

@@ -7,7 +7,7 @@ namespace Jot\HfShield\Entity\User;
 use Hyperf\Swagger\Annotation as SA;
 use Jot\HfRepository\Entity;
 
-#[SA\Schema(schema: "jot.hfshield.entity.user.scope")]
+#[SA\Schema(schema: "jot.hf-shield.entity.user.scope")]
 class Scope extends Entity
 {
 

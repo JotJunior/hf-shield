@@ -9,7 +9,7 @@ use Jot\HfRepository\Trait\HasTimestamps;
 use Jot\HfRepository\Trait\HasLogicRemoval;
 use Hyperf\Swagger\Annotation as SA;
 
-#[SA\Schema(schema: "jot.hfshield.entity.authcode.auth_code")]
+#[SA\Schema(schema: "jot.hf-shield.entity.authcode.auth_code")]
 class AuthCode extends Entity
 {
 
@@ -17,7 +17,7 @@ class AuthCode extends Entity
 
     #[SA\Property(
         property: "access_token",
-        ref: "#/components/schemas/jot.hfshield.entity.authcode.accesstoken",
+        ref: "#/components/schemas/jot.hf-shield.entity.authcode.accesstoken",
         x: ["php_type" => "\Jot\HfShield\Entity\AuthCode\AccessToken"]
     )]
     protected ?\Jot\HfShield\Entity\AuthCode\AccessToken $accessToken = null;

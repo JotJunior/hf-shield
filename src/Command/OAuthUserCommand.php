@@ -143,5 +143,4 @@ class OAuthUserCommand extends AbstractCommand
 
     }
 
-
 }

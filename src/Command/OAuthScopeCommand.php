@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Jot\HfShield\Command;
 
-use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Command\Annotation\Command;
+use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Di\Annotation\AnnotationCollector;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\Stringable\Str;
-use Jot\HfShield\Entity\Scope\Scope;
 use Jot\HfRepository\Command\HfFriendlyLinesTrait;
+use Jot\HfShield\Entity\Scope\Scope;
 use Jot\HfShield\Repository\ScopeRepository;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Input\InputArgument;
@@ -66,6 +66,38 @@ class OAuthScopeCommand extends HyperfCommand
         }
     }
 
+    protected function sync(): void
+    {
+        $collectedAnnotations = AnnotationCollector::getMethodsByAnnotation(\Jot\HfShield\Annotation\Scope::class);
+
+        foreach ($collectedAnnotations as $annotationData) {
+            $scopes = (array)$annotationData['annotation']->allow;
+            foreach ($scopes as $scope) {
+                try {
+                    $this->registerScope($scope);
+                } catch (\Throwable $th) {
+                    $this->failed($th->getMessage());
+                }
+            }
+        }
+    }
+
+    protected function registerScope(string $scope): void
+    {
+        if ($this->repository->exists($scope)) {
+            $this->warning('Scope %s is already registered.', [$scope]);
+            return;
+        }
+
+        $description = $this->ask(sprintf('%s description: ', $scope));
+        $this->repository->create(make(Scope::class, [
+            'data' => [
+                'id' => $scope,
+                'name' => $description,
+            ]
+        ]));
+    }
+
     protected function create(): void
     {
         $name = $this->ask('Name');
@@ -86,33 +118,5 @@ class OAuthScopeCommand extends HyperfCommand
             return;
         }
 
-    }
-
-    protected function sync(): void
-    {
-        $collectedAnnotations = AnnotationCollector::getMethodsByAnnotation(\Jot\HfShield\Annotation\Scope::class);
-
-        foreach ($collectedAnnotations as $annotationData) {
-            $scopes = (array)$annotationData['annotation']->allow;
-            foreach ($scopes as $scope) {
-                $this->registerScope($scope);
-            }
-        }
-    }
-
-    protected function registerScope(string $scope): void
-    {
-        if ($this->repository->exists($scope)) {
-            $this->warning('Scope %s is already registered.', [$scope]);
-            return;
-        }
-
-        $description = $this->ask(sprintf('%s description: ', $scope));
-        $this->repository->create(make(Scope::class, [
-            'data' => [
-                'id' => $scope,
-                'name' => $description,
-            ]
-        ]));
     }
 }
