@@ -1,0 +1,93 @@
+services:
+  app:
+    container_name: ${APP_NAME}
+    image: hyperf/hyperf:8.3-alpine-v3.19-swoole-slim
+    build:
+      context: .
+    volumes:
+      - ./:/opt/www
+    ports:
+      - 9500:9500
+      - 9501:9501
+      - 9502:9502
+    environment:
+      - APP_ENV=dev
+      - SCAN_CACHEABLE=false
+      - TIMEZONE=America/Sao_Paulo
+    stdin_open: true
+    tty: true
+    privileged: true
+    user: root
+    entrypoint: /bin/sh
+    networks:
+      local-network:
+        ipv4_address: 172.20.0.10
+  elastic:
+    container_name: elastic
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.1
+    ports:
+      - 127.0.0.1:9200:9200
+    environment:
+      - discovery.type=single-node
+      - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD}
+      - xpack.security.enabled=true
+      - xpack.security.http.ssl.enabled=false
+      - xpack.license.self_generated.type=trial
+      - xpack.ml.use_auto_machine_memory_percent=true
+      - ES_JAVA_OPTS=-Xms128m -Xmx2g
+      - cluster.routing.allocation.disk.watermark.low=1gb
+      - cluster.routing.allocation.disk.watermark.high=1gb
+      - cluster.routing.allocation.disk.watermark.flood_stage=1gb
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "curl --output /dev/null --silent --head --fail -u elastic:${ELASTICSEARCH_PASSWORD} http://elasticsearch:9200",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      local-network:
+        ipv4_address: 172.20.0.13
+  etcd:
+    container_name: etcd
+    image: bitnami/etcd:latest
+    ports:
+      - 2379:2379
+      - 2380:2380
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+    networks:
+      local-network:
+        ipv4_address: 172.20.0.12
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3.13.7-management-alpine
+    ports:
+      - 15671:15671
+      - 15672:15672
+      - 15691:15691
+      - 15692:15692
+      - 25672:25672
+      - 4369:4369
+      - 5671:5671
+      - 5672:5672
+    networks:
+      local-network:
+        ipv4_address: 172.20.0.14
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - 6379:6379
+    networks:
+      local-network:
+        ipv4_address: 172.20.0.11
+
+networks:
+  local-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

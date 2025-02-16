@@ -62,6 +62,12 @@ class ConfigProvider
                     'destination' => BASE_PATH . '/config/autoload/hf_elastic.php',
                 ],
                 [
+                    'id' => 'config',
+                    'description' => 'The config for hf_session.',
+                    'source' => __DIR__ . '/../publish/hf_session.php',
+                    'destination' => BASE_PATH . '/config/autoload/hf_session.php',
+                ],
+                [
                     'id' => 'migrations',
                     'description' => 'The elasticsearch migration files for hf_shield.',
                     'source' => __DIR__ . '/../migrations',

@@ -52,6 +52,9 @@ composer require jot/hf-shield
 Após instalar o módulo, é necessário configurá-lo. Verifique se todas as dependências estão instaladas em seu ambiente
 antes de iniciar o serviço.
 
+Você pode levantar seu ambiente de desenvolvimento a partir do [docker-composer](./docker-compose.yml) neste
+repositório.
+
 ### Dependências
 
 #### ETCD
@@ -84,8 +87,7 @@ Esta aplicação foi construída para usar o Elasticsearch como base de dados pr
 php bin/hyperf.php vendor:publish jot/hf-elastic
 ```
 
-Após editar o arquivo `config/autoload/hf_elastic.php` e inserir as credenciais do Elasticsearch, registre-as
-no etcd:
+Após editar o arquivo `.env` com as credenciais necessárias, registre-as no etcd:
 
 ```shell
 php bin/hyperf.php etcd:put hf_elastic

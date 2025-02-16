@@ -9,6 +9,7 @@ use Hyperf\Swagger\Annotation as SA;
 use Jot\HfShield\Annotation\Scope;
 use Jot\HfShield\Entity\Client\Client;
 use Jot\HfShield\Middleware\BearerStrategy;
+use Jot\HfShield\Middleware\SessionStrategy;
 use Jot\HfShield\Repository\ClientRepository;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use function Hyperf\Support\make;
@@ -60,7 +61,7 @@ class ClientController extends AbstractController
         ]
     )]
     #[RateLimit(create: 1, capacity: 2)]
-    #[Scope(allow: 'oauth:client:create')]
+    #[Scope(allow: 'oauth:client:update')]
     #[Middleware(BearerStrategy::class)]
     public function createClient(): PsrResponseInterface
     {
@@ -162,7 +163,7 @@ class ClientController extends AbstractController
     )]
     #[RateLimit(create: 1, capacity: 2)]
     #[Scope(allow: 'oauth:client:list')]
-    #[Middleware(BearerStrategy::class)]
+    #[Middleware(SessionStrategy::class)]
     public function listClients(): PsrResponseInterface
     {
         $repository = $this->container->get(ClientRepository::class);

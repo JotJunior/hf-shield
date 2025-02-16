@@ -10,6 +10,7 @@ use Hyperf\HttpMessage\Stream\SwooleStream;
 use Jot\HfShield\Exception\MissingResourceScopeException;
 use Jot\HfShield\Exception\UnauthorizedAccessException;
 use Jot\HfShield\Exception\UnauthorizedClientException;
+use Jot\HfShield\Exception\UnauthorizedSessionException;
 use Jot\HfShield\Exception\UnauthorizedUserException;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
@@ -24,6 +25,7 @@ class AuthExceptionHandler extends ExceptionHandler
     {
         if ($throwable instanceof MissingResourceScopeException ||
             $throwable instanceof UnauthorizedAccessException ||
+            $throwable instanceof UnauthorizedSessionException ||
             $throwable instanceof UnauthorizedUserException ||
             $throwable instanceof UnauthorizedClientException) {
 

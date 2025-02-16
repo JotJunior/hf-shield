@@ -13,14 +13,6 @@ return [
     'enable_oauth_endpoints' => true,
 
     /*
-     * Authentication strategies:
-     * - bearer: Validates the JWT token sent in the Authorization header.
-     * - jwt: The payload is encapsulated within the JWT and its signature is validated during the request.
-     * - session: Creates an additional layer in front of the bearer strategy by storing the token in the session.
-     */
-    'strategy' => 'bearer',
-
-    /*
      * Specifies the format of the token used for authentication.
      * The default value is 'JWT'.
      */

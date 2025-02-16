@@ -16,7 +16,7 @@ use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 #[SA\HyperfServer('http')]
-#[SA\Schema(schema: "oauth.access-token.request", required: [],
+#[SA\Schema(schema: "oauth.access-token.request", required: ["username", "password", "client_id", "client_secret", "grant_type", "scope"],
     properties: [
         new SA\Property(property: "username", type: "string", example: "my@user.com"),
         new SA\Property(property: "password", type: "string", example: "S3curit!PaSS"),
