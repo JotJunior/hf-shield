@@ -4,23 +4,22 @@ declare(strict_types=1);
 
 namespace Jot\HfShield;
 
-use Hyperf\Di\Annotation\Inject;
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Di\Annotation\Inject;
 use Jot\HfShield\Repository\AccessTokenRepository;
 use Jot\HfShield\Repository\AuthCodeRepository;
 use Jot\HfShield\Repository\ClientRepository;
 use Jot\HfShield\Repository\RefreshTokenRepository;
 use Jot\HfShield\Repository\ScopeRepository;
 use Jot\HfShield\Repository\UserRepository;
-use Psr\Container\ContainerInterface;
 use League\OAuth2\Server\AuthorizationServer;
+use League\OAuth2\Server\CryptKey;
 use League\OAuth2\Server\Grant\AuthCodeGrant;
+use League\OAuth2\Server\Grant\ClientCredentialsGrant;
+use League\OAuth2\Server\Grant\ImplicitGrant;
 use League\OAuth2\Server\Grant\PasswordGrant;
 use League\OAuth2\Server\Grant\RefreshTokenGrant;
-use League\OAuth2\Server\Grant\ImplicitGrant;
-use League\OAuth2\Server\CryptKey;
-use League\OAuth2\Server\Grant\ClientCredentialsGrant;
-
+use Psr\Container\ContainerInterface;
 use function Hyperf\Support\make;
 use function Hyperf\Tappable\tap;
 
@@ -84,79 +83,13 @@ class AuthorizationServerFactory
         });
     }
 
-
-    /**
-     * Creates and returns an AuthCodeGrant instance configured with the required repositories and settings.
-     *
-     * @return AuthCodeGrant The AuthCodeGrant instance initialized with the specified repositories and configurations.
-     */
-    protected function makeAuthCodeGrant(): AuthCodeGrant
-    {
-        return make(AuthCodeGrant::class, [
-                'authCodeRepository' => make(AuthCodeRepository::class),
-                'refreshTokenRepository' => make(RefreshTokenRepository::class),
-                'authCodeTTL' => $this->tokenExpireDays,
-            ]
-        );
-    }
-
-
-    /**
-     * Creates an instance of the RefreshTokenGrant, setting up its repository
-     * and configuring the Refresh Token Time-To-Live (TTL).
-     *
-     * @return RefreshTokenGrant The configured RefreshTokenGrant instance.
-     */
-    public function makeRefreshTokenGrant()
-    {
-        $repository = make(RefreshTokenRepository::class);
-        $grant = make(RefreshTokenGrant::class, [
-            'refreshTokenRepository' => $repository
-        ]);
-        $grant->setRefreshTokenTTL($this->tokenExpireDays);
-        return $grant;
-    }
-
-
-    /**
-     * Creates and configures a PasswordGrant instance with the appropriate user and refresh token repositories.
-     * The refresh token time-to-live (TTL) is set based on the predefined token expiration days.
-     *
-     * @return PasswordGrant The configured PasswordGrant instance.
-     */
-    public function makePasswordGrant()
-    {
-        $grant = make(PasswordGrant::class, [
-            'userRepository' => make(UserRepository::class),
-            'refreshTokenRepository' => make(RefreshTokenRepository::class)
-        ]);
-        $grant->setRefreshTokenTTL($this->tokenExpireDays);
-
-        return $grant;
-    }
-
-
-    /**
-     * Creates and returns an instance of the ImplicitGrant class configured with
-     * the access token time-to-live (TTL) setting.
-     *
-     * @return ImplicitGrant The ImplicitGrant instance initialized with the specified TTL.
-     */
-    protected function makeImplicitGrant()
-    {
-        return make(ImplicitGrant::class, [
-            'accessTokenTTL' => $this->tokenExpireDays
-        ]);
-    }
-
-
     /**
      * Creates and returns an AuthorizationServer instance configured with the necessary repositories,
      * cryptographic key, and encryption key.
      *
      * @return AuthorizationServer The AuthorizationServer instance initialized with specified dependencies and configuration.
      */
-    public function makeAuthorizationServer()
+    public function makeAuthorizationServer(): AuthorizationServer
     {
         return new AuthorizationServer(
             make(ClientRepository::class),
@@ -180,6 +113,67 @@ class AuthorizationServerFactory
             'keyPath' => $key,
             'passPhrase' => null,
             'keyPermissionsCheck' => false
+        ]);
+    }
+
+    /**
+     * Creates and returns an AuthCodeGrant instance configured with the required repositories and settings.
+     *
+     * @return AuthCodeGrant The AuthCodeGrant instance initialized with the specified repositories and configurations.
+     */
+    protected function makeAuthCodeGrant(): AuthCodeGrant
+    {
+        return make(AuthCodeGrant::class, [
+                'authCodeRepository' => make(AuthCodeRepository::class),
+                'refreshTokenRepository' => make(RefreshTokenRepository::class),
+                'authCodeTTL' => $this->tokenExpireDays,
+            ]
+        );
+    }
+
+    /**
+     * Creates an instance of the RefreshTokenGrant, setting up its repository
+     * and configuring the Refresh Token Time-To-Live (TTL).
+     *
+     * @return RefreshTokenGrant The configured RefreshTokenGrant instance.
+     */
+    public function makeRefreshTokenGrant(): RefreshTokenGrant
+    {
+        $repository = make(RefreshTokenRepository::class);
+        $grant = make(RefreshTokenGrant::class, [
+            'refreshTokenRepository' => $repository
+        ]);
+        $grant->setRefreshTokenTTL($this->tokenExpireDays);
+        return $grant;
+    }
+
+    /**
+     * Creates and configures a PasswordGrant instance with the appropriate user and refresh token repositories.
+     * The refresh token time-to-live (TTL) is set based on the predefined token expiration days.
+     *
+     * @return PasswordGrant The configured PasswordGrant instance.
+     */
+    public function makePasswordGrant(): PasswordGrant
+    {
+        $grant = make(PasswordGrant::class, [
+            'userRepository' => make(UserRepository::class),
+            'refreshTokenRepository' => make(RefreshTokenRepository::class)
+        ]);
+        $grant->setRefreshTokenTTL($this->tokenExpireDays);
+
+        return $grant;
+    }
+
+    /**
+     * Creates and returns an instance of the ImplicitGrant class configured with
+     * the access token time-to-live (TTL) setting.
+     *
+     * @return ImplicitGrant The ImplicitGrant instance initialized with the specified TTL.
+     */
+    protected function makeImplicitGrant(): ImplicitGrant
+    {
+        return make(ImplicitGrant::class, [
+            'accessTokenTTL' => $this->tokenExpireDays
         ]);
     }
 

@@ -64,6 +64,13 @@ class Client extends Entity
     protected ?string $name = null;
 
     #[SA\Property(
+        property: "grant_type",
+        type: "array",
+        example: ["password"]
+    )]
+    protected null|array|string $grantType = null;
+
+    #[SA\Property(
         property: "redirect_uri",
         type: "string",
         example: ""

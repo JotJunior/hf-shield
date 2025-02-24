@@ -7,6 +7,8 @@ use function Hyperf\Support\env;
 return [
     'hosts' => explode(',', env('ELASTICSEARCH_HOSTS', 'http://localhost:9200')),
     'username' => env('ELASTICSEARCH_USERNAME', 'elastic'),
+    'api_id' => env('ELASTICSEARCH_API_ID', ''),
+    'api_key' => env('ELASTICSEARCH_API_KEY', ''),
     'password' => env('ELASTICSEARCH_PASSWORD', ''),
     'prefix' => env('ELASTICSEARCH_INDEX_PREFIX', ''),
     'dynamic' => env('ELASTICSEARCH_INDEX_DYNAMIC', 'strict'),

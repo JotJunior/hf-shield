@@ -32,10 +32,12 @@ class ClientRepository extends AbstractRepository implements ClientRepositoryInt
 
         $clientData = $client->toArray();
 
-        return (new ClientEntity())
-            ->setIdentifier($clientData['id'])
-            ->setName($clientData['name'])
-            ->setRedirectUri($clientData['redirect_uri']);
+        $clientEntity = new ClientEntity();
+        $clientEntity->setIdentifier($clientData['id']);
+        $clientEntity->setName($clientData['name']);
+        $clientEntity->setRedirectUri($clientData['redirect_uri']);
+
+        return $clientEntity;
     }
 
 
