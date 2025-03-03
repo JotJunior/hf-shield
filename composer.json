@@ -37,5 +37,18 @@
     "hyperf": {
       "config": "Jot\\HfShield\\ConfigProvider"
     }
+  },
+  "require-dev": {
+    "mockery/mockery": "^1.6",
+    "phpunit/phpunit": "^10.5"
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Jot\\HfShieldTest\\": "tests/"
+    }
+  },
+  "scripts": {
+    "test": "phpunit",
+    "coverage": "phpunit --testdox --coverage-html=coverage/ --coverage-filter=src/"
   }
 }
