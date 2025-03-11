@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "812add3ce8bcc705628ccd9dbb6572b8",
+    "content-hash": "2790b8c5dda49706aa2c17e85d050d74",
     "packages": [
         {
             "name": "brick/math",
-            "version": "0.12.1",
+            "version": "0.12.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/brick/math.git",
-                "reference": "f510c0a40911935b77b86859eb5223d58d660df1"
+                "reference": "866551da34e9a618e64a819ee1e01c20d8a588ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/brick/math/zipball/f510c0a40911935b77b86859eb5223d58d660df1",
-                "reference": "f510c0a40911935b77b86859eb5223d58d660df1",
+                "url": "https://api.github.com/repos/brick/math/zipball/866551da34e9a618e64a819ee1e01c20d8a588ba",
+                "reference": "866551da34e9a618e64a819ee1e01c20d8a588ba",
                 "shasum": ""
             },
             "require": {
@@ -26,7 +26,7 @@
             "require-dev": {
                 "php-coveralls/php-coveralls": "^2.2",
                 "phpunit/phpunit": "^10.1",
-                "vimeo/psalm": "5.16.0"
+                "vimeo/psalm": "6.8.8"
             },
             "type": "library",
             "autoload": {
@@ -56,7 +56,7 @@
             ],
             "support": {
                 "issues": "https://github.com/brick/math/issues",
-                "source": "https://github.com/brick/math/tree/0.12.1"
+                "source": "https://github.com/brick/math/tree/0.12.3"
             },
             "funding": [
                 {
@@ -64,7 +64,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2023-11-29T23:19:16+00:00"
+            "time": "2025-02-28T13:11:00+00:00"
         },
         {
             "name": "defuse/php-encryption",
@@ -416,22 +416,22 @@
         },
         {
             "name": "ezimuel/ringphp",
-            "version": "1.2.3",
+            "version": "1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ezimuel/ringphp.git",
-                "reference": "648a9c3c8b5f2591a317d31aa7a18a784011b00d"
+                "reference": "5e4ee1dfc7a323b87873b83f17c69c76ba047793"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ezimuel/ringphp/zipball/648a9c3c8b5f2591a317d31aa7a18a784011b00d",
-                "reference": "648a9c3c8b5f2591a317d31aa7a18a784011b00d",
+                "url": "https://api.github.com/repos/ezimuel/ringphp/zipball/5e4ee1dfc7a323b87873b83f17c69c76ba047793",
+                "reference": "5e4ee1dfc7a323b87873b83f17c69c76ba047793",
                 "shasum": ""
             },
             "require": {
                 "ezimuel/guzzlestreams": "^3.0.1",
                 "php": ">=5.4.0",
-                "react/promise": "~2.0"
+                "react/promise": "^2.0 || ^3.0"
             },
             "replace": {
                 "guzzlehttp/ringphp": "self.version"
@@ -467,9 +467,9 @@
             ],
             "description": "Fork of guzzle/RingPHP (abandoned) to be used with elasticsearch-php",
             "support": {
-                "source": "https://github.com/ezimuel/ringphp/tree/1.2.3"
+                "source": "https://github.com/ezimuel/ringphp/tree/1.3.0"
             },
-            "time": "2025-01-14T12:59:43+00:00"
+            "time": "2025-02-24T10:29:27+00:00"
         },
         {
             "name": "fig/http-message-util",
@@ -987,16 +987,16 @@
         },
         {
             "name": "hyperf/code-parser",
-            "version": "v3.1.42",
+            "version": "v3.1.52",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hyperf/code-parser.git",
-                "reference": "81953c4ea9035ac5f0a4740ae157310ca4e18ff2"
+                "reference": "340fb9902465bfc6d26d8b5a6d8d369590ea6e57"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hyperf/code-parser/zipball/81953c4ea9035ac5f0a4740ae157310ca4e18ff2",
-                "reference": "81953c4ea9035ac5f0a4740ae157310ca4e18ff2",
+                "url": "https://api.github.com/repos/hyperf/code-parser/zipball/340fb9902465bfc6d26d8b5a6d8d369590ea6e57",
+                "reference": "340fb9902465bfc6d26d8b5a6d8d369590ea6e57",
                 "shasum": ""
             },
             "require": {
@@ -1048,7 +1048,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2024-09-25T02:54:12+00:00"
+            "time": "2025-02-27T07:40:13+00:00"
         },
         {
             "name": "hyperf/codec",
@@ -1116,16 +1116,16 @@
         },
         {
             "name": "hyperf/collection",
-            "version": "v3.1.50",
+            "version": "v3.1.52",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hyperf/collection.git",
-                "reference": "9ec6c151c6e1ce8407d617b7813eb52f4fb3c363"
+                "reference": "a56bfce5002c7d69838f7e82184a2e135e98e80a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hyperf/collection/zipball/9ec6c151c6e1ce8407d617b7813eb52f4fb3c363",
-                "reference": "9ec6c151c6e1ce8407d617b7813eb52f4fb3c363",
+                "url": "https://api.github.com/repos/hyperf/collection/zipball/a56bfce5002c7d69838f7e82184a2e135e98e80a",
+                "reference": "a56bfce5002c7d69838f7e82184a2e135e98e80a",
                 "shasum": ""
             },
             "require": {
@@ -1177,7 +1177,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2025-01-08T06:57:58+00:00"
+            "time": "2025-02-17T03:58:59+00:00"
         },
         {
             "name": "hyperf/command",
@@ -1695,22 +1695,22 @@
         },
         {
             "name": "hyperf/coroutine",
-            "version": "v3.1.51",
+            "version": "v3.1.52",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hyperf/coroutine.git",
-                "reference": "19c16ece44269e0cf16d8dd06875e0072f668110"
+                "reference": "223f0f9e17ee9dc8bf6e8da9e651296ba93e8d64"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hyperf/coroutine/zipball/19c16ece44269e0cf16d8dd06875e0072f668110",
-                "reference": "19c16ece44269e0cf16d8dd06875e0072f668110",
+                "url": "https://api.github.com/repos/hyperf/coroutine/zipball/223f0f9e17ee9dc8bf6e8da9e651296ba93e8d64",
+                "reference": "223f0f9e17ee9dc8bf6e8da9e651296ba93e8d64",
                 "shasum": ""
             },
             "require": {
                 "hyperf/context": "~3.1.0",
                 "hyperf/contract": "~3.1.0",
-                "hyperf/engine": "^2.0",
+                "hyperf/engine": "^2.13.0",
                 "php": ">=8.1"
             },
             "type": "library",
@@ -1755,20 +1755,20 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2025-01-20T02:23:38+00:00"
+            "time": "2025-02-08T03:41:26+00:00"
         },
         {
             "name": "hyperf/di",
-            "version": "v3.1.42",
+            "version": "v3.1.52",
             "source": {
                 "type": "git",
                 "url": "https://github.com/hyperf/di.git",
-                "reference": "72b65de5022e3dca79ae1902c058048b9519aa72"
+                "reference": "964d99b957185d317c0c4176de6b97c7436074fc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hyperf/di/zipball/72b65de5022e3dca79ae1902c058048b9519aa72",
-                "reference": "72b65de5022e3dca79ae1902c058048b9519aa72",
+                "url": "https://api.github.com/repos/hyperf/di/zipball/964d99b957185d317c0c4176de6b97c7436074fc",
+                "reference": "964d99b957185d317c0c4176de6b97c7436074fc",
                 "shasum": ""
             },
             "require": {
@@ -1831,7 +1831,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2024-09-25T02:54:12+00:00"
+            "time": "2025-02-27T06:49:30+00:00"
         },
         {
             "name": "hyperf/dispatcher",
@@ -3637,16 +3637,16 @@
         },
         {
             "name": "jot/hf-elastic",
-            "version": "0.16.14",
+            "version": "0.17.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JotJunior/hf-elastic.git",
-                "reference": "191bc3312f50ef21f4412e3a741833d2fff2b3a9"
+                "reference": "98deae02d2b518e3b75ba6f19a09cba6fec23805"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JotJunior/hf-elastic/zipball/191bc3312f50ef21f4412e3a741833d2fff2b3a9",
-                "reference": "191bc3312f50ef21f4412e3a741833d2fff2b3a9",
+                "url": "https://api.github.com/repos/JotJunior/hf-elastic/zipball/98deae02d2b518e3b75ba6f19a09cba6fec23805",
+                "reference": "98deae02d2b518e3b75ba6f19a09cba6fec23805",
                 "shasum": ""
             },
             "require": {
@@ -3660,6 +3660,8 @@
                 "ramsey/uuid": "^4.7"
             },
             "require-dev": {
+                "mikey179/vfsstream": "^1.6",
+                "mockery/mockery": "^1.6",
                 "phpunit/phpunit": "^10.5"
             },
             "type": "library",
@@ -3691,22 +3693,22 @@
             ],
             "support": {
                 "issues": "https://github.com/JotJunior/hf-elastic/issues",
-                "source": "https://github.com/JotJunior/hf-elastic/tree/0.16.14"
+                "source": "https://github.com/JotJunior/hf-elastic/tree/v0.17.1"
             },
-            "time": "2025-02-03T16:33:37+00:00"
+            "time": "2025-03-06T22:15:28+00:00"
         },
         {
             "name": "jot/hf-repository",
-            "version": "0.13.2",
+            "version": "0.15.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JotJunior/hf-repository.git",
-                "reference": "5bc1d423d39c6668878e4a8353548088875305d6"
+                "reference": "9adb5c8860a8ae0d1e614d49fb412b44bbe699de"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JotJunior/hf-repository/zipball/5bc1d423d39c6668878e4a8353548088875305d6",
-                "reference": "5bc1d423d39c6668878e4a8353548088875305d6",
+                "url": "https://api.github.com/repos/JotJunior/hf-repository/zipball/9adb5c8860a8ae0d1e614d49fb412b44bbe699de",
+                "reference": "9adb5c8860a8ae0d1e614d49fb412b44bbe699de",
                 "shasum": ""
             },
             "require": {
@@ -3716,10 +3718,14 @@
                 "hyperf/rate-limit": "^3.1",
                 "hyperf/redis": "^3.1",
                 "hyperf/swagger": "^3.1",
-                "jot/hf-elastic": "^0.16",
+                "jot/hf-elastic": "^0.17",
                 "jot/hf-validator": "^0.1",
                 "php": ">=8.2",
                 "zircote/swagger-php": "^4.11"
+            },
+            "require-dev": {
+                "fakerphp/faker": "^1.24",
+                "phpunit/phpunit": "^10.5"
             },
             "type": "library",
             "extra": {
@@ -3757,9 +3763,9 @@
             ],
             "support": {
                 "issues": "https://github.com/JotJunior/hf-repository/issues",
-                "source": "https://github.com/JotJunior/hf-repository/tree/0.13.2"
+                "source": "https://github.com/JotJunior/hf-repository/tree/0.15.1"
             },
-            "time": "2025-02-06T00:45:55+00:00"
+            "time": "2025-03-06T22:20:58+00:00"
         },
         {
             "name": "jot/hf-utils",
@@ -3819,20 +3825,20 @@
         },
         {
             "name": "jot/hf-validator",
-            "version": "0.1.9",
+            "version": "0.1.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JotJunior/hf-validator.git",
-                "reference": "842b3b815dc9df64a215053bfad7d154e798f427"
+                "reference": "a1a00edc158c68f61d774a219db8d3367bf2e4f3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JotJunior/hf-validator/zipball/842b3b815dc9df64a215053bfad7d154e798f427",
-                "reference": "842b3b815dc9df64a215053bfad7d154e798f427",
+                "url": "https://api.github.com/repos/JotJunior/hf-validator/zipball/a1a00edc158c68f61d774a219db8d3367bf2e4f3",
+                "reference": "a1a00edc158c68f61d774a219db8d3367bf2e4f3",
                 "shasum": ""
             },
             "require": {
-                "jot/hf-elastic": "^0.16",
+                "jot/hf-elastic": "^0.17",
                 "php": ">=8.2"
             },
             "require-dev": {
@@ -3863,9 +3869,9 @@
             ],
             "support": {
                 "issues": "https://github.com/JotJunior/hf-validator/issues",
-                "source": "https://github.com/JotJunior/hf-validator/tree/0.1.9"
+                "source": "https://github.com/JotJunior/hf-validator/tree/0.1.11"
             },
-            "time": "2025-02-05T19:11:49+00:00"
+            "time": "2025-03-06T22:19:56+00:00"
         },
         {
             "name": "laminas/laminas-mime",
@@ -4186,16 +4192,16 @@
         },
         {
             "name": "league/oauth2-server",
-            "version": "9.1.0",
+            "version": "9.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/oauth2-server.git",
-                "reference": "d511107cb018ead0bd84f86402b086306738c686"
+                "reference": "00323013403e1a1e0f424affafca56c28b60c22c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/oauth2-server/zipball/d511107cb018ead0bd84f86402b086306738c686",
-                "reference": "d511107cb018ead0bd84f86402b086306738c686",
+                "url": "https://api.github.com/repos/thephpleague/oauth2-server/zipball/00323013403e1a1e0f424affafca56c28b60c22c",
+                "reference": "00323013403e1a1e0f424affafca56c28b60c22c",
                 "shasum": ""
             },
             "require": {
@@ -4270,7 +4276,7 @@
             ],
             "support": {
                 "issues": "https://github.com/thephpleague/oauth2-server/issues",
-                "source": "https://github.com/thephpleague/oauth2-server/tree/9.1.0"
+                "source": "https://github.com/thephpleague/oauth2-server/tree/9.2.0"
             },
             "funding": [
                 {
@@ -4278,7 +4284,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2024-11-21T22:47:09+00:00"
+            "time": "2025-02-15T00:49:10+00:00"
         },
         {
             "name": "league/uri",
@@ -5392,16 +5398,16 @@
         },
         {
             "name": "ramsey/collection",
-            "version": "2.0.0",
+            "version": "2.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/ramsey/collection.git",
-                "reference": "a4b48764bfbb8f3a6a4d1aeb1a35bb5e9ecac4a5"
+                "reference": "3c5990b8a5e0b79cd1cf11c2dc1229e58e93f109"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ramsey/collection/zipball/a4b48764bfbb8f3a6a4d1aeb1a35bb5e9ecac4a5",
-                "reference": "a4b48764bfbb8f3a6a4d1aeb1a35bb5e9ecac4a5",
+                "url": "https://api.github.com/repos/ramsey/collection/zipball/3c5990b8a5e0b79cd1cf11c2dc1229e58e93f109",
+                "reference": "3c5990b8a5e0b79cd1cf11c2dc1229e58e93f109",
                 "shasum": ""
             },
             "require": {
@@ -5409,25 +5415,22 @@
             },
             "require-dev": {
                 "captainhook/plugin-composer": "^5.3",
-                "ergebnis/composer-normalize": "^2.28.3",
-                "fakerphp/faker": "^1.21",
+                "ergebnis/composer-normalize": "^2.45",
+                "fakerphp/faker": "^1.24",
                 "hamcrest/hamcrest-php": "^2.0",
-                "jangregor/phpstan-prophecy": "^1.0",
-                "mockery/mockery": "^1.5",
+                "jangregor/phpstan-prophecy": "^2.1",
+                "mockery/mockery": "^1.6",
                 "php-parallel-lint/php-console-highlighter": "^1.0",
-                "php-parallel-lint/php-parallel-lint": "^1.3",
-                "phpcsstandards/phpcsutils": "^1.0.0-rc1",
-                "phpspec/prophecy-phpunit": "^2.0",
-                "phpstan/extension-installer": "^1.2",
-                "phpstan/phpstan": "^1.9",
-                "phpstan/phpstan-mockery": "^1.1",
-                "phpstan/phpstan-phpunit": "^1.3",
-                "phpunit/phpunit": "^9.5",
-                "psalm/plugin-mockery": "^1.1",
-                "psalm/plugin-phpunit": "^0.18.4",
-                "ramsey/coding-standard": "^2.0.3",
-                "ramsey/conventional-commits": "^1.3",
-                "vimeo/psalm": "^5.4"
+                "php-parallel-lint/php-parallel-lint": "^1.4",
+                "phpspec/prophecy-phpunit": "^2.3",
+                "phpstan/extension-installer": "^1.4",
+                "phpstan/phpstan": "^2.1",
+                "phpstan/phpstan-mockery": "^2.0",
+                "phpstan/phpstan-phpunit": "^2.0",
+                "phpunit/phpunit": "^10.5",
+                "ramsey/coding-standard": "^2.3",
+                "ramsey/conventional-commits": "^1.6",
+                "roave/security-advisories": "dev-latest"
             },
             "type": "library",
             "extra": {
@@ -5465,19 +5468,9 @@
             ],
             "support": {
                 "issues": "https://github.com/ramsey/collection/issues",
-                "source": "https://github.com/ramsey/collection/tree/2.0.0"
+                "source": "https://github.com/ramsey/collection/tree/2.1.0"
             },
-            "funding": [
-                {
-                    "url": "https://github.com/ramsey",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/ramsey/collection",
-                    "type": "tidelift"
-                }
-            ],
-            "time": "2022-12-31T21:50:55+00:00"
+            "time": "2025-03-02T04:48:29+00:00"
         },
         {
             "name": "ramsey/uuid",
@@ -5573,23 +5566,24 @@
         },
         {
             "name": "react/promise",
-            "version": "v2.11.0",
+            "version": "v3.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/reactphp/promise.git",
-                "reference": "1a8460931ea36dc5c76838fec5734d55c88c6831"
+                "reference": "8a164643313c71354582dc850b42b33fa12a4b63"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/reactphp/promise/zipball/1a8460931ea36dc5c76838fec5734d55c88c6831",
-                "reference": "1a8460931ea36dc5c76838fec5734d55c88c6831",
+                "url": "https://api.github.com/repos/reactphp/promise/zipball/8a164643313c71354582dc850b42b33fa12a4b63",
+                "reference": "8a164643313c71354582dc850b42b33fa12a4b63",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.4.0"
+                "php": ">=7.1.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^9.6 || ^5.7 || ^4.8.36"
+                "phpstan/phpstan": "1.10.39 || 1.4.10",
+                "phpunit/phpunit": "^9.6 || ^7.5"
             },
             "type": "library",
             "autoload": {
@@ -5633,7 +5627,7 @@
             ],
             "support": {
                 "issues": "https://github.com/reactphp/promise/issues",
-                "source": "https://github.com/reactphp/promise/tree/v2.11.0"
+                "source": "https://github.com/reactphp/promise/tree/v3.2.0"
             },
             "funding": [
                 {
@@ -5641,7 +5635,7 @@
                     "type": "open_collective"
                 }
             ],
-            "time": "2023-11-16T16:16:50+00:00"
+            "time": "2024-05-24T10:39:05+00:00"
         },
         {
             "name": "swow/psr7-plus",
