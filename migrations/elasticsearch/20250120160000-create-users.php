@@ -14,33 +14,33 @@ return new class(ApplicationContext::getContainer()) extends Migration {
         $index = new Mapping(name: self::INDEX_NAME);
 
         // basic user data
-        $index->keyword('id');
-        $index->keyword('name')->normalizer('normalizer_ascii_lower');
-        $index->keyword('email');
-        $index->keyword('phone');
-        $index->keyword('federal_document');
-        $index->keyword('picture');
-        $index->keyword('password_salt');
-        $index->keyword('password');
-        $index->keyword('status');
+        $index->addField('keyword', 'id');
+        $index->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
+        $index->addField('keyword', 'email');
+        $index->addField('keyword', 'phone');
+        $index->addField('keyword', 'federal_document');
+        $index->addField('keyword', 'picture');
+        $index->addField('keyword', 'password_salt');
+        $index->addField('keyword', 'password');
+        $index->addField('keyword', 'status');
 
         // user tenant
         $tenant = new Migration\ElasticType\NestedType('tenant');
-        $tenant->keyword('id');
-        $tenant->keyword('name');
+        $tenant->addField('keyword', 'id');
+        $tenant->addField('keyword', 'name');
         $index->nested($tenant);
 
         // oauth client
         $client = new Migration\ElasticType\ObjectType('client');
-        $client->keyword('id');
-        $client->keyword('name')->normalizer('normalizer_ascii_lower');
+        $client->addField('keyword', 'id');
+        $client->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
         $index->object($client);
 
         // enabled scopes
         $scopes = new Migration\ElasticType\NestedType('scopes');
-        $scopes->keyword('id');
-        $scopes->keyword('name')->normalizer('normalizer_ascii_lower');
-        $scopes->keyword('tenant_identifier');
+        $scopes->addField('keyword', 'id');
+        $scopes->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
+        $scopes->addField('keyword', 'tenant_identifier');
         $index->nested($scopes);
 
         $index->alias('client_identifier')->path('client.id');

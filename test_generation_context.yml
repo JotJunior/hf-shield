@@ -4,7 +4,7 @@
 project_settings:
   test_framework: "PHPUnit"
   php_version: "8.2"
-  base_namespace: "Jot\\HfShield\\Test"
+  base_namespace: "Your\\BaseNamespace\\Test"
   source_dir: "src/"
   test_dir: "tests/"
 
@@ -56,7 +56,7 @@ mocking_rules:
   stub_conventions:
     data_providers: true
     fake_data_generation: "Faker\\Factory"
-    datetime_format: "Y-m-d H:i:s"
+    datetime_format: "Y-m-d\TH:i:s.u"
 
 # Padrões de Asserção
 assertion_rules:
@@ -102,12 +102,12 @@ test_groups:
 # Padrões de Cobertura
 coverage_requirements:
   minimum_coverage: 80
-#  critical_paths:
-#    - "src/Domain/"
-#    - "src/Application/"
-#  excluded_paths:
-#    - "src/Infrastructure/Legacy/"
-#    - "src/UI/"
+  critical_paths:
+    - "src/Domain/"
+    - "src/Application/"
+  excluded_paths:
+    - "src/Infrastructure/Legacy/"
+    - "src/UI/"
 
 # Regras de Validação
 validation_rules:

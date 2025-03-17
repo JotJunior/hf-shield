@@ -13,30 +13,30 @@ return new class(ApplicationContext::getContainer()) extends Migration {
     {
         $index = new Mapping(name: self::INDEX_NAME);
 
-        $index->keyword('id');
-        $index->keyword('name')->normalizer('normalizer_ascii_lower');
-        $index->keyword('hmac');
-        $index->keyword('status');
+        $index->addField('keyword', 'id');
+        $index->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
+        $index->addField('keyword', 'hmac');
+        $index->addField('keyword', 'status');
 
         $tenant = new Migration\ElasticType\ObjectType('tenant');
-        $tenant->keyword('id');
-        $tenant->keyword('name');
+        $tenant->addField('keyword', 'id');
+        $tenant->addField('keyword', 'name');
         $index->object($tenant);
 
         $client = new Migration\ElasticType\ObjectType('client');
-        $client->keyword('id');
-        $client->keyword('name');
+        $client->addField('keyword', 'id');
+        $client->addField('keyword', 'name');
         $index->object($client);
 
         $user = new Migration\ElasticType\ObjectType('user');
-        $user->keyword('id');
-        $user->keyword('name');
+        $user->addField('keyword', 'id');
+        $user->addField('keyword', 'name');
         $index->object($user);
 
         $scopes = new Migration\ElasticType\NestedType('scopes');
-        $scopes->keyword('id');
-        $scopes->keyword('name')->normalizer('normalizer_ascii_lower');
-        $scopes->keyword('tenant_identifier');
+        $scopes->addField('keyword', 'id');
+        $scopes->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
+        $scopes->addField('keyword', 'tenant_identifier');
         $index->nested($scopes);
 
         $index->alias('jwt_signature_identifier')->path('id');

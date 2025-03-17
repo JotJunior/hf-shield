@@ -13,8 +13,8 @@ return new class(ApplicationContext::getContainer()) extends Migration {
     {
         $index = new Mapping(name: self::INDEX_NAME);
 
-        $index->keyword('id');
-        $index->keyword('name')->normalizer('normalizer_ascii_lower');
+        $index->addField('keyword', 'id');
+        $index->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
         $index->alias('scope_identifier')->path('id');
         $index->defaults();
 

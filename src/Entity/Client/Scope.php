@@ -4,18 +4,15 @@ declare(strict_types=1);
 
 namespace Jot\HfShield\Entity\Client;
 
-use Jot\HfRepository\Entity;
-use Jot\HfRepository\Trait\HasTimestamps;
-use Jot\HfRepository\Trait\HasLogicRemoval;
 use Hyperf\Swagger\Annotation as SA;
+use Jot\HfRepository\Entity;
 
 #[SA\Schema(schema: "jot.hf-shield.entity.client.scope")]
 class Scope extends Entity
 {
 
-    
 
-        #[SA\Property(
+    #[SA\Property(
         property: "id",
         type: "string",
         example: ""
@@ -28,7 +25,6 @@ class Scope extends Entity
         example: ""
     )]
     protected ?string $name = null;
-
 
 
 }

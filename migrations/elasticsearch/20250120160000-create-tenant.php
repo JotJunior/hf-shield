@@ -2,7 +2,6 @@
 
 use Hyperf\Context\ApplicationContext;
 use Jot\HfElastic\Migration;
-use Jot\HfElastic\Migration\ElasticType\ObjectType;
 use Jot\HfElastic\Migration\Mapping;
 
 return new class(ApplicationContext::getContainer()) extends Migration {
@@ -14,10 +13,10 @@ return new class(ApplicationContext::getContainer()) extends Migration {
     {
         $index = new Mapping(name: self::INDEX_NAME);
 
-        $index->keyword('id');
-        $index->keyword('name')->normalizer('normalizer_ascii_lower');
-        $index->keyword('domains');
-        $index->ip('ips');
+        $index->addField('keyword', 'id');
+        $index->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
+        $index->addField('keyword', 'domains');
+        $index->addField('ip', 'ips');
 
         $index->alias('tenant_identifier')->path('id');
         $index->defaults();

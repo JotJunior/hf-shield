@@ -22,6 +22,25 @@ services:
     networks:
       local-network:
         ipv4_address: 172.20.0.10
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - 6379:6379
+    networks:
+      local-network:
+        ipv4_address: 172.20.0.11
+  etcd:
+    container_name: etcd
+    image: bitnami/etcd:latest
+    ports:
+      - 2379:2379
+      - 2380:2380
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+    networks:
+      local-network:
+        ipv4_address: 172.20.0.12
   elastic:
     container_name: elastic
     image: docker.elastic.co/elasticsearch/elasticsearch:8.17.1
@@ -32,7 +51,7 @@ services:
       - ELASTIC_PASSWORD=${ELASTICSEARCH_PASSWORD}
       - xpack.security.enabled=true
       - xpack.security.http.ssl.enabled=false
-      - xpack.license.self_generated.type=trial
+      - xpack.license.self_generated.type=basic
       - xpack.ml.use_auto_machine_memory_percent=true
       - ES_JAVA_OPTS=-Xms128m -Xmx2g
       - cluster.routing.allocation.disk.watermark.low=1gb
@@ -50,17 +69,6 @@ services:
     networks:
       local-network:
         ipv4_address: 172.20.0.13
-  etcd:
-    container_name: etcd
-    image: bitnami/etcd:latest
-    ports:
-      - 2379:2379
-      - 2380:2380
-    environment:
-      - ALLOW_NONE_AUTHENTICATION=yes
-    networks:
-      local-network:
-        ipv4_address: 172.20.0.12
   rabbitmq:
     container_name: rabbitmq
     image: rabbitmq:3.13.7-management-alpine
@@ -76,14 +84,25 @@ services:
     networks:
       local-network:
         ipv4_address: 172.20.0.14
-  redis:
-    container_name: redis
-    image: redis:latest
+  sonarqube:
+    container_name: sonarqube
+    image: sonarqube:community
     ports:
-      - 6379:6379
+      - 9100:9000
     networks:
       local-network:
-        ipv4_address: 172.20.0.11
+        ipv4_address: 172.20.0.15
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    ports:
+      - ${POSTGRES_PORT}:5432
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_USER=${POSTGRES_USER}
+    networks:
+      local-network:
+        ipv4_address: 172.20.0.15
 
 networks:
   local-network:

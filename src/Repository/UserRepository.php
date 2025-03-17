@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Jot\HfShield\Repository;
 
 use Jot\HfRepository\Entity;
-use Jot\HfRepository\EntityInterface;
+use Jot\HfRepository\Entity\EntityInterface;
 use Jot\HfRepository\Exception\EntityValidationWithErrorsException;
 use Jot\HfShield\Entity\User\User;
 use Jot\HfShield\Entity\UserEntity;

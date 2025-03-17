@@ -13,14 +13,14 @@ return new class(ApplicationContext::getContainer()) extends Migration {
     {
         $index = new Mapping(name: self::INDEX_NAME);
 
-        $index->keyword('id');
+        $index->addField('keyword', 'id');
 
         $accessToken = new Migration\ElasticType\ObjectType('access_token');
-        $accessToken->keyword('id');
-        $accessToken->dateNanos('expiry_date_time');
+        $accessToken->addField('keyword', 'id');
+        $accessToken->addField('date_nanos', 'expiry_date_time');
         $index->object($accessToken);
 
-        $index->dateNanos('expiry_date_time');
+        $index->addField('date_nanos', 'expiry_date_time');
         $index->alias('refresh_token_identifier')->path('id');
         $index->alias('access_token_identifier')->path('access_token.id');
         $index->defaults();

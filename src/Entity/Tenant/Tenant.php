@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Jot\HfShield\Entity\Tenant;
 
-use Jot\HfRepository\Entity;
-use Jot\HfRepository\Trait\HasTimestamps;
-use Jot\HfRepository\Trait\HasLogicRemoval;
 use Hyperf\Swagger\Annotation as SA;
+use Jot\HfRepository\Entity;
+use Jot\HfRepository\Entity\Traits\HasLogicRemovalTrait as HasLogicRemoval;
+use Jot\HfRepository\Entity\Traits\HasTimestampsTrait as HasTimestamps;
 
 #[SA\Schema(schema: "jot.shield.entity.tenant.tenant")]
 class Tenant extends Entity

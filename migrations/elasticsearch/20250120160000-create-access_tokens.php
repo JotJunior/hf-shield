@@ -13,25 +13,25 @@ return new class(ApplicationContext::getContainer()) extends Migration {
     {
         $index = new Mapping(name: self::INDEX_NAME);
 
-        $index->keyword('id');
-        $index->dateNanos('expiry_date_time');
+        $index->addField('keyword', 'id');
+        $index->addField('date_nanos', 'expiry_date_time');
 
         $user = new Migration\ElasticType\ObjectType('user');
-        $user->keyword('id');
-        $user->keyword('name')->normalizer('normalizer_ascii_lower');
+        $user->addField('keyword', 'id');
+        $user->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
         $index->object($user);
 
         $client = new Migration\ElasticType\ObjectType('client');
-        $client->keyword('id');
-        $client->keyword('name')->normalizer('normalizer_ascii_lower');
-        $client->keyword('redirect_uri');
+        $client->addField('keyword', 'id');
+        $client->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
+        $client->addField('keyword', 'redirect_uri');
         $index->object($client);
 
-        $index->boolean('confidential');
+        $index->addField('boolean', 'confidential');
 
         $scopes = new Migration\ElasticType\NestedType('scopes');
-        $scopes->keyword('id');
-        $scopes->keyword('name')->normalizer('normalizer_ascii_lower');
+        $scopes->addField('keyword', 'id');
+        $scopes->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
         $index->nested($scopes);
 
         $index->alias('access_token_identifier')->path('id');

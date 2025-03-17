@@ -13,19 +13,19 @@ return new class(ApplicationContext::getContainer()) extends Migration {
     {
         $index = new Mapping(name: self::INDEX_NAME);
 
-        $index->keyword('id');
+        $index->addField('keyword', 'id');
 
         $user = new Migration\ElasticType\ObjectType('user');
-        $user->keyword('id');
-        $user->keyword('name')->normalizer('normalizer_ascii_lower');
+        $user->addField('keyword', 'id');
+        $user->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
         $index->object($user);
 
         $client = new Migration\ElasticType\ObjectType('client');
-        $client->keyword('id');
-        $client->keyword('name')->normalizer('normalizer_ascii_lower');
+        $client->addField('keyword', 'id');
+        $client->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
         $index->object($client);
 
-        $index->dateNanos('expiry_date_time');
+        $index->addField('date_nanos', 'expiry_date_time');
         $index->alias('auth_code_identifier')->path('id');
         $index->alias('client_identifier')->path('client.id');
         $index->defaults();

@@ -3637,16 +3637,16 @@
         },
         {
             "name": "jot/hf-elastic",
-            "version": "0.17.1",
+            "version": "v0.17.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JotJunior/hf-elastic.git",
-                "reference": "98deae02d2b518e3b75ba6f19a09cba6fec23805"
+                "reference": "b5b517fe6d090ff50db01aa9f97ce2f4b42120da"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JotJunior/hf-elastic/zipball/98deae02d2b518e3b75ba6f19a09cba6fec23805",
-                "reference": "98deae02d2b518e3b75ba6f19a09cba6fec23805",
+                "url": "https://api.github.com/repos/JotJunior/hf-elastic/zipball/b5b517fe6d090ff50db01aa9f97ce2f4b42120da",
+                "reference": "b5b517fe6d090ff50db01aa9f97ce2f4b42120da",
                 "shasum": ""
             },
             "require": {
@@ -3693,22 +3693,22 @@
             ],
             "support": {
                 "issues": "https://github.com/JotJunior/hf-elastic/issues",
-                "source": "https://github.com/JotJunior/hf-elastic/tree/v0.17.1"
+                "source": "https://github.com/JotJunior/hf-elastic/tree/v0.17.9"
             },
-            "time": "2025-03-06T22:15:28+00:00"
+            "time": "2025-03-15T16:48:53+00:00"
         },
         {
             "name": "jot/hf-repository",
-            "version": "0.15.1",
+            "version": "v0.15.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JotJunior/hf-repository.git",
-                "reference": "9adb5c8860a8ae0d1e614d49fb412b44bbe699de"
+                "reference": "e0222785cdf90d50b396a4a6658c822bcbef0bf7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JotJunior/hf-repository/zipball/9adb5c8860a8ae0d1e614d49fb412b44bbe699de",
-                "reference": "9adb5c8860a8ae0d1e614d49fb412b44bbe699de",
+                "url": "https://api.github.com/repos/JotJunior/hf-repository/zipball/e0222785cdf90d50b396a4a6658c822bcbef0bf7",
+                "reference": "e0222785cdf90d50b396a4a6658c822bcbef0bf7",
                 "shasum": ""
             },
             "require": {
@@ -3763,9 +3763,9 @@
             ],
             "support": {
                 "issues": "https://github.com/JotJunior/hf-repository/issues",
-                "source": "https://github.com/JotJunior/hf-repository/tree/0.15.1"
+                "source": "https://github.com/JotJunior/hf-repository/tree/v0.15.5"
             },
-            "time": "2025-03-06T22:20:58+00:00"
+            "time": "2025-03-15T12:01:06+00:00"
         },
         {
             "name": "jot/hf-utils",
@@ -3825,16 +3825,16 @@
         },
         {
             "name": "jot/hf-validator",
-            "version": "0.1.11",
+            "version": "v0.1.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JotJunior/hf-validator.git",
-                "reference": "a1a00edc158c68f61d774a219db8d3367bf2e4f3"
+                "reference": "ecd061c9cdefac11c7b9b639868113126dfd2390"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JotJunior/hf-validator/zipball/a1a00edc158c68f61d774a219db8d3367bf2e4f3",
-                "reference": "a1a00edc158c68f61d774a219db8d3367bf2e4f3",
+                "url": "https://api.github.com/repos/JotJunior/hf-validator/zipball/ecd061c9cdefac11c7b9b639868113126dfd2390",
+                "reference": "ecd061c9cdefac11c7b9b639868113126dfd2390",
                 "shasum": ""
             },
             "require": {
@@ -3869,9 +3869,9 @@
             ],
             "support": {
                 "issues": "https://github.com/JotJunior/hf-validator/issues",
-                "source": "https://github.com/JotJunior/hf-validator/tree/0.1.11"
+                "source": "https://github.com/JotJunior/hf-validator/tree/v0.1.12"
             },
-            "time": "2025-03-06T22:19:56+00:00"
+            "time": "2025-03-11T20:10:21+00:00"
         },
         {
             "name": "laminas/laminas-mime",

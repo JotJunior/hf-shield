@@ -6,8 +6,8 @@ namespace Jot\HfShield\Entity\JwtSignature;
 
 use Hyperf\Swagger\Annotation as SA;
 use Jot\HfRepository\Entity;
-use Jot\HfRepository\Trait\HasLogicRemoval;
-use Jot\HfRepository\Trait\HasTimestamps;
+use Jot\HfRepository\Entity\Traits\HasLogicRemovalTrait as HasLogicRemoval;
+use Jot\HfRepository\Entity\Traits\HasTimestampsTrait as HasTimestamps;
 use Jot\HfValidator\Annotation as Validator;
 
 #[SA\Schema(schema: "jot.hf-shield.entity.jwt_signature.jwt_signature")]

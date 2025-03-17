@@ -13,23 +13,23 @@ return new class(ApplicationContext::getContainer()) extends Migration {
     {
         $index = new Mapping(name: self::INDEX_NAME);
 
-        $index->keyword('id');
-        $index->keyword('name')->normalizer('normalizer_ascii_lower');
-        $index->keyword('redirect_uri');
-        $index->keyword('secret');
-        $index->boolean('confidential');
-        $index->keyword('status');
+        $index->addField('keyword', 'id');
+        $index->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
+        $index->addField('keyword', 'redirect_uri');
+        $index->addField('keyword', 'secret');
+        $index->addField('boolean', 'confidential');
+        $index->addField('keyword', 'status');
 
         // client attached tenant
         $tenant = new Migration\ElasticType\ObjectType('tenant');
-        $tenant->keyword('id');
-        $tenant->keyword('name');
+        $tenant->addField('keyword', 'id');
+        $tenant->addField('keyword', 'name');
         $index->object($tenant);
 
         // enabled scopes
         $scopes = new Migration\ElasticType\NestedType('scopes');
-        $scopes->keyword('id');
-        $scopes->keyword('name')->normalizer('normalizer_ascii_lower');
+        $scopes->addField('keyword', 'id');
+        $scopes->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
         $index->nested($scopes);
 
         $index->alias('client_identifier')->path('id');

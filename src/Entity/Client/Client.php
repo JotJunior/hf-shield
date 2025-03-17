@@ -6,8 +6,8 @@ namespace Jot\HfShield\Entity\Client;
 
 use Hyperf\Swagger\Annotation as SA;
 use Jot\HfRepository\Entity;
-use Jot\HfRepository\Trait\HasLogicRemoval;
-use Jot\HfRepository\Trait\HasTimestamps;
+use Jot\HfRepository\Entity\Traits\HasLogicRemovalTrait as HasLogicRemoval;
+use Jot\HfRepository\Entity\Traits\HasTimestampsTrait as HasTimestamps;
 
 #[SA\Schema(schema: "jot.hf-shield.entity.client.client")]
 class Client extends Entity
