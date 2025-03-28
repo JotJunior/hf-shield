@@ -52,7 +52,6 @@ class OAuthClientCommand extends AbstractCommand
     protected function list(): void
     {
         $list = $this->repository->paginate([], 1, 1000);
-        $maxLength = 0;
 
         foreach ($list['data'] as $item) {
             $this->success('%s : %s', [$item['id'], $item['name']]);

@@ -30,7 +30,7 @@ class Scope extends Entity
         readOnly: true,
         example: true
     )]
-    protected ?bool $deleted = null;
+    protected null|bool|int $deleted = null;
 
     #[SA\Property(
         property: "id",

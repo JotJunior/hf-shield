@@ -116,7 +116,8 @@ HTML;
         try {
             $response = $this->server->respondToAccessTokenRequest($request, $this->response);
         } catch (OauthServerException $e) {
-            return $this->handleOauthException($e);
+            return $this->response
+                ->redirect(sprintf('%s?err=%s&msg=%s', $sessionConfig['redirect_error'], $e->getCode(), $e->getMessage()));
         }
 
         $token = json_decode($response->getBody(), JSON_OBJECT_AS_ARRAY);
@@ -159,26 +160,6 @@ HTML;
     }
 
     /**
-     * Handles an OAuth server exception and returns a formatted HTTP response.
-     *
-     * @param OauthServerException $exception The exception triggered by the OAuth server.
-     * @return PsrResponseInterface The HTTP response with a 401 status code, a cleared access token cookie,
-     *                               and a JSON payload containing the exception details and a failure indicator.
-     */
-    private function handleOauthException(OauthServerException $exception): PsrResponseInterface
-    {
-        $cookie = new Cookie(
-            name: 'access_token',
-            value: 'no-token',
-            expire: time() - 3600
-        );
-        return $this->response
-            ->withStatus(401)
-            ->withAddedHeader('Set-Cookie', (string)$cookie)
-            ->json([...$exception->getPayload(), 'success' => false]);
-    }
-
-    /**
      * Creates and returns a cookie containing the access token with specified expiration and security attributes.
      *
      * @param string $accessToken The access token to be stored in the cookie.
@@ -192,10 +173,9 @@ HTML;
             value: $accessToken,
             expire: time() + $expiresIn,
             path: '/',
-            secure: true,
+            secure: false,
             httpOnly: true,
             sameSite: 'Strict'
         );
     }
-
 }

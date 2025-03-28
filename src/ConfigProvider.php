@@ -73,6 +73,12 @@ class ConfigProvider
                     'source' => __DIR__ . '/../migrations',
                     'destination' => BASE_PATH . '/migrations',
                 ],
+                [
+                    'id' => 'dot-env-example',
+                    'description' => 'The example .env file for hf_shield.',
+                    'source' => __DIR__ . '/../.env.shield',
+                    'destination' => BASE_PATH . '/.env.shield',
+                ],
             ],
         ];
     }

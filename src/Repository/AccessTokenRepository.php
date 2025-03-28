@@ -59,7 +59,7 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
         $query = $this->queryBuilder
             ->from('users')
             ->where('id', $userId)
-            ->where('status', '=', 'active');
+            ->where('status',  'active');
 
         $this->addScopeConditions($query, $scope);
 
@@ -84,7 +84,7 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
         return $this->queryBuilder
                 ->from('clients')
                 ->where('id', $clientId)
-                ->where('status', '=', 'active')
+                ->where('status', 'active')
                 ->count() === 1;
     }
 

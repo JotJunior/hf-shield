@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Jot\HfShield\Repository;
 
+use Jot\HfRepository\Entity\EntityInterface;
+use Jot\HfShield\Entity\Scope\Scope;
+use Jot\HfShield\Entity\ScopeEntity;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\ScopeEntityInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
-use Jot\HfShield\Entity\ScopeEntity;
-use Jot\HfShield\Entity\Scope\Scope;
-
 use function Hyperf\Support\make;
 
 class ScopeRepository extends AbstractRepository implements ScopeRepositoryInterface
@@ -24,7 +24,7 @@ class ScopeRepository extends AbstractRepository implements ScopeRepositoryInter
             return null;
         }
 
-        return (new ScopeEntity())->setIdentifier($scope->getId());
+        return (make(ScopeEntity::class))->setIdentifier($scope->getId());
     }
 
     public function finalizeScopes(
@@ -38,4 +38,5 @@ class ScopeRepository extends AbstractRepository implements ScopeRepositoryInter
 
         return $scopes;
     }
+
 }

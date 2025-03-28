@@ -45,7 +45,7 @@ class RefreshToken extends Entity
         readOnly: true,
         example: true
     )]
-    protected ?bool $deleted = null;
+    protected null|bool|int $deleted = null;
 
     #[SA\Property(
         property: "expiry_date_time",

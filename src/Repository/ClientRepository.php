@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Jot\HfShield\Repository;
 
 use Hyperf\Stringable\Str;
-use Jot\HfRepository\EntityInterface;
+use Jot\HfRepository\Entity\EntityInterface;
+use Jot\HfRepository\Entity\Traits\HashableTrait;
 use Jot\HfShield\Entity\Client\Client;
 use Jot\HfShield\Entity\ClientEntity;
 use League\OAuth2\Server\CryptTrait;
@@ -18,6 +19,7 @@ class ClientRepository extends AbstractRepository implements ClientRepositoryInt
     private const HASH_ALGORITHM = 'sha256';
 
     use CryptTrait;
+    use HashableTrait;
 
     protected string $entity = Client::class;
 
@@ -65,8 +67,7 @@ class ClientRepository extends AbstractRepository implements ClientRepositoryInt
     public function createNewClient(EntityInterface $client): array
     {
         $plainSecret = Str::uuid()->toString();
-        $secret = $this->createHash($plainSecret, $this->config['encryption_key']);
-        $client->setSecret($secret);
+        $this->createHash('secret', $plainSecret, $this->config['encryption_key']);
         return [$plainSecret, parent::create($client)];
 
     }

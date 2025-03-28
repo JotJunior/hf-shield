@@ -52,7 +52,7 @@ class User extends Entity
         readOnly: true,
         example: false
     )]
-    protected ?bool $deleted = null;
+    protected null|bool|int $deleted = null;
 
     #[SA\Property(
         property: "email",

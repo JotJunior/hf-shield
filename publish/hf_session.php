@@ -5,6 +5,7 @@ declare(strict_types=1);
 use function Hyperf\Support\env;
 
 return [
+    'redirect_error' => env('HF_SESSION_REDIRECT_ERROR'),
     'redirect_uri' => env('HF_SESSION_REDIRECT_URI'),
     'auth_settings' => [
         'client_id' => env('HF_SESSION_CLIENT_ID'),

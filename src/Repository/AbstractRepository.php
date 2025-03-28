@@ -3,12 +3,8 @@
 namespace Jot\HfShield\Repository;
 
 use Hyperf\Contract\ConfigInterface;
-use Jot\HfElastic\Contracts\QueryBuilderInterface;
-use Jot\HfRepository\Entity\EntityFactoryInterface;
-use Jot\HfRepository\Query\QueryParserInterface;
 use Jot\HfRepository\Repository;
 use League\OAuth2\Server\CryptTrait;
-use Psr\Container\ContainerInterface;
 
 class AbstractRepository extends Repository
 {
@@ -17,15 +13,10 @@ class AbstractRepository extends Repository
     protected array $config = [];
 
 
-    public function __construct(
-        protected ContainerInterface     $container,
-        protected QueryBuilderInterface  $queryBuilder,
-        protected QueryParserInterface   $queryParser,
-        protected EntityFactoryInterface $entityFactory
-    )
+    public function __construct(ConfigInterface $config)
     {
-        parent::__construct($queryBuilder, $queryParser, $entityFactory);
-        $this->config = $container->get(ConfigInterface::class)->get('hf_shield', []);
+        parent::__construct();
+        $this->config = $config->get('hf_shield', []);
         $this->setEncryptionKey($this->config['encryption_key'] ?? null);
     }
 
@@ -53,7 +44,7 @@ class AbstractRepository extends Repository
         return $this->queryBuilder
             ->select(['id', 'name'])
             ->from('clients')
-            ->where('tenant.id', '=', $tenantId)
+            ->where('tenant.id', $tenantId)
             ->orderBy('name')
             ->limit(1000)
             ->execute();
@@ -65,6 +56,8 @@ class AbstractRepository extends Repository
      */
     public function retrieveScopeList(): array
     {
+
+
         return $this->queryBuilder
             ->select(['id', 'name'])
             ->from('scopes')
