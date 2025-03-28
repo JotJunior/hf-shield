@@ -46,7 +46,7 @@ class OAuthKeyPairsCommand extends AbstractCommand
         parent::configure();
         $this->setDescription('Create an OAuth token encryption key pairs');
         $this->addOption('force', 'F', InputArgument::OPTIONAL, 'Replace current keys', false);
-        $this->addOption('keys-path', 'P', InputArgument::OPTIONAL, BASE_PATH . '/storage/keys');
+        $this->addOption('keys-path', 'P', InputArgument::OPTIONAL, 'Destination keys directory', BASE_PATH . '/storage/keys');
         $this->configureUsageExamples();
     }
 
