@@ -67,8 +67,8 @@ class OAuthKeyPairsCommand extends AbstractCommand
      */
     public function handle(): void
     {
-        $forceOverwrite = $this->input->getArgument('force');
-        $keysPath = $this->input->getArgument('keys-path');
+        $forceOverwrite = $this->input->getOption('force');
+        $keysPath = $this->input->getOption('keys-path');
 
         if (!$this->shouldProceedWithKeyGeneration($keysPath, $forceOverwrite)) {
             return;
