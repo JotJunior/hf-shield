@@ -63,6 +63,7 @@ class OAuthTenantCommand extends HyperfCommand
     protected function create(): void
     {
         $name = $this->ask('Name: <fg=yellow>(*)</>');
+        $indexSuffix = $this->ask('Index suffix:', '');
         $ips = $this->ask('IPs: <fg=yellow>(*)</> <fg=white>[separate by comma]</>');
         $domains = $this->ask('Domains: <fg=yellow>(*)</> <fg=white>[separate by comma]</>');
 
@@ -71,6 +72,7 @@ class OAuthTenantCommand extends HyperfCommand
                 'name' => $name,
                 'ips' => explode(',', str_replace(' ', '', $ips)),
                 'domains' => explode(',', str_replace(' ', '', $domains)),
+                'index_suffix' => $indexSuffix
             ]
         ]);
 

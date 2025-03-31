@@ -15,6 +15,7 @@ return new class(ApplicationContext::getContainer()) extends Migration {
 
         $index->addField('keyword', 'id');
         $index->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
+        $index->addField('keyword', 'index_suffix');
         $index->addField('keyword', 'domains');
         $index->addField('ip', 'ips');
 
