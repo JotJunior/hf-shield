@@ -12,6 +12,7 @@ use Jot\HfShield\Entity\User\User;
 use Jot\HfShield\Repository\UserRepository;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use function Hyperf\Translation\__;
 use function Hyperf\Support\make;
 
 #[Command]

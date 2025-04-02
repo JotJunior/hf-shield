@@ -80,10 +80,16 @@ class ConfigProvider
                     'destination' => BASE_PATH . '/.env.shield',
                 ],
                 [
-                    'id' => 'translations',
-                    'description' => 'The translation files for hf_shield.',
-                    'source' => __DIR__ . '/../storage/languages',
-                    'destination' => BASE_PATH . '/storage/languages',
+                    'id' => 'translations-en',
+                    'description' => 'The english translation files for hf_shield.',
+                    'source' => __DIR__ . '/../storage/languages/en/hf-shield.php',
+                    'destination' => BASE_PATH . '/storage/languages/en/hf-shield.php',
+                ],
+                [
+                    'id' => 'translations-pt-br',
+                    'description' => 'The portuguese translation files for hf_shield.',
+                    'source' => __DIR__ . '/../storage/languages/pt_BR/hf-shield.php',
+                    'destination' => BASE_PATH . '/storage/languages/pt_BR/hf-shield.php',
                 ],
             ],
         ];

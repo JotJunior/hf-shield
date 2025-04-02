@@ -6,6 +6,7 @@ namespace Jot\HfShield\Command;
 
 use Hyperf\Command\Command as HyperfCommand;
 use Jot\HfRepository\Command\HfFriendlyLinesTrait;
+use function Hyperf\Translation\__;
 
 abstract class AbstractCommand extends HyperfCommand
 {

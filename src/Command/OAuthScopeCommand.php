@@ -14,6 +14,7 @@ use Jot\HfShield\Entity\Scope\Scope;
 use Jot\HfShield\Repository\ScopeRepository;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Input\InputArgument;
+use function Hyperf\Translation\__;
 use function Hyperf\Support\make;
 
 #[Command]
