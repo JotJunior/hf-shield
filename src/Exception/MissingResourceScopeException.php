@@ -4,8 +4,9 @@ namespace Jot\HfShield\Exception;
 
 class MissingResourceScopeException extends \RuntimeException
 {
-    private const MESSAGE = 'No authorization scopes have been registered for this resource. Please verify your configuration.';
-
-    protected $message = self::MESSAGE;
-    protected $code = 401;
+    public function __construct()
+    {
+        $this->message = __('hf-shield.missing_resource_scope');
+        $this->code = 401;
+    }
 }

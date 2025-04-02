@@ -15,8 +15,8 @@ abstract class AbstractCommand extends HyperfCommand
     protected function selectClient(string $tenantId): ?string
     {
         return $this->selectItem(
-            'Client ID: <fg=yellow>(*)</> <fg=white>[ENTER to skip or type "-" for get the client list]</>',
-            'Wrong client number.',
+            __('hf-shield.client_list_prompt'),
+            __('hf-shield.wrong_client_number'),
             fn() => $this->repository->retrieveClientList($tenantId)['data'] ?? []
         );
     }
@@ -30,7 +30,7 @@ abstract class AbstractCommand extends HyperfCommand
                 $items[] = $item;
                 $this->success('<fg=yellow>%d</> - %s : %s', [$index + 1, $item['id'], $item['name']]);
             }
-            $pickedNumber = $this->ask('Pick a number: ');
+            $pickedNumber = $this->ask(__('hf-shield.pick_a_number') . ': ');
             $selectedItem = $items[(int)$pickedNumber - 1]['id'] ?? null;
 
             if (!$selectedItem) {
@@ -38,7 +38,7 @@ abstract class AbstractCommand extends HyperfCommand
                 exit(1);
             }
 
-            $this->success('Selected: %s', [$selectedItem]);
+            $this->success(__('hf-shield.selected', ['value' => $selectedItem]));
             return $selectedItem;
         }
 
@@ -48,8 +48,8 @@ abstract class AbstractCommand extends HyperfCommand
     protected function selectTenant(): ?string
     {
         return $this->selectItem(
-            'Tenant ID: <fg=yellow>(*)</> <fg=white>[Type "-" for get the tenant list]</>',
-            'Wrong tenant number.',
+            __('hf-shield.tenant_list_prompt'),
+            __('hf-shield.wrong_tenant_number'),
             fn() => $this->repository->retrieveTenantList()['data'] ?? []
         );
     }
@@ -77,7 +77,7 @@ abstract class AbstractCommand extends HyperfCommand
         }
 
         if ($condition === 'exists' && $fieldExists) {
-            $this->warning('%s %s is already used.', [$label, $value]);
+            $this->warning(__('hf-shield.field_already_used', ['label' => $label, 'value' => $value]));
         }
 
         if ($condition === 'missing' && $fieldExists) {
@@ -85,7 +85,7 @@ abstract class AbstractCommand extends HyperfCommand
         }
 
         if ($condition === 'missing' && !$fieldExists) {
-            $this->warning('%s %s not found.', [$label, $value]);
+            $this->warning(__('hf-shield.field_not_found', ['label' => $label, 'value' => $value]));
         }
 
         return false;

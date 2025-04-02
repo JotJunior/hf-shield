@@ -8,7 +8,8 @@ hierarquia de escopos e fluxo de autenticação.
 1. [Introdução](#introdução)
 2. [Instalação](#instalação)
 3. [Configuração](#configuração)
-4. [Definindo as permissões](#definindo-as-permissões)
+4. [Traduções](#traduções)
+5. [Definindo as permissões](#definindo-as-permissões)
 
 ---
 
@@ -143,6 +144,35 @@ autenticação sejam criados:
 ```shell
 php bin/hyperf.php elastic:migrate
 ```
+
+---
+
+## Traduções
+
+O **hf-shield** suporta internacionalização (i18n) utilizando o pacote hyperf/translation. Os arquivos de tradução estão localizados em `storage/languages/{locale}/hf-shield.php`.
+
+Atualmente, o módulo suporta os seguintes idiomas:
+
+- Inglês (en)
+- Português do Brasil (pt_BR)
+
+Para adicionar suporte a um novo idioma, crie um novo arquivo de tradução seguindo o padrão existente.
+
+### Publicando as traduções
+
+As traduções são publicadas automaticamente quando você executa o comando de publicação do pacote:
+
+```shell
+php bin/hyperf.php vendor:publish jot/hf-shield
+```
+
+### Personalizando as traduções
+
+Você pode personalizar as traduções editando os arquivos em `storage/languages/{locale}/hf-shield.php`. As chaves de tradução são organizadas nas seguintes categorias:
+
+- Mensagens de comando (para CLI)
+- Rótulos e prompts de formulário
+- Mensagens de exceção
 
 ---
 

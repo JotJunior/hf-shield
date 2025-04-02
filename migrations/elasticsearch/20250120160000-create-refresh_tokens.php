@@ -21,8 +21,8 @@ return new class(ApplicationContext::getContainer()) extends Migration {
         $index->object($accessToken);
 
         $index->addField('date_nanos', 'expiry_date_time');
-        $index->alias('refresh_token_identifier')->path('id');
-        $index->alias('access_token_identifier')->path('access_token.id');
+        $index->alias('refresh_token_id')->path('id');
+        $index->alias('access_token_id')->path('access_token.id');
         $index->defaults();
 
         $index->settings([

@@ -79,6 +79,12 @@ class ConfigProvider
                     'source' => __DIR__ . '/../.env.shield',
                     'destination' => BASE_PATH . '/.env.shield',
                 ],
+                [
+                    'id' => 'translations',
+                    'description' => 'The translation files for hf_shield.',
+                    'source' => __DIR__ . '/../storage/languages',
+                    'destination' => BASE_PATH . '/storage/languages',
+                ],
             ],
         ];
     }

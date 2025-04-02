@@ -23,6 +23,7 @@ return new class(ApplicationContext::getContainer()) extends Migration {
         $index->addField('keyword', 'password_salt');
         $index->addField('keyword', 'password');
         $index->addField('keyword', 'status');
+        $index->addField('text', 'custom_settings');
 
         // user tenant
         $tenant = new Migration\ElasticType\NestedType('tenant');
@@ -40,11 +41,11 @@ return new class(ApplicationContext::getContainer()) extends Migration {
         $scopes = new Migration\ElasticType\NestedType('scopes');
         $scopes->addField('keyword', 'id');
         $scopes->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
-        $scopes->addField('keyword', 'tenant_identifier');
+        $scopes->addField('keyword', 'tenant_id');
         $index->nested($scopes);
 
-        $index->alias('client_identifier')->path('client.id');
-        $index->alias('user_identifier')->path('id');
+        $index->alias('client_id')->path('client.id');
+        $index->alias('user_id')->path('id');
         $index->defaults();
 
         $index->settings([

@@ -26,8 +26,8 @@ return new class(ApplicationContext::getContainer()) extends Migration {
         $index->object($client);
 
         $index->addField('date_nanos', 'expiry_date_time');
-        $index->alias('auth_code_identifier')->path('id');
-        $index->alias('client_identifier')->path('client.id');
+        $index->alias('auth_code_id')->path('id');
+        $index->alias('client_id')->path('client.id');
         $index->defaults();
 
         $index->settings([

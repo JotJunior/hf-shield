@@ -4,6 +4,9 @@ namespace Jot\HfShield\Exception;
 
 class UnauthorizedClientException extends \RuntimeException
 {
-    protected $message = 'Unauthorized Client';
-    protected $code = 401;
+    public function __construct()
+    {
+        $this->message = __('hf-shield.unauthorized_client');
+        $this->code = 401;
+    }
 }

@@ -12,6 +12,5 @@
 .settings/
 .vscode/
 phpstan.neon
-phpunit.xml
 runtime/
 vendor/

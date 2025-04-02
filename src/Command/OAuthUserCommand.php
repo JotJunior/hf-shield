@@ -59,17 +59,17 @@ class OAuthUserCommand extends AbstractCommand
 
     protected function scopes()
     {
-        $username = $this->ask('Username:');
+        $username = $this->ask(__('hf-shield.username') . ':');
         $user = $this->repository->first(['email' => $username]);
 
         if (empty($user)) {
-            $this->failed('User not found.');
+            $this->failed(__('hf-shield.user_not_found'));
             return;
         }
 
         $scopes = [];
         foreach ($this->repository->retrieveScopeList()['data'] as $scope) {
-            $selected = $this->ask(sprintf('Add scope %s? (y/n):', $scope['name']), 'n');
+            $selected = $this->ask(sprintf(__('hf-shield.add_scope_prompt'), $scope['name']), 'n');
             if ($selected === 'y') {
                 $scopes[] = [
                     'id' => $scope['id'],
@@ -79,7 +79,7 @@ class OAuthUserCommand extends AbstractCommand
         }
 
         if (empty($scopes)) {
-            $this->warning('No scopes selected.');
+            $this->warning(__('hf-shield.no_scopes_selected'));
             return;
         }
 
@@ -92,7 +92,7 @@ class OAuthUserCommand extends AbstractCommand
             $this->failed('Error updating user: %s', [$th->getMessage()]);
             return;
         }
-        $this->success('All scopes updated successfully.');
+        $this->success(__('hf-shield.all_scopes_updated_successfully'));
         foreach ($result['scopes'] as $scope) {
             $this->success('  <fg=#FFCC00>%s</> [%s]', [$scope['name'], $scope['id']]);
         }
@@ -102,16 +102,16 @@ class OAuthUserCommand extends AbstractCommand
     {
         $tenant = $this->selectTenant();
         $client = $this->selectClient($tenant);
-        $name = $this->ask('Name: <fg=yellow>(*)</>');
-        $email = $this->retryIf('exists', 'E-mail', 'email', ['tenant.id' => $tenant]);
-        $phone = $this->retryIf('exists', 'Phone', 'phone', ['tenant.id' => $tenant]);
-        $federalDocument = $this->retryIf('exists', 'Federal Document', 'federal_document', ['tenant.id' => $tenant]);
+        $name = $this->ask(__('hf-shield.name') . ': <fg=yellow>(*)</>');
+        $email = $this->retryIf('exists', __('hf-shield.email'), 'email', ['tenant.id' => $tenant]);
+        $phone = $this->retryIf('exists', __('hf-shield.phone'), 'phone', ['tenant.id' => $tenant]);
+        $federalDocument = $this->retryIf('exists', __('hf-shield.federal_document'), 'federal_document', ['tenant.id' => $tenant]);
 
         do {
-            $password = $this->secret('Password: <fg=yellow>(*)</>');
-            $repeatPassword = $this->secret('Repeat Password: <fg=yellow>(*)</>');
+            $password = $this->secret(__('hf-shield.password') . ': <fg=yellow>(*)</>');
+            $repeatPassword = $this->secret(__('hf-shield.repeat_password') . ': <fg=yellow>(*)</>');
             if ($repeatPassword !== $password) {
-                $this->warning('Passwords must match.');
+                $this->warning(__('hf-shield.passwords_must_match'));
             }
         } while ($password !== $repeatPassword);
 
@@ -133,7 +133,7 @@ class OAuthUserCommand extends AbstractCommand
 
         try {
             $this->repository->create($data);
-            $this->success('User created successfully.');
+            $this->success(__('hf-shield.user_created_successfully'));
         } catch (EntityValidationWithErrorsException $th) {
             foreach ($th->getErrors() as $field => $message) {
                 $this->failed('<fg=#FFCC00;options=bold>%s:</> %s', [$field, $message[0]]);

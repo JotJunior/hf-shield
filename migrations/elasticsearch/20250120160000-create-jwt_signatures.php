@@ -36,13 +36,13 @@ return new class(ApplicationContext::getContainer()) extends Migration {
         $scopes = new Migration\ElasticType\NestedType('scopes');
         $scopes->addField('keyword', 'id');
         $scopes->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
-        $scopes->addField('keyword', 'tenant_identifier');
+        $scopes->addField('keyword', 'tenant_id');
         $index->nested($scopes);
 
-        $index->alias('jwt_signature_identifier')->path('id');
-        $index->alias('client_identifier')->path('client.id');
-        $index->alias('tenant_identifier')->path('tenant.id');
-        $index->alias('user_identifier')->path('user.id');
+        $index->alias('jwt_signature_id')->path('id');
+        $index->alias('client_id')->path('client.id');
+        $index->alias('tenant_id')->path('tenant.id');
+        $index->alias('user_id')->path('user.id');
         $index->defaults();
 
         $index->settings([

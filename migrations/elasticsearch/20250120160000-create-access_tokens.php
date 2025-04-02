@@ -34,8 +34,8 @@ return new class(ApplicationContext::getContainer()) extends Migration {
         $scopes->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
         $index->nested($scopes);
 
-        $index->alias('access_token_identifier')->path('id');
-        $index->alias('client_identifier')->path('client.id');
+        $index->alias('access_token_id')->path('id');
+        $index->alias('client_id')->path('client.id');
         $index->defaults();
 
         $index->settings([

@@ -19,7 +19,7 @@ return new class(ApplicationContext::getContainer()) extends Migration {
         $index->addField('keyword', 'domains');
         $index->addField('ip', 'ips');
 
-        $index->alias('tenant_identifier')->path('id');
+        $index->alias('tenant_id')->path('id');
         $index->defaults();
 
         $index->settings([

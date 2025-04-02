@@ -85,11 +85,11 @@ class OAuthScopeCommand extends HyperfCommand
     protected function registerScope(string $scope): void
     {
         if ($this->repository->exists($scope)) {
-            $this->warning('Scope %s is already registered.', [$scope]);
+            $this->warning(__('hf-shield.scope_already_registered', ['scope' => $scope]));
             return;
         }
 
-        $description = $this->ask(sprintf('%s description: ', $scope));
+        $description = $this->ask(sprintf('%s ' . __('hf-shield.description') . ': ', $scope));
         $this->repository->create(make(Scope::class, [
             'data' => [
                 'id' => $scope,
@@ -100,8 +100,8 @@ class OAuthScopeCommand extends HyperfCommand
 
     protected function create(): void
     {
-        $name = $this->ask('Name');
-        $description = $this->ask('Description');
+        $name = $this->ask(__('hf-shield.name'));
+        $description = $this->ask(__('hf-shield.description'));
 
         $scope = make(Scope::class, [
             'data' => [
@@ -112,7 +112,7 @@ class OAuthScopeCommand extends HyperfCommand
 
         try {
             $this->repository->create($scope);
-            $this->success('Scope created successfully.');
+            $this->success(__('hf-shield.scope_created_successfully'));
         } catch (\Throwable $th) {
             $this->failed($th->getMessage());
             return;

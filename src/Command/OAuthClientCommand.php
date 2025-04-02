@@ -61,8 +61,8 @@ class OAuthClientCommand extends AbstractCommand
     protected function create(): void
     {
         $tenant = $this->selectTenant();
-        $name = $this->ask('Name: <fg=yellow>(*)</>');
-        $email = $this->ask('Redirect URI: <fg=yellow>(*)</>');
+        $name = $this->ask(__('hf-shield.name') . ': <fg=yellow>(*)</>');
+        $email = $this->ask(__('hf-shield.redirect_uri') . ': <fg=yellow>(*)</>');
 
         $client = make(Client::class, [
             'data' => [
@@ -76,9 +76,9 @@ class OAuthClientCommand extends AbstractCommand
         try {
             list($plainSecret, $result) = $this->repository->createNewClient($client);
             $clientId = $result->toArray()['id'];
-            $this->success('Client ID:     <fg=#FFCC00>%s</>', [$clientId]);
+            $this->success(__('hf-shield.client_id') . ':     <fg=#FFCC00>%s</>', [$clientId]);
             $this->success('Client Secret: <fg=#FFCC00>%s</>', [$plainSecret]);
-            $this->success('Save this secret in a safe place. You will not be able to retrieve it again.');
+            $this->success(__('hf-shield.save_secret_warning'));
         } catch (EntityValidationWithErrorsException $th) {
             foreach ($th->getErrors() as $field => $message) {
                 $this->failed('%s: %s', [$field, $message[0]]);

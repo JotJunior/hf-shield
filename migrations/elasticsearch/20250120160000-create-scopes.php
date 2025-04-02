@@ -15,7 +15,7 @@ return new class(ApplicationContext::getContainer()) extends Migration {
 
         $index->addField('keyword', 'id');
         $index->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
-        $index->alias('scope_identifier')->path('id');
+        $index->alias('scope_id')->path('id');
         $index->defaults();
 
         $index->settings([
