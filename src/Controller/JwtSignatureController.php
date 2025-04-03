@@ -1,6 +1,13 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of hf-shield.
+ *
+ * @link     https://github.com/JotJunior/hf-shield
+ * @contact  hf-shield@jot.com.br
+ * @license  MIT
+ */
 
 namespace Jot\HfShield\Controller;
 
@@ -14,6 +21,7 @@ use Jot\HfShield\Entity\JwtSignature\JwtSignature;
 use Jot\HfShield\Middleware\BearerStrategy;
 use Jot\HfShield\Repository\JwtSignatureRepository;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
+
 use function Hyperf\Support\make;
 
 #[SA\HyperfServer('http')]
@@ -24,89 +32,88 @@ use function Hyperf\Support\make;
 #[Controller(prefix: '/jwt')]
 class JwtSignatureController extends AbstractController
 {
-
     #[Inject]
     protected string $repository = JwtSignatureRepository::class;
 
     #[SA\Get(
-        path: "/jwt/signatures",
-        description: "Retrieve a list of jwt_signatures with optional pagination.",
-        summary: "Get JwtSignatures List",
+        path: '/jwt/signatures',
+        description: 'Retrieve a list of jwt_signatures with optional pagination.',
+        summary: 'Get JwtSignatures List',
         security: [
             ['shieldBearerAuth' => ['oauth:jwt_signature:list']],
         ],
-        tags: ["JwtSignature"],
+        tags: ['JwtSignature'],
         parameters: [
             new SA\Parameter(
-                name: "_page",
-                description: "Page number for pagination",
-                in: "query",
+                name: '_page',
+                description: 'Page number for pagination',
+                in: 'query',
                 required: false,
-                schema: new SA\Schema(type: "integer", example: 1)
+                schema: new SA\Schema(type: 'integer', example: 1)
             ),
             new SA\Parameter(
-                name: "_per_page",
-                description: "Number of results per page",
-                in: "query",
+                name: '_per_page',
+                description: 'Number of results per page',
+                in: 'query',
                 required: false,
-                schema: new SA\Schema(type: "integer", example: 10)
+                schema: new SA\Schema(type: 'integer', example: 10)
             ),
             new SA\Parameter(
-                name: "_sort",
-                description: "Sort results by a specific fields",
-                in: "query",
+                name: '_sort',
+                description: 'Sort results by a specific fields',
+                in: 'query',
                 required: false,
-                schema: new SA\Schema(type: "string", example: "created_at:desc,updated_at:desc")
+                schema: new SA\Schema(type: 'string', example: 'created_at:desc,updated_at:desc')
             ),
             new SA\Parameter(
-                name: "_fields",
-                description: "Fields to include in the response",
-                in: "query",
+                name: '_fields',
+                description: 'Fields to include in the response',
+                in: 'query',
                 required: false,
-                schema: new SA\Schema(type: "string", example: "id,created_at,updated_at")
-            )
+                schema: new SA\Schema(type: 'string', example: 'id,created_at,updated_at')
+            ),
         ],
         responses: [
             new SA\Response(
                 response: 200,
-                description: "JwtSignature details retrieved successfully",
+                description: 'JwtSignature details retrieved successfully',
                 content: new SA\JsonContent(
                     properties: [
                         new SA\Property(
-                            property: "data",
-                            type: "array",
-                            items: new SA\Items(ref: "#/components/schemas/jot.hf-shield.entity.jwt_signature.jwt_signature")
+                            property: 'data',
+                            type: 'array',
+                            items: new SA\Items(ref: '#/components/schemas/jot.hf-shield.entity.jwt_signature.jwt_signature')
                         ),
                         new SA\Property(
-                            property: "result",
-                            type: "string",
-                            example: "success"
+                            property: 'result',
+                            type: 'string',
+                            example: 'success'
                         ),
                         new SA\Property(
-                            property: "error",
-                            type: "string",
+                            property: 'error',
+                            type: 'string',
                             example: null,
                             nullable: true
-                        )
+                        ),
                     ],
-                    type: "object"
+                    type: 'object'
                 )
             ),
             new SA\Response(
                 response: 400,
-                description: "Bad Request",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.error.response")
+                description: 'Bad Request',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
             ),
             new SA\Response(
                 response: 401,
-                description: "Unauthorized access",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.auth-error.response")
+                description: 'Unauthorized access',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.auth-error.response')
             ),
             new SA\Response(
                 response: 500,
-                description: "Application error",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.error.response")
-            )
+                description: 'Application error',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
+            ),
         ]
     )]
     #[RateLimit(create: 1, capacity: 2)]
@@ -121,71 +128,70 @@ class JwtSignatureController extends AbstractController
         return $this->response
             ->withHeader('Access-Control-Allow-Origin', '*')
             ->json($result);
-
     }
 
     #[SA\Get(
-        path: "/jwt/signatures/{id}",
-        description: "Retrieve the details of a specific jwt_signatures identified by ID.",
-        summary: "Get JwtSignature Data",
+        path: '/jwt/signatures/{id}',
+        description: 'Retrieve the details of a specific jwt_signatures identified by ID.',
+        summary: 'Get JwtSignature Data',
         security: [
             ['shieldBearerAuth' => ['oauth:jwt_signature:read']],
         ],
-        tags: ["JwtSignature"],
+        tags: ['JwtSignature'],
         parameters: [
             new SA\Parameter(
-                name: "id",
-                description: "Unique identifier of the jwt_signatures",
-                in: "path",
+                name: 'id',
+                description: 'Unique identifier of the jwt_signatures',
+                in: 'path',
                 required: true,
-                schema: new SA\Schema(type: "string", example: "12345")
-            )
+                schema: new SA\Schema(type: 'string', example: '12345')
+            ),
         ],
         responses: [
             new SA\Response(
                 response: 200,
-                description: "JwtSignature details retrieved successfully",
+                description: 'JwtSignature details retrieved successfully',
                 content: new SA\JsonContent(
                     properties: [
                         new SA\Property(
-                            property: "data",
-                            ref: "#/components/schemas/jot.hf-shield.entity.jwt_signature.jwt_signature"
+                            property: 'data',
+                            ref: '#/components/schemas/jot.hf-shield.entity.jwt_signature.jwt_signature'
                         ),
                         new SA\Property(
-                            property: "result",
-                            type: "string",
-                            example: "success"
+                            property: 'result',
+                            type: 'string',
+                            example: 'success'
                         ),
                         new SA\Property(
-                            property: "error",
-                            type: "string",
-                            example: "Invalid request parameters",
+                            property: 'error',
+                            type: 'string',
+                            example: 'Invalid request parameters',
                             nullable: true
-                        )
+                        ),
                     ],
-                    type: "object"
+                    type: 'object'
                 )
             ),
             new SA\Response(
                 response: 400,
-                description: "Server Error",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.error.response")
+                description: 'Server Error',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
             ),
             new SA\Response(
                 response: 401,
-                description: "Unauthorized access",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.auth-error.response")
+                description: 'Unauthorized access',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.auth-error.response')
             ),
             new SA\Response(
                 response: 404,
-                description: "JwtSignature not Found",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.error.response")
+                description: 'JwtSignature not Found',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
             ),
             new SA\Response(
                 response: 500,
-                description: "Application error",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.error.response")
-            )
+                description: 'Application error',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
+            ),
         ]
     )]
     #[Middleware(BearerStrategy::class)]
@@ -199,7 +205,7 @@ class JwtSignatureController extends AbstractController
             return $this->response->withStatus(404)->json([
                 'data' => null,
                 'result' => 'not-found',
-                'error' => 'Document not found'
+                'error' => 'Document not found',
             ]);
         }
 
@@ -211,38 +217,38 @@ class JwtSignatureController extends AbstractController
     }
 
     #[SA\Post(
-        path: "/jwt/signatures",
-        description: "Create a new jwt_signatures.",
-        summary: "Create a New JwtSignature",
+        path: '/jwt/signatures',
+        description: 'Create a new jwt_signatures.',
+        summary: 'Create a New JwtSignature',
         security: [
             ['shieldBearerAuth' => ['oauth:jwt_signature:create']],
         ],
         requestBody: new SA\RequestBody(
             required: true,
-            content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.entity.jwt_signature.jwt_signature")
+            content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.entity.jwt_signature.jwt_signature')
         ),
-        tags: ["JwtSignature"],
+        tags: ['JwtSignature'],
         responses: [
             new SA\Response(
                 response: 201,
-                description: "JwtSignature created",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.entity.jwt_signature.jwt_signature")
+                description: 'JwtSignature created',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.entity.jwt_signature.jwt_signature')
             ),
             new SA\Response(
                 response: 401,
-                description: "Unauthorized access",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.auth-error.response")
+                description: 'Unauthorized access',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.auth-error.response')
             ),
             new SA\Response(
                 response: 400,
-                description: "Bad request",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.error.response")
+                description: 'Bad request',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
             ),
             new SA\Response(
                 response: 500,
-                description: "Application error",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.error.response")
-            )
+                description: 'Application error',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
+            ),
         ]
     )]
     #[RateLimit(create: 1, capacity: 2)]
@@ -257,68 +263,68 @@ class JwtSignatureController extends AbstractController
     }
 
     #[SA\Delete(
-        path: "/jwt/signatures/{id}",
-        description: "Delete an existing jwt_signatures by its unique identifier.",
-        summary: "Delete an existing JwtSignature",
+        path: '/jwt/signatures/{id}',
+        description: 'Delete an existing jwt_signatures by its unique identifier.',
+        summary: 'Delete an existing JwtSignature',
         security: [
             ['shieldBearerAuth' => ['oauth:jwt_signature:delete']],
         ],
-        tags: ["JwtSignature"],
+        tags: ['JwtSignature'],
         parameters: [
             new SA\Parameter(
-                name: "id",
-                description: "Unique identifier of the jwt_signatures",
-                in: "path",
+                name: 'id',
+                description: 'Unique identifier of the jwt_signatures',
+                in: 'path',
                 required: true,
-                schema: new SA\Schema(type: "string", example: "12345")
-            )
+                schema: new SA\Schema(type: 'string', example: '12345')
+            ),
         ],
         responses: [
             new SA\Response(
                 response: 200,
-                description: "JwtSignature Deleted",
+                description: 'JwtSignature Deleted',
                 content: new SA\JsonContent(
                     properties: [
                         new SA\Property(
-                            property: "data",
-                            type: "string",
+                            property: 'data',
+                            type: 'string',
                             nullable: true
                         ),
                         new SA\Property(
-                            property: "result",
-                            type: "string",
-                            example: "success"
+                            property: 'result',
+                            type: 'string',
+                            example: 'success'
                         ),
                         new SA\Property(
-                            property: "error",
-                            type: "string",
-                            example: "JwtSignature not found",
+                            property: 'error',
+                            type: 'string',
+                            example: 'JwtSignature not found',
                             nullable: true
-                        )
+                        ),
                     ],
-                    type: "object"
+                    type: 'object'
                 )
             ),
             new SA\Response(
                 response: 400,
-                description: "Bad Request",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.error.response")
+                description: 'Bad Request',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
             ),
             new SA\Response(
                 response: 401,
-                description: "Unauthorized access",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.auth-error.response")
+                description: 'Unauthorized access',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.auth-error.response')
             ),
             new SA\Response(
                 response: 404,
-                description: "JwtSignature Not Found",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.error.response")
+                description: 'JwtSignature Not Found',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
             ),
             new SA\Response(
                 response: 500,
-                description: "Application error",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.error.response")
-            )
+                description: 'Application error',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
+            ),
         ]
     )]
     #[Scope(allow: 'oauth:jwt_signature:delete')]
@@ -331,5 +337,4 @@ class JwtSignatureController extends AbstractController
             'error' => null,
         ]);
     }
-
 }

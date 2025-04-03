@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of hf-shield.
+ *
+ * @link     https://github.com/JotJunior/hf-shield
+ * @contact  hf-shield@jot.com.br
+ * @license  MIT
+ */
+
 namespace Jot\HfShield\Controller;
 
 use Hyperf\HttpServer\Annotation\Controller;
@@ -11,6 +20,7 @@ use Jot\HfShield\Entity\User\User;
 use Jot\HfShield\Middleware\BearerStrategy;
 use Jot\HfShield\Repository\UserRepository;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
+
 use function Hyperf\Support\make;
 
 #[SA\HyperfServer('http')]
@@ -21,42 +31,41 @@ use function Hyperf\Support\make;
 #[Controller(prefix: '/oauth')]
 class UserController extends AbstractController
 {
-
     protected string $repository = UserRepository::class;
 
     #[SA\Post(
-        path: "/oauth/users",
-        description: "Create a new users.",
-        summary: "Create a New User",
+        path: '/oauth/users',
+        description: 'Create a new users.',
+        summary: 'Create a New User',
         security: [
             ['shieldBearerAuth' => ['oauth:user:create']],
         ],
         requestBody: new SA\RequestBody(
             required: true,
-            content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.entity.user.user")
+            content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.entity.user.user')
         ),
-        tags: ["User"],
+        tags: ['User'],
         responses: [
             new SA\Response(
                 response: 201,
-                description: "User created",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.entity.user.user")
+                description: 'User created',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.entity.user.user')
             ),
             new SA\Response(
                 response: 401,
-                description: "Unauthorized access",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.auth-error.response")
+                description: 'Unauthorized access',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.auth-error.response')
             ),
             new SA\Response(
                 response: 400,
-                description: "Bad request",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.error.response")
+                description: 'Bad request',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
             ),
             new SA\Response(
                 response: 500,
-                description: "Application error",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.error.response")
-            )
+                description: 'Application error',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
+            ),
         ]
     )]
     #[Scope(allow: 'oauth:user:create')]
@@ -70,62 +79,53 @@ class UserController extends AbstractController
         return $this->saveUser($user);
     }
 
-    private function saveUser(User $user): PsrResponseInterface
-    {
-        $createdUser = $this->repository()->create($user);
-        $userData = $createdUser
-            ->hide(['password_salt', 'password'])
-            ->toArray();
-        return $this->response->json($userData);
-    }
-
     #[SA\Put(
-        path: "/oauth/users/{id}",
-        description: "Update the details of an existing users.",
-        summary: "Update an existing User",
+        path: '/oauth/users/{id}',
+        description: 'Update the details of an existing users.',
+        summary: 'Update an existing User',
         security: [
             ['shieldBearerAuth' => ['oauth:user:update']],
         ],
         requestBody: new SA\RequestBody(
             required: true,
-            content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.entity.user.user")
+            content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.entity.user.user')
         ),
-        tags: ["User"],
+        tags: ['User'],
         parameters: [
             new SA\Parameter(
-                name: "id",
-                description: "Unique identifier of the users",
-                in: "path",
+                name: 'id',
+                description: 'Unique identifier of the users',
+                in: 'path',
                 required: true,
-                schema: new SA\Schema(type: "string", example: "12345")
-            )
+                schema: new SA\Schema(type: 'string', example: '12345')
+            ),
         ],
         responses: [
             new SA\Response(
                 response: 200,
-                description: "User Updated",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.entity.user.user")
+                description: 'User Updated',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.entity.user.user')
             ),
             new SA\Response(
                 response: 400,
-                description: "Bad Request",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.error.response")
+                description: 'Bad Request',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
             ),
             new SA\Response(
                 response: 401,
-                description: "Unauthorized access",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.auth-error.response")
+                description: 'Unauthorized access',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.auth-error.response')
             ),
             new SA\Response(
                 response: 404,
-                description: "User Not Found",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.error.response")
+                description: 'User Not Found',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
             ),
             new SA\Response(
                 response: 500,
-                description: "Application error",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.error.response")
-            )
+                description: 'Application error',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
+            ),
         ]
     )]
     #[Scope(allow: 'oauth:user:update')]
@@ -137,11 +137,19 @@ class UserController extends AbstractController
         $userData['id'] = $id;
         $user = make(User::class, ['data' => $userData]);
         $user->setEntityState('update');
-        if (!$user->validate()) {
+        if (! $user->validate()) {
             return $this->response->withStatus(400)->json($user->getErrors());
         }
         $updatedUser = $this->repository()->update($user);
         return $this->response->json($updatedUser->toArray());
     }
 
+    private function saveUser(User $user): PsrResponseInterface
+    {
+        $createdUser = $this->repository()->create($user);
+        $userData = $createdUser
+            ->hide(['password_salt', 'password'])
+            ->toArray();
+        return $this->response->json($userData);
+    }
 }

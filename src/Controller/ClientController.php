@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of hf-shield.
+ *
+ * @link     https://github.com/JotJunior/hf-shield
+ * @contact  hf-shield@jot.com.br
+ * @license  MIT
+ */
+
 namespace Jot\HfShield\Controller;
 
 use Hyperf\HttpServer\Annotation\Controller;
@@ -12,6 +21,7 @@ use Jot\HfShield\Middleware\BearerStrategy;
 use Jot\HfShield\Middleware\SessionStrategy;
 use Jot\HfShield\Repository\ClientRepository;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
+
 use function Hyperf\Support\make;
 
 #[SA\HyperfServer('http')]
@@ -22,42 +32,41 @@ use function Hyperf\Support\make;
 #[Controller(prefix: '/oauth')]
 class ClientController extends AbstractController
 {
-
     protected string $repository = ClientRepository::class;
 
     #[SA\Post(
-        path: "/oauth/clients",
-        description: "Create a new client.",
-        summary: "Create a New Client",
+        path: '/oauth/clients',
+        description: 'Create a new client.',
+        summary: 'Create a New Client',
         security: [
             ['shieldBearerAuth' => ['oauth:client:create']],
         ],
         requestBody: new SA\RequestBody(
             required: true,
-            content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.entity.client.client")
+            content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.entity.client.client')
         ),
-        tags: ["Client"],
+        tags: ['Client'],
         responses: [
             new SA\Response(
                 response: 201,
-                description: "Client created",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.entity.client.client")
+                description: 'Client created',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.entity.client.client')
             ),
             new SA\Response(
                 response: 400,
-                description: "Bad request",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.error.response")
+                description: 'Bad request',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
             ),
             new SA\Response(
                 response: 401,
-                description: "Unauthorized access",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.auth-error.response")
+                description: 'Unauthorized access',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.auth-error.response')
             ),
             new SA\Response(
                 response: 500,
-                description: "Application error",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.error.response")
-            )
+                description: 'Application error',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
+            ),
         ]
     )]
     #[RateLimit(create: 1, capacity: 2)]
@@ -70,95 +79,85 @@ class ClientController extends AbstractController
         return $this->saveClient($client);
     }
 
-    private function saveClient(Client $client): PsrResponseInterface
-    {
-        list($plainSecret, $result) = $this->repository()->createNewClient($client);
-        $clientData = $result
-            ->hide(['secret'])
-            ->toArray();
-        $clientData['secret'] = $plainSecret;
-        return $this->response->json($clientData);
-    }
-
     #[SA\Get(
-        path: "/oauth/clients",
-        description: "Retrieve a list of clients with optional pagination.",
-        summary: "Get Clients List",
+        path: '/oauth/clients',
+        description: 'Retrieve a list of clients with optional pagination.',
+        summary: 'Get Clients List',
         security: [
             ['shieldBearerAuth' => ['oauth:client:list']],
         ],
-        tags: ["Client"],
+        tags: ['Client'],
         parameters: [
             new SA\Parameter(
-                name: "_page",
-                description: "Page number for pagination",
-                in: "query",
+                name: '_page',
+                description: 'Page number for pagination',
+                in: 'query',
                 required: false,
-                schema: new SA\Schema(type: "integer", example: 1)
+                schema: new SA\Schema(type: 'integer', example: 1)
             ),
             new SA\Parameter(
-                name: "_per_page",
-                description: "Number of results per page",
-                in: "query",
+                name: '_per_page',
+                description: 'Number of results per page',
+                in: 'query',
                 required: false,
-                schema: new SA\Schema(type: "integer", example: 10)
+                schema: new SA\Schema(type: 'integer', example: 10)
             ),
             new SA\Parameter(
-                name: "_sort",
-                description: "Sort results by a specific fields",
-                in: "query",
+                name: '_sort',
+                description: 'Sort results by a specific fields',
+                in: 'query',
                 required: false,
-                schema: new SA\Schema(type: "string", example: "created_at:desc,updated_at:desc")
+                schema: new SA\Schema(type: 'string', example: 'created_at:desc,updated_at:desc')
             ),
             new SA\Parameter(
-                name: "_fields",
-                description: "Fields to include in the response",
-                in: "query",
+                name: '_fields',
+                description: 'Fields to include in the response',
+                in: 'query',
                 required: false,
-                schema: new SA\Schema(type: "string", example: "id,created_at,updated_at")
-            )
+                schema: new SA\Schema(type: 'string', example: 'id,created_at,updated_at')
+            ),
         ],
         responses: [
             new SA\Response(
                 response: 200,
-                description: "Client details retrieved successfully",
+                description: 'Client details retrieved successfully',
                 content: new SA\JsonContent(
                     properties: [
                         new SA\Property(
-                            property: "data",
-                            type: "array",
-                            items: new SA\Items(ref: "#/components/schemas/jot.hf-shield.entity.client.client")
+                            property: 'data',
+                            type: 'array',
+                            items: new SA\Items(ref: '#/components/schemas/jot.hf-shield.entity.client.client')
                         ),
                         new SA\Property(
-                            property: "result",
-                            type: "string",
-                            example: "success"
+                            property: 'result',
+                            type: 'string',
+                            example: 'success'
                         ),
                         new SA\Property(
-                            property: "error",
-                            type: "string",
+                            property: 'error',
+                            type: 'string',
                             example: null,
                             nullable: true
-                        )
+                        ),
                     ],
-                    type: "object"
+                    type: 'object'
                 )
             ),
             new SA\Response(
                 response: 400,
-                description: "Bad Request",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.error.response")
+                description: 'Bad Request',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
             ),
             new SA\Response(
                 response: 401,
-                description: "Unauthorized access",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.auth-error.response")
+                description: 'Unauthorized access',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.auth-error.response')
             ),
             new SA\Response(
                 response: 500,
-                description: "Application error",
-                content: new SA\JsonContent(ref: "#/components/schemas/jot.hf-shield.error.response")
-            )
+                description: 'Application error',
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
+            ),
         ]
     )]
     #[RateLimit(create: 1, capacity: 2)]
@@ -171,4 +170,13 @@ class ClientController extends AbstractController
         return $this->response->json($clients);
     }
 
+    private function saveClient(Client $client): PsrResponseInterface
+    {
+        [$plainSecret, $result] = $this->repository()->createNewClient($client);
+        $clientData = $result
+            ->hide(['secret'])
+            ->toArray();
+        $clientData['secret'] = $plainSecret;
+        return $this->response->json($clientData);
+    }
 }

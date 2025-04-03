@@ -1,14 +1,20 @@
 <?php
 
 /**
- * @author      Alex Bilbie <hello@alexbilbie.com>
  * @copyright   Copyright (c) Alex Bilbie
  * @license     http://mit-license.org/
  *
- * @link        https://github.com/thephpleague/oauth2-server
+ * @see        https://github.com/thephpleague/oauth2-server
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of hf-shield.
+ *
+ * @link     https://github.com/JotJunior/hf-shield
+ * @contact  hf-shield@jot.com.br
+ * @license  MIT
+ */
 
 namespace Jot\HfShield\Entity;
 
@@ -22,8 +28,10 @@ class ClientEntity implements ClientEntityInterface
     use ClientTrait;
 
     protected string $identifier;
+
     protected string $name;
-    protected string|array $redirectUri;
+
+    protected array|string $redirectUri;
 
     public function getIdentifier(): string
     {
@@ -56,6 +64,4 @@ class ClientEntity implements ClientEntityInterface
         $this->redirectUri = $redirectUri;
         return $this;
     }
-
-
 }

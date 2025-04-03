@@ -1,6 +1,13 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of hf-shield.
+ *
+ * @link     https://github.com/JotJunior/hf-shield
+ * @contact  hf-shield@jot.com.br
+ * @license  MIT
+ */
 
 namespace Jot\HfShield\Exception\Handler;
 
@@ -23,17 +30,21 @@ class AuthExceptionHandler extends ExceptionHandler
 
     public function handle(Throwable $throwable, ResponseInterface $response)
     {
-        if ($throwable instanceof MissingResourceScopeException ||
-            $throwable instanceof UnauthorizedAccessException ||
-            $throwable instanceof UnauthorizedSessionException ||
-            $throwable instanceof UnauthorizedUserException ||
-            $throwable instanceof UnauthorizedClientException) {
-
+        if ($throwable instanceof MissingResourceScopeException
+            || $throwable instanceof UnauthorizedAccessException
+            || $throwable instanceof UnauthorizedSessionException
+            || $throwable instanceof UnauthorizedUserException
+            || $throwable instanceof UnauthorizedClientException) {
             $this->stopPropagation();
             return $this->createJsonResponse($response, 401, ['message' => $throwable->getMessage()]);
         }
 
         return $response;
+    }
+
+    public function isValid(Throwable $throwable): bool
+    {
+        return true;
     }
 
     private function createJsonResponse(ResponseInterface $response, int $statusCode, array $data): ResponseInterface
@@ -42,10 +53,5 @@ class AuthExceptionHandler extends ExceptionHandler
             ->withHeader('Content-Type', 'application/json')
             ->withStatus($statusCode)
             ->withBody(new SwooleStream(json_encode($data, JSON_UNESCAPED_UNICODE)));
-    }
-
-    public function isValid(Throwable $throwable): bool
-    {
-        return true;
     }
 }

@@ -1,5 +1,13 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of hf-shield.
+ *
+ * @link     https://github.com/JotJunior/hf-shield
+ * @contact  hf-shield@jot.com.br
+ * @license  MIT
+ */
 return [
     // Command messages
     'client_created_successfully' => 'Cliente criado com sucesso.',
@@ -16,7 +24,7 @@ return [
     'field_already_used' => ':label :value já está em uso.',
     'field_not_found' => ':label :value não encontrado.',
     'passwords_must_match' => 'As senhas devem coincidir.',
-    
+
     // Form labels and prompts
     'name' => 'Nome',
     'email' => 'E-mail',
@@ -33,7 +41,7 @@ return [
     'pick_a_number' => 'Escolha um número',
     'client_list_prompt' => 'ID do Cliente: (*) [ENTER para pular ou digite "-" para obter a lista de clientes]',
     'tenant_list_prompt' => 'ID do Tenant: (*) [Digite "-" para obter a lista de tenants]',
-    
+
     // Exception messages
     'unauthorized_access' => 'Acesso não autorizado',
     'unauthorized_client' => 'Cliente não autorizado',

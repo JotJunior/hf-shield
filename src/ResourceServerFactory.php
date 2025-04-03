@@ -1,21 +1,28 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of hf-shield.
+ *
+ * @link     https://github.com/JotJunior/hf-shield
+ * @contact  hf-shield@jot.com.br
+ * @license  MIT
+ */
 
 namespace Jot\HfShield;
 
-use Hyperf\Di\Annotation\Inject;
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Di\Annotation\Inject;
 use Jot\HfShield\Repository\AccessTokenRepository;
-use League\OAuth2\Server\CryptTrait;
-use Psr\Container\ContainerInterface;
-use League\OAuth2\Server\ResourceServer;
 use League\OAuth2\Server\CryptKey;
+use League\OAuth2\Server\CryptTrait;
+use League\OAuth2\Server\ResourceServer;
+use Psr\Container\ContainerInterface;
+
 use function Hyperf\Support\make;
 
 class ResourceServerFactory
 {
-
     use CryptTrait;
 
     #[Inject]
@@ -24,11 +31,6 @@ class ResourceServerFactory
     #[Inject]
     protected ConfigInterface $config;
 
-    /**
-     * @param ContainerInterface $container
-     * @param ConfigInterface $config
-     * @return void
-     */
     public function __construct(ContainerInterface $container, ConfigInterface $config)
     {
         $this->container = $container;
@@ -42,13 +44,11 @@ class ResourceServerFactory
 
     protected function makeCryptKey(): CryptKey
     {
-        $key = str_replace('\\n', "\n", $this->config->get('hf_shield.public_key'));
+        $key = str_replace('\n', "\n", $this->config->get('hf_shield.public_key'));
         return make(CryptKey::class, [
             'keyPath' => $key,
             'passPhrase' => null,
-            'keyPermissionsCheck' => false
+            'keyPermissionsCheck' => false,
         ]);
     }
-
-
 }

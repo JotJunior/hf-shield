@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of hf-shield.
+ *
+ * @link     https://github.com/JotJunior/hf-shield
+ * @contact  hf-shield@jot.com.br
+ * @license  MIT
+ */
+
 namespace Jot\HfShield\Middleware;
 
 use Hyperf\HttpServer\Router\Dispatched;
@@ -15,10 +24,12 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 trait BearerTrait
 {
-
     public const ATTR_ACCESS_TOKEN_ID = 'oauth_access_token_id';
+
     public const ATTR_CLIENT_ID = 'oauth_client_id';
+
     public const ATTR_USER_ID = 'oauth_user_id';
+
     public const ATTR_SCOPES = 'oauth_scopes';
 
     /**
@@ -28,10 +39,8 @@ trait BearerTrait
      * and verifies the request attributes. If authentication fails, an exception is thrown. Additionally,
      * it checks for the presence of required resource scopes and throws an exception if they are missing.
      *
-     * @param ServerRequestInterface $request The incoming server request to be validated.
-     * @param RequestHandlerInterface $handler The request handler interface instance.
-     *
-     * @return void
+     * @param ServerRequestInterface $request the incoming server request to be validated
+     * @param RequestHandlerInterface $handler the request handler interface instance
      */
     protected function validateBearerStrategy(ServerRequestInterface $request, RequestHandlerInterface $handler): void
     {
@@ -50,8 +59,6 @@ trait BearerTrait
 
     /**
      * Gathers and assigns the resource scopes based on the dispatched route handler.
-     *
-     * @return void
      */
     protected function collectResourceScopes(): void
     {
@@ -61,7 +68,7 @@ trait BearerTrait
             if ($routeHandler instanceof Handler) {
                 $controller = $routeHandler->callback[0];
                 $method = $routeHandler->callback[1];
-                $this->resourceScopes = (array)AllowedScopes::get($controller, $method)->allow;
+                $this->resourceScopes = (array) AllowedScopes::get($controller, $method)->allow;
             }
         }
     }
@@ -71,23 +78,21 @@ trait BearerTrait
      *
      * This method performs a series of checks on the request attributes, including access token validity,
      * client verification, and user validation. If any of these checks fail, the corresponding exception is thrown.
-     *
-     * @return void
      */
     protected function validateRequestAttributes(): void
     {
         $this->assertRequestAttribute(self::ATTR_ACCESS_TOKEN_ID, UnauthorizedAccessException::class);
 
-        if (!$this->tokenHasRequiredScopes()) {
+        if (! $this->tokenHasRequiredScopes()) {
             throw new UnauthorizedAccessException();
         }
 
-        if (!$this->repository->isClientValid($this->request->getAttribute(self::ATTR_CLIENT_ID))) {
+        if (! $this->repository->isClientValid($this->request->getAttribute(self::ATTR_CLIENT_ID))) {
             throw new UnauthorizedClientException();
         }
 
         $userId = $this->request->getAttribute(self::ATTR_USER_ID);
-        if (!$this->repository->isUserValid($userId, $this->resourceScopes)) {
+        if (! $this->repository->isUserValid($userId, $this->resourceScopes)) {
             throw new UnauthorizedUserException();
         }
     }
@@ -96,9 +101,8 @@ trait BearerTrait
      * Validates that a specific attribute exists in the request.
      * If the attribute is missing or empty, an exception of the specified class is thrown.
      *
-     * @param string $attributeName The name of the attribute to check in the request.
-     * @param string $exceptionClass The fully qualified class name of the exception to be thrown if the attribute is missing.
-     * @return void
+     * @param string $attributeName the name of the attribute to check in the request
+     * @param string $exceptionClass the fully qualified class name of the exception to be thrown if the attribute is missing
      */
     protected function assertRequestAttribute(string $attributeName, string $exceptionClass): void
     {
@@ -113,12 +117,11 @@ trait BearerTrait
      * This method compares the scopes associated with the token against the required resource scopes
      * to determine if they are fully satisfied. Access is granted only if all required scopes are present.
      *
-     * @return bool True if the token contains all required scopes; otherwise, false.
+     * @return bool true if the token contains all required scopes; otherwise, false
      */
     protected function tokenHasRequiredScopes(): bool
     {
         $tokenScopes = $this->request->getAttribute(self::ATTR_SCOPES);
         return count(array_intersect($this->resourceScopes, $tokenScopes)) === count($this->resourceScopes);
     }
-
 }

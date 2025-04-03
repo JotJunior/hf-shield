@@ -1,6 +1,13 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of hf-shield.
+ *
+ * @link     https://github.com/JotJunior/hf-shield
+ * @contact  hf-shield@jot.com.br
+ * @license  MIT
+ */
 
 namespace Jot\HfShield\Command;
 
@@ -12,13 +19,14 @@ use Jot\HfShield\Entity\User\User;
 use Jot\HfShield\Repository\UserRepository;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use function Hyperf\Translation\__;
+use Throwable;
+
 use function Hyperf\Support\make;
+use function Hyperf\Translation\__;
 
 #[Command]
 class OAuthUserCommand extends AbstractCommand
 {
-
     #[Inject]
     protected UserRepository $repository;
 
@@ -44,9 +52,8 @@ class OAuthUserCommand extends AbstractCommand
         $sub = $this->input->getArgument('sub');
 
         if (method_exists($this, $sub)) {
-            $this->$sub();
+            $this->{$sub}();
         }
-
     }
 
     protected function list(): void
@@ -74,7 +81,7 @@ class OAuthUserCommand extends AbstractCommand
             if ($selected === 'y') {
                 $scopes[] = [
                     'id' => $scope['id'],
-                    'name' => $scope['name']
+                    'name' => $scope['name'],
                 ];
             }
         }
@@ -89,7 +96,7 @@ class OAuthUserCommand extends AbstractCommand
         } catch (RepositoryUpdateException $th) {
             $this->failed($th->getMessage());
             return;
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             $this->failed('Error updating user: %s', [$th->getMessage()]);
             return;
         }
@@ -129,7 +136,7 @@ class OAuthUserCommand extends AbstractCommand
             $payload['client'] = ['id' => $client];
         }
         $data = make(User::class, [
-            'data' => $payload
+            'data' => $payload,
         ]);
 
         try {
@@ -141,7 +148,5 @@ class OAuthUserCommand extends AbstractCommand
             }
             return;
         }
-
     }
-
 }

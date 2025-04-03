@@ -1,6 +1,13 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of hf-shield.
+ *
+ * @link     https://github.com/JotJunior/hf-shield
+ * @contact  hf-shield@jot.com.br
+ * @license  MIT
+ */
 
 namespace Jot\HfShield\Command;
 
@@ -17,16 +24,20 @@ class OAuthKeyPairsCommand extends AbstractCommand
     use HfFriendlyLinesTrait;
 
     private const USER_PROMPT_DEFAULT = 'n';
+
     private const USER_PROMPT_CONFIRM = 'y';
+
     private const KEY_CONFIG = [
         'digest_alg' => 'sha256',
         'private_key_bits' => 4096,
-        'private_key_type' => OPENSSL_KEYTYPE_RSA
+        'private_key_type' => OPENSSL_KEYTYPE_RSA,
     ];
+
     private const KEY_FILES = [
         'private' => 'private.key',
-        'public' => 'public.pem'
+        'public' => 'public.pem',
     ];
+
     private const DIRECTORY_PERMISSIONS = 0755;
 
     #[Inject]
@@ -39,7 +50,6 @@ class OAuthKeyPairsCommand extends AbstractCommand
 
     /**
      * Configures the command for creating OAuth token encryption key pairs.
-     * @return void
      */
     public function configure(): void
     {
@@ -51,8 +61,22 @@ class OAuthKeyPairsCommand extends AbstractCommand
     }
 
     /**
+     * Handles the execution of the key generation process.
+     */
+    public function handle(): void
+    {
+        $forceOverwrite = $this->input->getOption('force');
+        $keysPath = $this->input->getOption('keys-path');
+
+        if (! $this->shouldProceedWithKeyGeneration($keysPath, $forceOverwrite)) {
+            return;
+        }
+
+        $this->generateKeyPair($keysPath);
+    }
+
+    /**
      * Configures the usage examples for a specific command.
-     * @return void
      */
     private function configureUsageExamples(): void
     {
@@ -62,31 +86,15 @@ class OAuthKeyPairsCommand extends AbstractCommand
     }
 
     /**
-     * Handles the execution of the key generation process.
-     * @return void
-     */
-    public function handle(): void
-    {
-        $forceOverwrite = $this->input->getOption('force');
-        $keysPath = $this->input->getOption('keys-path');
-
-        if (!$this->shouldProceedWithKeyGeneration($keysPath, $forceOverwrite)) {
-            return;
-        }
-
-        $this->generateKeyPair($keysPath);
-    }
-
-    /**
      * Determines whether the key generation process should proceed based on the existence
      * of keys in the given directory and a force flag.
-     * @param string $directory The directory in which to check for existing keys.
-     * @param bool $force A flag to force key generation regardless of existing keys.
-     * @return bool Returns true if key generation should proceed, otherwise false.
+     * @param string $directory the directory in which to check for existing keys
+     * @param bool $force a flag to force key generation regardless of existing keys
+     * @return bool returns true if key generation should proceed, otherwise false
      */
     private function shouldProceedWithKeyGeneration(string $directory, bool $force): bool
     {
-        if (!$this->keysExist($directory) || $force) {
+        if (! $this->keysExist($directory) || $force) {
             return true;
         }
 
@@ -95,8 +103,8 @@ class OAuthKeyPairsCommand extends AbstractCommand
 
     /**
      * Checks if the required key files exist in the specified directory.
-     * @param string $directory The directory to check for the existence of key files.
-     * @return bool Returns true if the key files exist in the specified directory, otherwise false.
+     * @param string $directory the directory to check for the existence of key files
+     * @return bool returns true if the key files exist in the specified directory, otherwise false
      */
     private function keysExist(string $directory): bool
     {
@@ -105,7 +113,7 @@ class OAuthKeyPairsCommand extends AbstractCommand
 
     /**
      * Prompts the user for confirmation to overwrite existing keys.
-     * @return bool Returns true if the user confirms the overwrite, otherwise false.
+     * @return bool returns true if the user confirms the overwrite, otherwise false
      */
     private function confirmOverwrite(): bool
     {
@@ -118,8 +126,7 @@ class OAuthKeyPairsCommand extends AbstractCommand
 
     /**
      * Generates a key pair, ensures the specified directory exists, and saves the keys to the given path.
-     * @param string $path The directory path where the generated key pair will be saved.
-     * @return void
+     * @param string $path the directory path where the generated key pair will be saved
      */
     private function generateKeyPair(string $path): void
     {
@@ -142,18 +149,17 @@ class OAuthKeyPairsCommand extends AbstractCommand
 
         return [
             'private' => $privateKey,
-            'public' => $publicKey
+            'public' => $publicKey,
         ];
     }
 
     /**
      * Ensures that the specified directory exists, creating it if necessary.
-     * @param string $path The path of the directory to check or create.
-     * @return void
+     * @param string $path the path of the directory to check or create
      */
     private function ensureDirectoryExists(string $path): void
     {
-        if (!is_dir($path)) {
+        if (! is_dir($path)) {
             mkdir($path, self::DIRECTORY_PERMISSIONS, true);
         }
     }
@@ -161,10 +167,9 @@ class OAuthKeyPairsCommand extends AbstractCommand
     /**
      * Saves a key pair to the specified path by writing the private and public keys
      * to their respective files.
-     * @param string $path The directory path where the key files will be saved.
-     * @param array $keyPair An associative array containing the keys with 'private'
-     * and 'public' as keys.
-     * @return void This method does not return a value.
+     * @param string $path the directory path where the key files will be saved
+     * @param array $keyPair an associative array containing the keys with 'private'
+     *                       and 'public' as keys
      */
     private function saveKeyPair(string $path, array $keyPair): void
     {

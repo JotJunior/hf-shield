@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of hf-shield.
+ *
+ * @link     https://github.com/JotJunior/hf-shield
+ * @contact  hf-shield@jot.com.br
+ * @license  MIT
+ */
+
 namespace Jot\HfShield;
 
 use Hyperf\Swagger\HttpServer;
@@ -15,7 +24,6 @@ use League\OAuth2\Server\ResourceServer;
 
 class ConfigProvider
 {
-
     public function __invoke(): array
     {
         return [
@@ -44,9 +52,9 @@ class ConfigProvider
                 'handler' => [
                     'http' => [
                         AuthExceptionHandler::class,
-                        ControllerExceptionHandler::class
-                    ]
-                ]
+                        ControllerExceptionHandler::class,
+                    ],
+                ],
             ],
             'publish' => [
                 [
@@ -94,5 +102,4 @@ class ConfigProvider
             ],
         ];
     }
-
 }

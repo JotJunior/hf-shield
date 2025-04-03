@@ -1,18 +1,25 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of hf-shield.
+ *
+ * @link     https://github.com/JotJunior/hf-shield
+ * @contact  hf-shield@jot.com.br
+ * @license  MIT
+ */
 
 namespace Jot\HfShield\Repository;
 
 use Jot\HfShield\Entity\RefreshToken\RefreshToken;
+use Jot\HfShield\Entity\RefreshTokenEntity;
 use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
 use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
-use Jot\HfShield\Entity\RefreshTokenEntity;
+
 use function Hyperf\Support\make;
 
 class RefreshTokenRepository extends AbstractRepository implements RefreshTokenRepositoryInterface
 {
-
     protected string $entity = RefreshToken::class;
 
     public function persistNewRefreshToken(RefreshTokenEntityInterface $refreshTokenEntity): void
@@ -25,7 +32,7 @@ class RefreshTokenRepository extends AbstractRepository implements RefreshTokenR
                     'expiry_date_time' => $refreshTokenEntity->getAccessToken()->getExpiryDateTime()->format('Y-m-d\TH:i:s.uP'),
                 ],
                 'expiry_date_time' => $refreshTokenEntity->getExpiryDateTime()->format('Y-m-d\TH:i:s.uP'),
-            ]
+            ],
         ]);
 
         $r = parent::create($entity);

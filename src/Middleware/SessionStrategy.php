@@ -1,6 +1,13 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of hf-shield.
+ *
+ * @link     https://github.com/JotJunior/hf-shield
+ * @contact  hf-shield@jot.com.br
+ * @license  MIT
+ */
 
 namespace Jot\HfShield\Middleware;
 
@@ -21,29 +28,26 @@ class SessionStrategy extends SessionMiddleware implements MiddlewareInterface
 {
     use BearerTrait;
 
-
     public function __construct(
-        protected ContainerInterface     $container,
-        protected ResourceServer         $server,
-        protected AccessTokenRepository  $repository,
+        protected ContainerInterface $container,
+        protected ResourceServer $server,
+        protected AccessTokenRepository $repository,
         protected ServerRequestInterface $request,
-        protected SessionInterface       $session,
-        protected array                  $resourceScopes = []
-    )
-    {
+        protected SessionInterface $session,
+        protected array $resourceScopes = []
+    ) {
         parent::__construct(
             $container->get(SessionManager::class),
             $container->get(ConfigInterface::class)
         );
     }
 
-
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $response = parent::process($request, $handler);
 
         $token = $request->getCookieParams()['access_token'] ?? null;
-        if (!$token) {
+        if (! $token) {
             throw new UnauthorizedAccessException();
         }
 
@@ -52,5 +56,4 @@ class SessionStrategy extends SessionMiddleware implements MiddlewareInterface
 
         return $response;
     }
-
 }

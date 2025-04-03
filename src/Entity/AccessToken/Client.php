@@ -1,41 +1,40 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of hf-shield.
+ *
+ * @link     https://github.com/JotJunior/hf-shield
+ * @contact  hf-shield@jot.com.br
+ * @license  MIT
+ */
 
 namespace Jot\HfShield\Entity\AccessToken;
 
-use Jot\HfRepository\Entity;
-use Jot\HfRepository\Entity\Traits\HasTimestampsTrait as HasTimestamps;
-use Jot\HfRepository\Entity\Traits\HasLogicRemovalTrait as HasLogicRemoval;
 use Hyperf\Swagger\Annotation as SA;
+use Jot\HfRepository\Entity;
 
-#[SA\Schema(schema: "jot.shield.entity.accesstoken.client")]
+#[SA\Schema(schema: 'jot.shield.entity.accesstoken.client')]
 class Client extends Entity
 {
-
-    
-
-        #[SA\Property(
-        property: "id",
-        type: "string",
-        example: ""
+    #[SA\Property(
+        property: 'id',
+        type: 'string',
+        example: ''
     )]
     protected ?string $id = null;
 
     #[SA\Property(
-        property: "name",
-        type: "string",
-        example: ""
+        property: 'name',
+        type: 'string',
+        example: ''
     )]
     protected ?string $name = null;
 
     #[SA\Property(
-        property: "redirect_uri",
-        type: "string",
-        example: ""
+        property: 'redirect_uri',
+        type: 'string',
+        example: ''
     )]
     protected ?string $redirectUri = null;
-
-
-
 }

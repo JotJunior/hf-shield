@@ -1,6 +1,13 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of hf-shield.
+ *
+ * @link     https://github.com/JotJunior/hf-shield
+ * @contact  hf-shield@jot.com.br
+ * @license  MIT
+ */
 
 namespace Jot\HfShield\Command;
 
@@ -12,13 +19,13 @@ use Jot\HfShield\Entity\Client\Client;
 use Jot\HfShield\Repository\ClientRepository;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Input\InputArgument;
-use function Hyperf\Translation\__;
+
 use function Hyperf\Support\make;
+use function Hyperf\Translation\__;
 
 #[Command]
 class OAuthClientCommand extends AbstractCommand
 {
-
     use HfFriendlyLinesTrait;
 
     #[Inject]
@@ -41,13 +48,11 @@ class OAuthClientCommand extends AbstractCommand
 
     public function handle()
     {
-
         $sub = $this->input->getArgument('sub');
 
         if (method_exists($this, $sub)) {
-            $this->$sub();
+            $this->{$sub}();
         }
-
     }
 
     protected function list(): void
@@ -71,11 +76,11 @@ class OAuthClientCommand extends AbstractCommand
                 'redirect_uri' => $email,
                 'tenant' => ['id' => $tenant],
                 'status' => 'active',
-            ]
+            ],
         ]);
 
         try {
-            list($plainSecret, $result) = $this->repository->createNewClient($client);
+            [$plainSecret, $result] = $this->repository->createNewClient($client);
             $clientId = $result->toArray()['id'];
             $this->success(__('hf-shield.client_id') . ':     <fg=#FFCC00>%s</>', [$clientId]);
             $this->success('Client Secret: <fg=#FFCC00>%s</>', [$plainSecret]);
@@ -86,7 +91,5 @@ class OAuthClientCommand extends AbstractCommand
             }
             return;
         }
-
     }
-
 }

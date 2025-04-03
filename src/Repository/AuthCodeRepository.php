@@ -1,18 +1,25 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of hf-shield.
+ *
+ * @link     https://github.com/JotJunior/hf-shield
+ * @contact  hf-shield@jot.com.br
+ * @license  MIT
+ */
 
 namespace Jot\HfShield\Repository;
 
 use Jot\HfShield\Entity\AuthCode\AuthCode;
+use Jot\HfShield\Entity\AuthCodeEntity;
 use League\OAuth2\Server\Entities\AuthCodeEntityInterface;
 use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
-use Jot\HfShield\Entity\AuthCodeEntity;
+
 use function Hyperf\Support\make;
 
 class AuthCodeRepository extends AbstractRepository implements AuthCodeRepositoryInterface
 {
-
     protected string $entity = AuthCode::class;
 
     public function persistNewAuthCode(AuthCodeEntityInterface $authCodeEntity): void
@@ -21,7 +28,7 @@ class AuthCodeRepository extends AbstractRepository implements AuthCodeRepositor
             'id' => $authCodeEntity->getIdentifier(),
             'redirect_uri' => $authCodeEntity->getRedirectUri(),
             'user' => [
-                'id' => $authCodeEntity->getUserIdentifier()
+                'id' => $authCodeEntity->getUserIdentifier(),
             ],
             'client' => [
                 'id' => $authCodeEntity->getClient()->getIdentifier(),
@@ -39,7 +46,7 @@ class AuthCodeRepository extends AbstractRepository implements AuthCodeRepositor
 
     public function isAuthCodeRevoked($codeId): bool
     {
-        return !$this->exists($codeId);
+        return ! $this->exists($codeId);
     }
 
     public function getNewAuthCode(): AuthCodeEntityInterface

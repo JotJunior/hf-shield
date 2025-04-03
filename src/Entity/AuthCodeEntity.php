@@ -1,14 +1,20 @@
 <?php
 
 /**
- * @author      Alex Bilbie <hello@alexbilbie.com>
  * @copyright   Copyright (c) Alex Bilbie
  * @license     http://mit-license.org/
  *
- * @link        https://github.com/thephpleague/oauth2-server
+ * @see        https://github.com/thephpleague/oauth2-server
  */
 
 declare(strict_types=1);
+/**
+ * This file is part of hf-shield.
+ *
+ * @link     https://github.com/JotJunior/hf-shield
+ * @contact  hf-shield@jot.com.br
+ * @license  MIT
+ */
 
 namespace Jot\HfShield\Entity;
 

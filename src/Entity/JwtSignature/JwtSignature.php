@@ -1,143 +1,149 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of hf-shield.
+ *
+ * @link     https://github.com/JotJunior/hf-shield
+ * @contact  hf-shield@jot.com.br
+ * @license  MIT
+ */
 
 namespace Jot\HfShield\Entity\JwtSignature;
 
+use DateTimeInterface;
 use Hyperf\Swagger\Annotation as SA;
 use Jot\HfRepository\Entity;
 use Jot\HfRepository\Entity\Traits\HasLogicRemovalTrait as HasLogicRemoval;
 use Jot\HfRepository\Entity\Traits\HasTimestampsTrait as HasTimestamps;
 use Jot\HfValidator\Annotation as Validator;
 
-#[SA\Schema(schema: "jot.hf-shield.entity.jwt_signature.jwt_signature")]
+#[SA\Schema(schema: 'jot.hf-shield.entity.jwt_signature.jwt_signature')]
 class JwtSignature extends Entity
 {
-
-    use HasLogicRemoval, HasTimestamps;
+    use HasLogicRemoval;
+    use HasTimestamps;
 
     #[SA\Property(
-        property: "created_at",
-        type: "string",
-        format: "string",
+        property: 'created_at',
+        type: 'string',
+        format: 'string',
         readOnly: true,
-        x: ["php_type" => "\DateTime"]
+        x: ['php_type' => '\\DateTime']
     )]
-    protected ?\DateTimeInterface $createdAt = null;
+    protected ?DateTimeInterface $createdAt = null;
 
     #[SA\Property(
-        property: "deleted",
-        type: "boolean",
+        property: 'deleted',
+        type: 'boolean',
         readOnly: true,
         example: true
     )]
     protected null|bool|int $deleted = null;
 
     #[SA\Property(
-        property: "hmac",
-        type: "string",
+        property: 'hmac',
+        type: 'string',
         readOnly: true,
-        example: ""
+        example: ''
     )]
     protected ?string $hmac = null;
 
     #[SA\Property(
-        property: "id",
-        type: "string",
+        property: 'id',
+        type: 'string',
         readOnly: true,
-        example: ""
+        example: ''
     )]
     protected ?string $id = null;
 
     #[SA\Property(
-        property: "jwt_signature_identifier",
-        description: "An alias of jwt id",
-        type: "string",
+        property: 'jwt_signature_identifier',
+        description: 'An alias of jwt id',
+        type: 'string',
         readOnly: true,
-        example: ""
+        example: ''
     )]
     protected ?string $jwtSignatureIdentifier = null;
 
     #[SA\Property(
-        property: "name",
-        type: "string",
-        example: ""
+        property: 'name',
+        type: 'string',
+        example: ''
     )]
     #[Validator\Required(onCreate: true, onUpdate: false)]
     protected ?string $name = null;
 
     #[SA\Property(
-        property: "scopes",
-        type: "array",
-        items: new SA\Items(ref: "#/components/schemas/jot.hf-shield.entity.jwt_signature.scope"),
-        x: ["php_type" => "\App\Entity\JwtSignature\Scope[]"]
+        property: 'scopes',
+        type: 'array',
+        items: new SA\Items(ref: '#/components/schemas/jot.hf-shield.entity.jwt_signature.scope'),
+        x: ['php_type' => '\\App\\Entity\\JwtSignature\\Scope[]']
     )]
     #[Validator\Exists(index: 'scopes', field: 'id')]
     protected ?array $scopes = null;
 
     #[SA\Property(
-        property: "status",
-        type: "string",
-        enum: ["active", "inactive"],
-        example: ""
+        property: 'status',
+        type: 'string',
+        enum: ['active', 'inactive'],
+        example: ''
     )]
     #[Validator\Required(onCreate: true, onUpdate: false)]
-    #[Validator\Enum(values: ["active", "inactive"])]
+    #[Validator\Enum(values: ['active', 'inactive'])]
     protected ?string $status = null;
 
     #[SA\Property(
-        property: "tenant",
-        ref: "#/components/schemas/jot.hf-shield.entity.jwt_signature.tenant",
-        x: ["php_type" => "\App\Entity\JwtSignature\Tenant"]
+        property: 'tenant',
+        ref: '#/components/schemas/jot.hf-shield.entity.jwt_signature.tenant',
+        x: ['php_type' => '\\App\\Entity\\JwtSignature\\Tenant']
     )]
     #[Validator\Required(onCreate: true, onUpdate: false)]
     #[Validator\Exists(index: 'tenants', field: 'id')]
-    protected ?\Jot\HfShield\Entity\JwtSignature\Tenant $tenant = null;
+    protected ?Tenant $tenant = null;
 
     #[SA\Property(
-        property: "client",
-        ref: "#/components/schemas/jot.hf-shield.entity.jwt_signature.client",
-        x: ["php_type" => "\App\Entity\JwtSignature\Client"]
+        property: 'client',
+        ref: '#/components/schemas/jot.hf-shield.entity.jwt_signature.client',
+        x: ['php_type' => '\\App\\Entity\\JwtSignature\\Client']
     )]
     #[Validator\Required(onCreate: true, onUpdate: false)]
     #[Validator\Exists(index: 'clients', field: 'id')]
-    protected ?\Jot\HfShield\Entity\JwtSignature\Client $client = null;
+    protected ?Client $client = null;
 
     #[SA\Property(
-        property: "tenant_identifier",
-        description: "An alias of tenant id",
-        type: "string",
+        property: 'tenant_identifier',
+        description: 'An alias of tenant id',
+        type: 'string',
         readOnly: true,
-        example: ""
+        example: ''
     )]
     protected ?string $tenantIdentifier = null;
 
     #[SA\Property(
-        property: "updated_at",
-        type: "string",
-        format: "string",
+        property: 'updated_at',
+        type: 'string',
+        format: 'string',
         readOnly: true,
-        x: ["php_type" => "\DateTime"]
+        x: ['php_type' => '\\DateTime']
     )]
-    protected ?\DateTimeInterface $updatedAt = null;
+    protected ?DateTimeInterface $updatedAt = null;
 
     #[SA\Property(
-        property: "user",
-        ref: "#/components/schemas/jot.hf-shield.entity.jwt_signature.user",
-        x: ["php_type" => "\App\Entity\JwtSignature\User"]
+        property: 'user',
+        ref: '#/components/schemas/jot.hf-shield.entity.jwt_signature.user',
+        x: ['php_type' => '\\App\\Entity\\JwtSignature\\User']
     )]
     #[Validator\Required(onCreate: true, onUpdate: false)]
     #[Validator\Exists(index: 'users', field: 'id')]
-    protected ?\Jot\HfShield\Entity\JwtSignature\User $user = null;
+    protected ?User $user = null;
 
     #[SA\Property(
-        property: "user_identifier",
-        description: "An alias of user id",
-        type: "string",
+        property: 'user_identifier',
+        description: 'An alias of user id',
+        type: 'string',
         readOnly: true,
-        example: ""
+        example: ''
     )]
     protected ?string $userIdentifier = null;
-
-
 }

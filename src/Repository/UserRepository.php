@@ -1,17 +1,26 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of hf-shield.
+ *
+ * @link     https://github.com/JotJunior/hf-shield
+ * @contact  hf-shield@jot.com.br
+ * @license  MIT
+ */
 
 namespace Jot\HfShield\Repository;
 
 use Jot\HfRepository\Entity;
 use Jot\HfRepository\Entity\EntityInterface;
 use Jot\HfRepository\Exception\EntityValidationWithErrorsException;
+use Jot\HfRepository\Exception\RepositoryUpdateException;
 use Jot\HfShield\Entity\User\User;
 use Jot\HfShield\Entity\UserEntity;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\UserEntityInterface;
 use League\OAuth2\Server\Repositories\UserRepositoryInterface;
+
 use function Hyperf\Support\make;
 
 class UserRepository extends AbstractRepository implements UserRepositoryInterface
@@ -21,20 +30,19 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
     /**
      * Retrieves a user entity based on the provided user credentials.
      *
-     * @param string $username The username or email of the user attempting to authenticate.
-     * @param string $password The password provided by the user.
-     * @param string $grantType The grant type associated with the authentication request.
-     * @param ClientEntityInterface $clientEntity The client entity requesting the authentication.
+     * @param string $username the username or email of the user attempting to authenticate
+     * @param string $password the password provided by the user
+     * @param string $grantType the grant type associated with the authentication request
+     * @param ClientEntityInterface $clientEntity the client entity requesting the authentication
      *
-     * @return UserEntityInterface|null Returns a UserEntityInterface instance if the credentials are valid, otherwise null.
+     * @return null|UserEntityInterface returns a UserEntityInterface instance if the credentials are valid, otherwise null
      */
     public function getUserEntityByUserCredentials(
-        string                $username,
-        string                $password,
-        string                $grantType,
+        string $username,
+        string $password,
+        string $grantType,
         ClientEntityInterface $clientEntity
-    ): ?UserEntityInterface
-    {
+    ): ?UserEntityInterface {
         /** @var User $user */
         $user = $this->first(['email' => $username]);
         if (empty($user)) {
@@ -42,7 +50,7 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
         }
 
         $passwordSalt = $user->getPasswordSalt();
-        if (!$this->isPasswordValid($user->getPassword(), $password, $passwordSalt)) {
+        if (! $this->isPasswordValid($user->getPassword(), $password, $passwordSalt)) {
             return null;
         }
 
@@ -50,26 +58,10 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
     }
 
     /**
-     * Validates if the given plain password matches the hashed password after applying the hash algorithm with the salt.
-     *
-     * @param string $hashedPassword The hashed password to validate against.
-     * @param string $plainPassword The plain password input provided by the user.
-     * @param string|null $passwordSalt The salt used in the password hashing process, or null if none.
-     *
-     * @return bool Returns true if the plain password matches the hashed password; otherwise, false.
-     */
-    private function isPasswordValid(string $hashedPassword, string $plainPassword, ?string $passwordSalt): bool
-    {
-        $encryptionKey = $this->config['encryption_key'];
-        $computedHash = hash_hmac('sha256', $plainPassword . $passwordSalt, $encryptionKey);
-        return hash_equals($hashedPassword, $computedHash);
-    }
-
-    /**
      * Creates a new user entity by validating and processing it, and then inserts it into the database.
      *
-     * @param EntityInterface $entity The entity instance to be created.
-     * @return EntityInterface Returns the created user entity instance with the inserted data.
+     * @param EntityInterface $entity the entity instance to be created
+     * @return EntityInterface returns the created user entity instance with the inserted data
      *
      * @throws EntityValidationWithErrorsException
      */
@@ -88,16 +80,60 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
     }
 
     /**
+     * Updates the scopes of a given user entity by merging the incoming scopes
+     * with the existing ones, ensuring uniqueness and maintaining the user state.
+     *
+     * @param EntityInterface $user the user entity whose scopes need to be updated
+     * @param array $scopes the array of new scopes to be added or merged
+     * @return EntityInterface the updated user entity with the modified scopes
+     *
+     * @throws RepositoryUpdateException
+     */
+    public function updateScopes(EntityInterface $user, array $scopes): EntityInterface
+    {
+        $userData = $user->toArray();
+        $scopes
+            = array_values(
+                array_unique(
+                    array_merge($scopes, $userData['scopes'] ?? []),
+                    SORT_REGULAR
+                )
+            );
+        $user = make(User::class, ['data' => [
+            'id' => $user->getId(),
+            'scopes' => $scopes,
+        ]]);
+        $user
+            ->setEntityState(Entity::STATE_UPDATE)
+            ->hide(['password', 'password_salt']);
+        return $this->update($user);
+    }
+
+    /**
+     * Validates if the given plain password matches the hashed password after applying the hash algorithm with the salt.
+     *
+     * @param string $hashedPassword the hashed password to validate against
+     * @param string $plainPassword the plain password input provided by the user
+     * @param null|string $passwordSalt the salt used in the password hashing process, or null if none
+     *
+     * @return bool returns true if the plain password matches the hashed password; otherwise, false
+     */
+    private function isPasswordValid(string $hashedPassword, string $plainPassword, ?string $passwordSalt): bool
+    {
+        $encryptionKey = $this->config['encryption_key'];
+        $computedHash = hash_hmac('sha256', $plainPassword . $passwordSalt, $encryptionKey);
+        return hash_equals($hashedPassword, $computedHash);
+    }
+
+    /**
      * Validates the given user entity and ensures it meets the required criteria.
      * If validation fails, an exception containing validation errors will be thrown.
      *
-     * @param EntityInterface $user The user entity to be validated.
-     *
-     * @return void
+     * @param EntityInterface $user the user entity to be validated
      */
     private function validateUser(EntityInterface $user): void
     {
-        if (!$user->validate()) {
+        if (! $user->validate()) {
             throw new EntityValidationWithErrorsException($user->getErrors());
         }
     }
@@ -105,10 +141,8 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
     /**
      * Hashes the user's password using the provided encryption key and their password salt.
      *
-     * @param EntityInterface $user The user entity containing the password and related properties.
-     * @param string $encryptionKey The encryption key used for generating the password hash.
-     *
-     * @return void
+     * @param EntityInterface $user the user entity containing the password and related properties
+     * @param string $encryptionKey the encryption key used for generating the password hash
      */
     private function hashUserPassword(EntityInterface $user, string $encryptionKey): void
     {
@@ -117,35 +151,5 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
             salt: $user->getPasswordSalt(),
             encryptionKey: $encryptionKey
         );
-    }
-
-
-    /**
-     * Updates the scopes of a given user entity by merging the incoming scopes
-     * with the existing ones, ensuring uniqueness and maintaining the user state.
-     *
-     * @param EntityInterface $user The user entity whose scopes need to be updated.
-     * @param array $scopes The array of new scopes to be added or merged.
-     * @return EntityInterface The updated user entity with the modified scopes.
-     *
-     * @throws \Jot\HfRepository\Exception\RepositoryUpdateException
-     */
-    public function updateScopes(EntityInterface $user, array $scopes): EntityInterface
-    {
-        $userData = $user->toArray();
-        $scopes =
-            array_values(
-                array_unique(
-                    array_merge($scopes, $userData['scopes'] ?? []), SORT_REGULAR
-                )
-            );
-        $user = make(User::class, ['data' => [
-            'id' => $user->getId(),
-            'scopes' => $scopes
-        ]]);
-        $user
-            ->setEntityState(Entity::STATE_UPDATE)
-            ->hide(['password', 'password_salt']);
-        return $this->update($user);
     }
 }

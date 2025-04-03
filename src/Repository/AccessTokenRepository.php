@@ -1,6 +1,13 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of hf-shield.
+ *
+ * @link     https://github.com/JotJunior/hf-shield
+ * @contact  hf-shield@jot.com.br
+ * @license  MIT
+ */
 
 namespace Jot\HfShield\Repository;
 
@@ -9,6 +16,7 @@ use Jot\HfShield\Entity\AccessTokenEntity;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
+
 use function Hyperf\Support\make;
 
 class AccessTokenRepository extends AbstractRepository implements AccessTokenRepositoryInterface
@@ -27,7 +35,7 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
             'user' => [
                 'id' => $accessTokenEntity->getUserIdentifier(),
             ],
-            'scopes' => array_map(fn($scope) => ['id' => $scope->getIdentifier()], $accessTokenEntity->getScopes()),
+            'scopes' => array_map(fn ($scope) => ['id' => $scope->getIdentifier()], $accessTokenEntity->getScopes()),
             'expiry_date_time' => $accessTokenEntity->getExpiryDateTime(),
         ]]);
         $this->create($entity);
@@ -40,7 +48,7 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
 
     public function isAccessTokenRevoked($tokenId): bool
     {
-        return !$this->exists($tokenId);
+        return ! $this->exists($tokenId);
     }
 
     public function getNewToken(ClientEntityInterface $clientEntity, array $scopes, $userIdentifier = null): AccessTokenEntityInterface
@@ -54,38 +62,37 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
         return $newToken;
     }
 
-    public function isUserValid(string $userId, string|array $scope): bool
+    public function isUserValid(string $userId, array|string $scope): bool
     {
         $query = $this->queryBuilder
             ->from('users')
             ->where('id', $userId)
-            ->where('status',  'active');
+            ->where('status', 'active');
 
         $this->addScopeConditions($query, $scope);
 
         return $query->count() === 1;
     }
 
-    private function addScopeConditions($query, string|array $scope): void
+    public function isClientValid(string $clientId): bool
+    {
+        return $this->queryBuilder
+            ->from('clients')
+            ->where('id', $clientId)
+            ->where('status', 'active')
+            ->count() === 1;
+    }
+
+    private function addScopeConditions($query, array|string $scope): void
     {
         $isArrayScope = is_array($scope);
 
         if ($isArrayScope) {
             foreach ($scope as $item) {
-                $query->whereNested('scopes', fn($query) => $query->where('scopes.id', $item));
+                $query->whereNested('scopes', fn ($query) => $query->where('scopes.id', $item));
             }
         } else {
-            $query->whereNested('scopes', fn($query) => $query->where('scopes.id', $scope));
+            $query->whereNested('scopes', fn ($query) => $query->where('scopes.id', $scope));
         }
     }
-
-    public function isClientValid(string $clientId): bool
-    {
-        return $this->queryBuilder
-                ->from('clients')
-                ->where('id', $clientId)
-                ->where('status', 'active')
-                ->count() === 1;
-    }
-
 }

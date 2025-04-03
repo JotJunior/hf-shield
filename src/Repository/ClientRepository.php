@@ -1,6 +1,13 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of hf-shield.
+ *
+ * @link     https://github.com/JotJunior/hf-shield
+ * @contact  hf-shield@jot.com.br
+ * @license  MIT
+ */
 
 namespace Jot\HfShield\Repository;
 
@@ -15,11 +22,10 @@ use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 
 class ClientRepository extends AbstractRepository implements ClientRepositoryInterface
 {
-
-    private const HASH_ALGORITHM = 'sha256';
-
     use CryptTrait;
     use HashableTrait;
+
+    private const HASH_ALGORITHM = 'sha256';
 
     protected string $entity = Client::class;
 
@@ -42,7 +48,6 @@ class ClientRepository extends AbstractRepository implements ClientRepositoryInt
         return $clientEntity;
     }
 
-
     public function validateClient(string $clientIdentifier, ?string $clientSecret, ?string $grantType): bool
     {
         $foundClient = $this->find($clientIdentifier);
@@ -54,6 +59,13 @@ class ClientRepository extends AbstractRepository implements ClientRepositoryInt
         return $this->isClientSecretValid($foundClient->getSecret(), $clientSecret);
     }
 
+    public function createNewClient(EntityInterface $client): array
+    {
+        $plainSecret = Str::uuid()->toString();
+        $this->createHash('secret', $plainSecret, $this->config['encryption_key']);
+        return [$plainSecret, parent::create($client)];
+    }
+
     private function isClientSecretValid(?string $storedSecret, string $providedSecret): bool
     {
         if ($storedSecret === null) {
@@ -63,13 +75,4 @@ class ClientRepository extends AbstractRepository implements ClientRepositoryInt
         $hashedProvidedSecret = hash_hmac(self::HASH_ALGORITHM, $providedSecret, $this->config['encryption_key']);
         return hash_equals($storedSecret, $hashedProvidedSecret);
     }
-
-    public function createNewClient(EntityInterface $client): array
-    {
-        $plainSecret = Str::uuid()->toString();
-        $this->createHash('secret', $plainSecret, $this->config['encryption_key']);
-        return [$plainSecret, parent::create($client)];
-
-    }
-
 }

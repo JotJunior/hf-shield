@@ -1,6 +1,13 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of hf-shield.
+ *
+ * @link     https://github.com/JotJunior/hf-shield
+ * @contact  hf-shield@jot.com.br
+ * @license  MIT
+ */
 
 namespace Jot\HfShield\Command;
 
@@ -13,12 +20,12 @@ use Jot\HfShield\Entity\Tenant\Tenant;
 use Jot\HfShield\Repository\TenantRepository;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Input\InputArgument;
+
 use function Hyperf\Support\make;
 
 #[Command]
 class OAuthTenantCommand extends HyperfCommand
 {
-
     use HfFriendlyLinesTrait;
 
     #[Inject]
@@ -42,13 +49,11 @@ class OAuthTenantCommand extends HyperfCommand
 
     public function handle()
     {
-
         $sub = $this->input->getArgument('sub');
 
         if (method_exists($this, $sub)) {
-            $this->$sub();
+            $this->{$sub}();
         }
-
     }
 
     protected function list(): void
@@ -72,8 +77,8 @@ class OAuthTenantCommand extends HyperfCommand
                 'name' => $name,
                 'ips' => explode(',', str_replace(' ', '', $ips)),
                 'domains' => explode(',', str_replace(' ', '', $domains)),
-                'index_suffix' => $indexSuffix
-            ]
+                'index_suffix' => $indexSuffix,
+            ],
         ]);
 
         try {
@@ -85,8 +90,5 @@ class OAuthTenantCommand extends HyperfCommand
             }
             return;
         }
-
     }
-
-
 }

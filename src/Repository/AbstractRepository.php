@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of hf-shield.
+ *
+ * @link     https://github.com/JotJunior/hf-shield
+ * @contact  hf-shield@jot.com.br
+ * @license  MIT
+ */
+
 namespace Jot\HfShield\Repository;
 
 use Hyperf\Contract\ConfigInterface;
@@ -12,7 +21,6 @@ class AbstractRepository extends Repository
 
     protected array $config = [];
 
-
     public function __construct(ConfigInterface $config)
     {
         parent::__construct();
@@ -22,7 +30,7 @@ class AbstractRepository extends Repository
 
     /**
      * Retrieves a list of tenants from the database with specific attributes.
-     * @return array Returns an array containing the selected tenant data.
+     * @return array returns an array containing the selected tenant data
      */
     public function retrieveTenantList(): array
     {
@@ -36,8 +44,8 @@ class AbstractRepository extends Repository
 
     /**
      * Retrieves a list of clients associated with a specified tenant.
-     * @param string $tenantId The unique identifier of the tenant whose clients are to be fetched.
-     * @return array Returns an array containing the selected client data.
+     * @param string $tenantId the unique identifier of the tenant whose clients are to be fetched
+     * @return array returns an array containing the selected client data
      */
     public function retrieveClientList(string $tenantId): array
     {
@@ -52,12 +60,10 @@ class AbstractRepository extends Repository
 
     /**
      * Retrieves a list of scopes from the database with specific attributes.
-     * @return array Returns an array containing the selected scope data.
+     * @return array returns an array containing the selected scope data
      */
     public function retrieveScopeList(): array
     {
-
-
         return $this->queryBuilder
             ->select(['id', 'name'])
             ->from('scopes')
@@ -65,6 +71,4 @@ class AbstractRepository extends Repository
             ->limit(1000)
             ->execute();
     }
-
-
 }

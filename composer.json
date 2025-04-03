@@ -42,6 +42,7 @@
     }
   },
   "require-dev": {
+    "friendsofphp/php-cs-fixer": "^3.0",
     "mockery/mockery": "^1.6",
     "phpunit/phpunit": "^10.5"
   },
@@ -51,6 +52,8 @@
     }
   },
   "scripts": {
+    "cs-fix": "php-cs-fixer fix $1",
+    "analyse": "phpstan analyse --memory-limit 300M",
     "test": "phpunit --testdox",
     "test-dox": "phpunit --testdox",
     "test-coverage": "phpunit --coverage-html=coverage/ --coverage-filter=src/",

@@ -1,5 +1,14 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of hf-shield.
+ *
+ * @link     https://github.com/JotJunior/hf-shield
+ * @contact  hf-shield@jot.com.br
+ * @license  MIT
+ */
+
 namespace Jot\HfShield\Controller;
 
 use Hyperf\Contract\ConfigInterface;
@@ -13,19 +22,19 @@ use League\OAuth2\Server\CryptTrait;
 
 #[SA\HyperfServer('http')]
 #[SA\Info(
-    version: "1.0.0",
-    title: "HfShield"
+    version: '1.0.0',
+    title: 'HfShield'
 )]
 #[SA\SecurityScheme(
-    securityScheme: "shieldBearerAuth",
-    type: "http",
-    in: "header",
-    bearerFormat: "JWT",
-    scheme: "bearer",
+    securityScheme: 'shieldBearerAuth',
+    type: 'http',
+    in: 'header',
+    bearerFormat: 'JWT',
+    scheme: 'bearer',
     flows: [
         new SA\Flow(
-            tokenUrl: "/oauth/token",
-            flow: "bearer",
+            tokenUrl: '/oauth/token',
+            flow: 'bearer',
             scopes: [
                 'oauth:client:create',
                 'oauth:client:list',
@@ -36,41 +45,45 @@ use League\OAuth2\Server\CryptTrait;
                 'oauth:jwt_signature:create',
                 'oauth:jwt_signature:delete',
             ]
-        )
+        ),
     ]
 )]
-#[SA\Schema(schema: "jot.hf-shield.error.response", required: ["result", "error"],
+#[SA\Schema(
+    schema: 'jot.hf-shield.error.response',
+    required: ['result', 'error'],
     properties: [
-        new SA\Property(property: "result", type: "string", example: "error"),
-        new SA\Property(property: "error", type: "string", example: "Error message"),
-        new SA\Property(property: "data", type: "string|array", example: null),
+        new SA\Property(property: 'result', type: 'string', example: 'error'),
+        new SA\Property(property: 'error', type: 'string', example: 'Error message'),
+        new SA\Property(property: 'data', type: 'string|array', example: null),
     ],
-    type: "object"
+    type: 'object'
 )]
-#[SA\Schema(schema: "jot.hf-shield.auth-error.response", required: ["result", "error"],
+#[SA\Schema(
+    schema: 'jot.hf-shield.auth-error.response',
+    required: ['result', 'error'],
     properties: [
-        new SA\Property(property: "status_code", type: "integer", example: 401),
-        new SA\Property(property: "error", type: "string", example: "The user credentials were incorrect."),
+        new SA\Property(property: 'status_code', type: 'integer', example: 401),
+        new SA\Property(property: 'error', type: 'string', example: 'The user credentials were incorrect.'),
     ],
-    type: "object"
+    type: 'object'
 )]
 class AbstractController
 {
-
     use CryptTrait;
 
     protected string $repository;
+
     protected array $config = [];
+
     private RepositoryInterface $repositoryInstance;
 
     public function __construct(
-        protected ContainerInterface       $container,
-        protected RequestInterface         $request,
-        protected ResponseInterface        $response,
-        protected AuthorizationServer      $server,
+        protected ContainerInterface $container,
+        protected RequestInterface $request,
+        protected ResponseInterface $response,
+        protected AuthorizationServer $server,
         protected readonly ConfigInterface $configService
-    )
-    {
+    ) {
         $this->config = $this->configService->get('hf_shield');
         $this->setEncryptionKey($this->config['encryption_key']);
         $this->repositoryInstance = $this->container->get($this->repository);
@@ -80,6 +93,4 @@ class AbstractController
     {
         return $this->repositoryInstance;
     }
-
-
 }

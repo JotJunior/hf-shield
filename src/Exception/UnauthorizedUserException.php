@@ -1,10 +1,21 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of hf-shield.
+ *
+ * @link     https://github.com/JotJunior/hf-shield
+ * @contact  hf-shield@jot.com.br
+ * @license  MIT
+ */
+
 namespace Jot\HfShield\Exception;
+
+use RuntimeException;
 
 use function Hyperf\Translation\__;
 
-class UnauthorizedUserException extends \RuntimeException
+class UnauthorizedUserException extends RuntimeException
 {
     public function __construct()
     {

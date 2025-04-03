@@ -1,16 +1,23 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of hf-shield.
+ *
+ * @link     https://github.com/JotJunior/hf-shield
+ * @contact  hf-shield@jot.com.br
+ * @license  MIT
+ */
 
 namespace Jot\HfShield\Command;
 
 use Hyperf\Command\Command as HyperfCommand;
 use Jot\HfRepository\Command\HfFriendlyLinesTrait;
+
 use function Hyperf\Translation\__;
 
 abstract class AbstractCommand extends HyperfCommand
 {
-
     use HfFriendlyLinesTrait;
 
     protected function selectClient(string $tenantId): ?string
@@ -18,7 +25,7 @@ abstract class AbstractCommand extends HyperfCommand
         return $this->selectItem(
             __('hf-shield.client_list_prompt'),
             __('hf-shield.wrong_client_number'),
-            fn() => $this->repository->retrieveClientList($tenantId)['data'] ?? []
+            fn () => $this->repository->retrieveClientList($tenantId)['data'] ?? []
         );
     }
 
@@ -32,9 +39,9 @@ abstract class AbstractCommand extends HyperfCommand
                 $this->success('<fg=yellow>%d</> - %s : %s', [$index + 1, $item['id'], $item['name']]);
             }
             $pickedNumber = $this->ask(__('hf-shield.pick_a_number') . ': ');
-            $selectedItem = $items[(int)$pickedNumber - 1]['id'] ?? null;
+            $selectedItem = $items[(int) $pickedNumber - 1]['id'] ?? null;
 
-            if (!$selectedItem) {
+            if (! $selectedItem) {
                 $this->failed($error);
                 exit(1);
             }
@@ -51,29 +58,29 @@ abstract class AbstractCommand extends HyperfCommand
         return $this->selectItem(
             __('hf-shield.tenant_list_prompt'),
             __('hf-shield.wrong_tenant_number'),
-            fn() => $this->repository->retrieveTenantList()['data'] ?? []
+            fn () => $this->repository->retrieveTenantList()['data'] ?? []
         );
     }
 
     protected function retryIf(string $condition, string $label, string $field, array $conditions = [], bool $allowEmpty = false)
     {
-        do {
+        while (true) {
             $value = $this->ask(sprintf('%s:%s</>', $label, $allowEmpty ? '' : ' <fg=yellow>(*)'));
-            if (!$value && $allowEmpty) {
+            if (! $value && $allowEmpty) {
                 return $value;
             }
 
-            $fieldExists = !empty($this->repository->first([$field => $value, ...$conditions]));
+            $fieldExists = ! empty($this->repository->first([$field => $value, ...$conditions]));
 
             if ($this->validateCondition($fieldExists, $condition, $label, $value)) {
                 return $value;
             }
-        } while (true);
+        }
     }
 
     protected function validateCondition(bool $fieldExists, string $condition, string $label, string $value): bool
     {
-        if ($condition === 'exists' && !$fieldExists) {
+        if ($condition === 'exists' && ! $fieldExists) {
             return true;
         }
 
@@ -85,12 +92,10 @@ abstract class AbstractCommand extends HyperfCommand
             return true;
         }
 
-        if ($condition === 'missing' && !$fieldExists) {
+        if ($condition === 'missing' && ! $fieldExists) {
             $this->warning(__('hf-shield.field_not_found', ['label' => $label, 'value' => $value]));
         }
 
         return false;
     }
-
-
 }
