@@ -28,7 +28,7 @@ class Scope extends Entity
         type: 'string',
         format: 'string',
         readOnly: true,
-        x: ['php_type' => '\\DateTime']
+        x: ['php_type' => '\DateTime']
     )]
     protected ?DateTimeInterface $createdAt = null;
 
@@ -68,7 +68,7 @@ class Scope extends Entity
         type: 'string',
         format: 'string',
         readOnly: true,
-        x: ['php_type' => '\\DateTime']
+        x: ['php_type' => '\DateTime']
     )]
     protected ?DateTimeInterface $updatedAt = null;
 }

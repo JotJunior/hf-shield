@@ -34,7 +34,7 @@ class AccessToken extends Entity
     #[SA\Property(
         property: 'client',
         ref: '#/components/schemas/jot.shield.entity.accesstoken.client',
-        x: ['php_type' => '\\Jot\\HfShield\\Entity\\AccessToken\\Client']
+        x: ['php_type' => '\Jot\HfShield\Entity\AccessToken\Client']
     )]
     protected ?Client $client = null;
 
@@ -50,7 +50,7 @@ class AccessToken extends Entity
         type: 'string',
         format: 'string',
         readOnly: true,
-        x: ['php_type' => '\\DateTime']
+        x: ['php_type' => '\DateTime']
     )]
     protected ?DateTimeInterface $createdAt = null;
 
@@ -66,7 +66,7 @@ class AccessToken extends Entity
         property: 'expiry_date_time',
         type: 'string',
         format: 'string',
-        x: ['php_type' => '\\DateTimeImmutable']
+        x: ['php_type' => '\DateTimeImmutable']
     )]
     protected ?DateTimeInterface $expiryDateTime = null;
 
@@ -82,7 +82,7 @@ class AccessToken extends Entity
         property: 'scopes',
         type: 'array',
         items: new SA\Items(ref: '#/components/schemas/jot.shield.entity.accesstoken.scope'),
-        x: ['php_type' => '\\Jot\\HfShield\\Entity\\AccessToken\\Scope[]']
+        x: ['php_type' => '\Jot\HfShield\Entity\AccessToken\Scope[]']
     )]
     protected ?array $scopes = null;
 
@@ -91,14 +91,14 @@ class AccessToken extends Entity
         type: 'string',
         format: 'string',
         readOnly: true,
-        x: ['php_type' => '\\DateTime']
+        x: ['php_type' => '\DateTime']
     )]
     protected ?DateTimeInterface $updatedAt = null;
 
     #[SA\Property(
         property: 'user',
         ref: '#/components/schemas/jot.shield.entity.accesstoken.user',
-        x: ['php_type' => '\\Jot\\HfShield\\Entity\\AccessToken\\User']
+        x: ['php_type' => '\Jot\HfShield\Entity\AccessToken\User']
     )]
     protected ?User $user = null;
 }

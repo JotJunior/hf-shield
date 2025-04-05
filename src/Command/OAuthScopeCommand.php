@@ -22,7 +22,6 @@ use Jot\HfShield\Repository\ScopeRepository;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Throwable;
-
 use function Hyperf\Support\make;
 use function Hyperf\Translation\__;
 
@@ -78,7 +77,7 @@ class OAuthScopeCommand extends HyperfCommand
         $collectedAnnotations = AnnotationCollector::getMethodsByAnnotation(\Jot\HfShield\Annotation\Scope::class);
 
         foreach ($collectedAnnotations as $annotationData) {
-            $scopes = (array) $annotationData['annotation']->allow;
+            $scopes = (array)$annotationData['annotation']->allow;
             foreach ($scopes as $scope) {
                 try {
                     $this->registerScope($scope);
@@ -91,18 +90,36 @@ class OAuthScopeCommand extends HyperfCommand
 
     protected function registerScope(string $scope): void
     {
-        if ($this->repository->exists($scope)) {
-            $this->warning(__('hf-shield.scope_already_registered', ['scope' => $scope]));
-            return;
-        }
+        $parts = explode(':', $scope);
+        $baseScope = [];
+        foreach ($parts as $part) {
+            $baseScope[] = $part;
+            $finalScope = implode(':', $baseScope);
+            if (count($baseScope) < 3) {
+                $finalScope .= ':';
+            }
 
-        $description = $this->ask(sprintf('%s ' . __('hf-shield.description') . ': ', $scope));
-        $this->repository->create(make(Scope::class, [
-            'data' => [
-                'id' => $scope,
-                'name' => $description,
-            ],
-        ]));
+            if ($this->repository->exists($finalScope)) {
+                $this->warning(__('hf-shield.scope_already_registered', ['scope' => $scope]));
+            } else {
+                $description = match ($baseScope[2] ?? null) {
+                    'list' => sprintf('List all %s', Str::plural($parts[1])),
+                    'view' => sprintf('View a single %s', Str::singular($parts[1])),
+                    'create' => sprintf('Create a new %s', Str::singular($parts[1])),
+                    'update' => sprintf('Update an existing %s', Str::singular($parts[1])),
+                    'delete' => sprintf('Delete a %s', Str::singular($parts[1])),
+                    default => sprintf('Scope %s', $finalScope),
+                };
+                $this->success($scope . ' - ' . $description);
+
+                $this->repository->create(make(Scope::class, [
+                    'data' => [
+                        'id' => $finalScope,
+                        'name' => $description,
+                    ],
+                ]));
+            }
+        }
     }
 
     protected function create(): void

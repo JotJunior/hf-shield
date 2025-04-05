@@ -29,7 +29,7 @@ class User extends Entity
         property: 'client',
         ref: '#/components/schemas/jot.hf-shield.entity.user.client',
         description: 'Reference to the client associated with the user.',
-        x: ['php_type' => '\\Jot\\HfShield\\Entity\\User\\Client']
+        x: ['php_type' => '\Jot\HfShield\Entity\User\Client']
     )]
     #[Validator\Exists(index: 'clients', field: 'id')]
     protected ?Client $client = null;
@@ -50,7 +50,7 @@ class User extends Entity
         format: 'date-time',
         readOnly: true,
         example: '2023-10-01T12:45:00Z',
-        x: ['php_type' => '\\DateTime']
+        x: ['php_type' => '\DateTime']
     )]
     protected ?DateTimeInterface $createdAt = null;
 
@@ -153,7 +153,7 @@ class User extends Entity
             ['id' => 'oauth:client:list'],
             ['id' => 'api-events:event:read'],
         ],
-        x: ['php_type' => '\\Jot\\HfShield\\Entity\\User\\Scope[]']
+        x: ['php_type' => '\Jot\HfShield\Entity\User\Scope[]']
     )]
     protected ?array $scopes = null;
 
@@ -171,7 +171,7 @@ class User extends Entity
         property: 'tenants',
         type: 'array',
         items: new SA\Items(ref: '#/components/schemas/jot.hf-shield.entity.user.tenant'),
-        x: ['php_type' => '\\App\\Entity\\User\\Tenant[]']
+        x: ['php_type' => '\App\Entity\User\Tenant[]']
     )]
     #[Validator\Exists(index: 'tenants', field: 'id')]
     #[Validator\Required(onCreate: true, onUpdate: false)]
@@ -193,7 +193,7 @@ class User extends Entity
         format: 'date-time',
         readOnly: true,
         example: '2023-10-02T15:00:00Z',
-        x: ['php_type' => '\\DateTime']
+        x: ['php_type' => '\DateTime']
     )]
     protected ?DateTimeInterface $updatedAt = null;
 

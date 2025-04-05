@@ -26,7 +26,7 @@ class RefreshToken extends Entity
     #[SA\Property(
         property: 'access_token',
         ref: '#/components/schemas/jot.shield.entity.refreshtoken.accesstoken',
-        x: ['php_type' => '\\Jot\\HfShield\\Entity\\RefreshToken\\AccessToken']
+        x: ['php_type' => '\Jot\HfShield\Entity\RefreshToken\AccessToken']
     )]
     protected ?AccessToken $accessToken = null;
 
@@ -43,7 +43,7 @@ class RefreshToken extends Entity
         type: 'string',
         format: 'string',
         readOnly: true,
-        x: ['php_type' => '\\DateTime']
+        x: ['php_type' => '\DateTime']
     )]
     protected ?DateTimeInterface $createdAt = null;
 
@@ -59,7 +59,7 @@ class RefreshToken extends Entity
         property: 'expiry_date_time',
         type: 'string',
         format: 'string',
-        x: ['php_type' => '\\DateTimeImmutable']
+        x: ['php_type' => '\DateTimeImmutable']
     )]
     protected ?DateTimeInterface $expiryDateTime = null;
 
@@ -84,7 +84,7 @@ class RefreshToken extends Entity
         type: 'string',
         format: 'string',
         readOnly: true,
-        x: ['php_type' => '\\DateTime']
+        x: ['php_type' => '\DateTime']
     )]
     protected ?DateTimeInterface $updatedAt = null;
 }

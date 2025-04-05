@@ -22,7 +22,7 @@ class AccessToken extends Entity
         property: 'expiry_date_time',
         type: 'string',
         format: 'string',
-        x: ['php_type' => '\\DateTimeImmutable']
+        x: ['php_type' => '\DateTimeImmutable']
     )]
     protected ?DateTimeInterface $expiryDateTime = null;
 

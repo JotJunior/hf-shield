@@ -17,6 +17,7 @@ use Hyperf\Session\Middleware\SessionMiddleware;
 use Hyperf\Session\SessionManager;
 use Jot\HfShield\Exception\UnauthorizedAccessException;
 use Jot\HfShield\Repository\AccessTokenRepository;
+use League\OAuth2\Server\CryptTrait;
 use League\OAuth2\Server\ResourceServer;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -27,6 +28,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 class SessionStrategy extends SessionMiddleware implements MiddlewareInterface
 {
     use BearerTrait;
+    use CryptTrait;
 
     public function __construct(
         protected ContainerInterface $container,
@@ -46,10 +48,14 @@ class SessionStrategy extends SessionMiddleware implements MiddlewareInterface
     {
         $response = parent::process($request, $handler);
 
+        $this->validateBearerStrategy($request, $handler);
+
         $token = $request->getCookieParams()['access_token'] ?? null;
         if (! $token) {
             throw new UnauthorizedAccessException();
         }
+
+        $token = $this->decrypt($token);
 
         $request = $request->withAddedHeader('Authorization', sprintf('Bearer %s', $token));
         $this->validateBearerStrategy($request, $handler);

@@ -44,7 +44,7 @@ class Client extends Entity
         type: 'string',
         format: 'string',
         readOnly: true,
-        x: ['php_type' => '\\DateTime']
+        x: ['php_type' => '\DateTime']
     )]
     protected ?DateTimeInterface $createdAt = null;
 
@@ -89,7 +89,7 @@ class Client extends Entity
         property: 'scopes',
         type: 'array',
         items: new SA\Items(ref: '#/components/schemas/jot.hf-shield.entity.client.scope'),
-        x: ['php_type' => '\\Jot\\HfShield\\Entity\\Client\\Scope[]']
+        x: ['php_type' => '\Jot\HfShield\Entity\Client\Scope[]']
     )]
     protected ?array $scopes = null;
 
@@ -110,7 +110,7 @@ class Client extends Entity
     #[SA\Property(
         property: 'tenant',
         ref: '#/components/schemas/jot.hf-shield.entity.client.tenant',
-        x: ['php_type' => '\\Jot\\HfShield\\Entity\\Client\\Tenant']
+        x: ['php_type' => '\Jot\HfShield\Entity\Client\Tenant']
     )]
     protected ?Tenant $tenant = null;
 
@@ -128,7 +128,7 @@ class Client extends Entity
         type: 'string',
         format: 'string',
         readOnly: true,
-        x: ['php_type' => '\\DateTime']
+        x: ['php_type' => '\DateTime']
     )]
     protected ?DateTimeInterface $updatedAt = null;
 

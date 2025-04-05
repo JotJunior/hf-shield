@@ -20,6 +20,7 @@ use Hyperf\RateLimit\Annotation\RateLimit;
 use Hyperf\Swagger\Annotation as SA;
 use Jot\HfShield\Exception\UnauthorizedSessionException;
 use Jot\HfShield\Repository\AccessTokenRepository;
+use League\OAuth2\Server\CryptTrait;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 
@@ -51,6 +52,8 @@ use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 #[Controller(prefix: '/oauth')]
 class SessionTokenController extends AbstractController
 {
+    use CryptTrait;
+
     protected string $repository = AccessTokenRepository::class;
 
     #[GetMapping(path: '/oauth/session')]
@@ -130,7 +133,7 @@ HTML;
                 ->redirect(sprintf('%s?err=%s&msg=%s', $sessionConfig['redirect_error'], $e->getCode(), $e->getMessage()));
         }
 
-        $token = json_decode($response->getBody(), JSON_OBJECT_AS_ARRAY);
+        $token = json_decode($response->getBody()->getContents(), true);
         $cookie = $this->buildAccessTokenCookie($token['access_token'], $token['expires_in']);
 
         return $response
@@ -179,7 +182,7 @@ HTML;
     {
         return new Cookie(
             name: 'access_token',
-            value: $accessToken,
+            value: $this->encrypt($accessToken),
             expire: time() + $expiresIn,
             path: '/',
             secure: false,

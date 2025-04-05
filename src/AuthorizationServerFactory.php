@@ -150,7 +150,12 @@ class AuthorizationServerFactory
      */
     protected function makeCryptKey(): CryptKey
     {
-        $key = str_replace('\n', "\n", $this->config->get('hf_shield.private_key'));
+        $privateKey = $this->config->get('hf_shield.private_key');
+        if (is_file(BASE_PATH . $privateKey)) {
+            $privateKey = file_get_contents(BASE_PATH . $privateKey);
+        }
+        $key = $privateKey;
+
         return make(CryptKey::class, [
             'keyPath' => $key,
             'passPhrase' => null,

@@ -14,3 +14,5 @@
 phpstan.neon
 runtime/
 vendor/
+sonar-scan.sh
+.scannerwork

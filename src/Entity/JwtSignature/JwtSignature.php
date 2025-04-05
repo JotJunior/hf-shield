@@ -29,7 +29,7 @@ class JwtSignature extends Entity
         type: 'string',
         format: 'string',
         readOnly: true,
-        x: ['php_type' => '\\DateTime']
+        x: ['php_type' => '\DateTime']
     )]
     protected ?DateTimeInterface $createdAt = null;
 
@@ -78,7 +78,7 @@ class JwtSignature extends Entity
         property: 'scopes',
         type: 'array',
         items: new SA\Items(ref: '#/components/schemas/jot.hf-shield.entity.jwt_signature.scope'),
-        x: ['php_type' => '\\App\\Entity\\JwtSignature\\Scope[]']
+        x: ['php_type' => '\App\Entity\JwtSignature\Scope[]']
     )]
     #[Validator\Exists(index: 'scopes', field: 'id')]
     protected ?array $scopes = null;
@@ -96,7 +96,7 @@ class JwtSignature extends Entity
     #[SA\Property(
         property: 'tenant',
         ref: '#/components/schemas/jot.hf-shield.entity.jwt_signature.tenant',
-        x: ['php_type' => '\\App\\Entity\\JwtSignature\\Tenant']
+        x: ['php_type' => '\App\Entity\JwtSignature\Tenant']
     )]
     #[Validator\Required(onCreate: true, onUpdate: false)]
     #[Validator\Exists(index: 'tenants', field: 'id')]
@@ -105,7 +105,7 @@ class JwtSignature extends Entity
     #[SA\Property(
         property: 'client',
         ref: '#/components/schemas/jot.hf-shield.entity.jwt_signature.client',
-        x: ['php_type' => '\\App\\Entity\\JwtSignature\\Client']
+        x: ['php_type' => '\App\Entity\JwtSignature\Client']
     )]
     #[Validator\Required(onCreate: true, onUpdate: false)]
     #[Validator\Exists(index: 'clients', field: 'id')]
@@ -125,14 +125,14 @@ class JwtSignature extends Entity
         type: 'string',
         format: 'string',
         readOnly: true,
-        x: ['php_type' => '\\DateTime']
+        x: ['php_type' => '\DateTime']
     )]
     protected ?DateTimeInterface $updatedAt = null;
 
     #[SA\Property(
         property: 'user',
         ref: '#/components/schemas/jot.hf-shield.entity.jwt_signature.user',
-        x: ['php_type' => '\\App\\Entity\\JwtSignature\\User']
+        x: ['php_type' => '\App\Entity\JwtSignature\User']
     )]
     #[Validator\Required(onCreate: true, onUpdate: false)]
     #[Validator\Exists(index: 'users', field: 'id')]
