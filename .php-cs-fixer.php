@@ -1,16 +1,25 @@
 <?php
 
 declare(strict_types=1);
+/**
+ * This file is part of the hf_shield module, a package build for Hyperf framework that is responsible for OAuth2 authentication and access control.
+ *
+ * @author   Joao Zanon <jot@jot.com.br>
+ * @link     https://github.com/JotJunior/hf-shield
+ * @license  MIT
+ */
+use PhpCsFixer\Config;
+use PhpCsFixer\Finder;
 
 $header = <<<'EOF'
-This file is part of hf-shield.
+This file is part of the hf_shield module, a package build for Hyperf framework that is responsible for OAuth2 authentication and access control.
 
+@author   Joao Zanon <jot@jot.com.br>
 @link     https://github.com/JotJunior/hf-shield
-@contact  hf-shield@jot.com.br
 @license  MIT
 EOF;
 
-return (new PhpCsFixer\Config())
+return (new Config())
     ->setRiskyAllowed(true)
     ->setRules([
         '@PSR2' => true,
@@ -89,7 +98,7 @@ return (new PhpCsFixer\Config())
         'single_line_empty_body' => false,
     ])
     ->setFinder(
-        PhpCsFixer\Finder::create()
+        Finder::create()
             ->exclude('public')
             ->exclude('runtime')
             ->exclude('vendor')

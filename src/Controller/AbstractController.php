@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 /**
- * This file is part of hf-shield.
+ * This file is part of the hf_shield module, a package build for Hyperf framework that is responsible for OAuth2 authentication and access control.
  *
+ * @author   Joao Zanon <jot@jot.com.br>
  * @link     https://github.com/JotJunior/hf-shield
- * @contact  hf-shield@jot.com.br
  * @license  MIT
  */
 
@@ -30,23 +30,7 @@ use League\OAuth2\Server\CryptTrait;
     type: 'http',
     in: 'header',
     bearerFormat: 'JWT',
-    scheme: 'bearer',
-    flows: [
-        new SA\Flow(
-            tokenUrl: '/oauth/token',
-            flow: 'bearer',
-            scopes: [
-                'oauth:client:create',
-                'oauth:client:list',
-                'oauth:user:create',
-                'oauth:user:update',
-                'oauth:jwt_signature:list',
-                'oauth:jwt_signature:read',
-                'oauth:jwt_signature:create',
-                'oauth:jwt_signature:delete',
-            ]
-        ),
-    ]
+    scheme: 'bearer'
 )]
 #[SA\Schema(
     schema: 'jot.hf-shield.error.response',

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 /**
- * This file is part of hf-shield.
+ * This file is part of the hf_shield module, a package build for Hyperf framework that is responsible for OAuth2 authentication and access control.
  *
+ * @author   Joao Zanon <jot@jot.com.br>
  * @link     https://github.com/JotJunior/hf-shield
- * @contact  hf-shield@jot.com.br
  * @license  MIT
  */
 
@@ -17,6 +17,8 @@ use Jot\HfRepository\Command\HfFriendlyLinesTrait;
 use Jot\HfShield\Repository\ClientRepository;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Input\InputArgument;
+
+use function Hyperf\Translation\__;
 
 #[Command]
 class OAuthKeyPairsCommand extends AbstractCommand
@@ -73,6 +75,8 @@ class OAuthKeyPairsCommand extends AbstractCommand
         }
 
         $this->generateKeyPair($keysPath);
+
+        $this->success(__('key_success'));
     }
 
     /**

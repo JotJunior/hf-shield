@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 /**
- * This file is part of hf-shield.
+ * This file is part of the hf_shield module, a package build for Hyperf framework that is responsible for OAuth2 authentication and access control.
  *
+ * @author   Joao Zanon <jot@jot.com.br>
  * @link     https://github.com/JotJunior/hf-shield
- * @contact  hf-shield@jot.com.br
  * @license  MIT
  */
 
@@ -83,9 +83,7 @@ class UserController extends AbstractController
         path: '/oauth/users/{id}',
         description: 'Update the details of an existing users.',
         summary: 'Update an existing User',
-        security: [
-            ['shieldBearerAuth' => ['oauth:user:update']],
-        ],
+        security: [['shieldBearerAuth' => ['oauth:user:update']]],
         requestBody: new SA\RequestBody(
             required: true,
             content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.entity.user.user')

@@ -1,13 +1,15 @@
 <?php
 
 declare(strict_types=1);
+
 /**
- * This file is part of hf-shield.
+ * This file is part of the hf_shield module, a package build for Hyperf framework that is responsible for OAuth2 authentication and access control.
  *
+ * @author   Joao Zanon <jot@jot.com.br>
  * @link     https://github.com/JotJunior/hf-shield
- * @contact  hf-shield@jot.com.br
  * @license  MIT
  */
+
 use function Hyperf\Support\env;
 
 return [
@@ -17,6 +19,21 @@ return [
      * The repositories, validations, and middlewares will still be available for credential checks.
      */
     'enable_oauth_endpoints' => true,
+
+    /*
+     * The endpoint api version
+     */
+    'api_version' => env('API_VERSION', 'v1'),
+
+    /*
+     * The middleware strategy for request validation (bearer|session|signed_jwt|public)
+     */
+    'middleware_strategy' => env('OAUTH_MIDDLEWARE_STRATEGY', 'bearer'),
+
+    /*
+     * The module name included on top of scope structure:  module:resource:action
+     */
+    'module_name' => env('OAUTH_SCOPE_MODULE_NAME', 'api'),
 
     /*
      * Specifies the format of the token used for authentication.

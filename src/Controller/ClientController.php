@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 /**
- * This file is part of hf-shield.
+ * This file is part of the hf_shield module, a package build for Hyperf framework that is responsible for OAuth2 authentication and access control.
  *
+ * @author   Joao Zanon <jot@jot.com.br>
  * @link     https://github.com/JotJunior/hf-shield
- * @contact  hf-shield@jot.com.br
  * @license  MIT
  */
 
@@ -18,7 +18,6 @@ use Hyperf\Swagger\Annotation as SA;
 use Jot\HfShield\Annotation\Scope;
 use Jot\HfShield\Entity\Client\Client;
 use Jot\HfShield\Middleware\BearerStrategy;
-use Jot\HfShield\Middleware\SessionStrategy;
 use Jot\HfShield\Repository\ClientRepository;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 
@@ -162,7 +161,7 @@ class ClientController extends AbstractController
     )]
     #[RateLimit(create: 1, capacity: 2)]
     #[Scope(allow: 'oauth:client:list')]
-    #[Middleware(SessionStrategy::class)]
+    #[Middleware(BearerStrategy::class)]
     public function listClients(): PsrResponseInterface
     {
         $repository = $this->container->get(ClientRepository::class);

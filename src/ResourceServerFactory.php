@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 /**
- * This file is part of hf-shield.
+ * This file is part of the hf_shield module, a package build for Hyperf framework that is responsible for OAuth2 authentication and access control.
  *
+ * @author   Joao Zanon <jot@jot.com.br>
  * @link     https://github.com/JotJunior/hf-shield
- * @contact  hf-shield@jot.com.br
  * @license  MIT
  */
 
@@ -44,7 +44,13 @@ class ResourceServerFactory
 
     protected function makeCryptKey(): CryptKey
     {
-        $key = str_replace('\n', "\n", $this->config->get('hf_shield.public_key'));
+        $publicKey = $this->config->get('hf_shield.public_key');
+        if (is_file(BASE_PATH . $publicKey)) {
+            $key = file_get_contents(BASE_PATH . $publicKey);
+        } else {
+            $key = str_replace('\n', "\n", $publicKey);
+        }
+
         return make(CryptKey::class, [
             'keyPath' => $key,
             'passPhrase' => null,

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 /**
- * This file is part of hf-shield.
+ * This file is part of the hf_shield module, a package build for Hyperf framework that is responsible for OAuth2 authentication and access control.
  *
+ * @author   Joao Zanon <jot@jot.com.br>
  * @link     https://github.com/JotJunior/hf-shield
- * @contact  hf-shield@jot.com.br
  * @license  MIT
  */
 return [
@@ -24,6 +24,7 @@ return [
     'field_already_used' => ':label :value já está em uso.',
     'field_not_found' => ':label :value não encontrado.',
     'passwords_must_match' => 'As senhas devem coincidir.',
+    'key_success' => 'Chaves de segurança criadas com sucesso.',
 
     // Form labels and prompts
     'name' => 'Nome',

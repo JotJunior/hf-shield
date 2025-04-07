@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 /**
- * This file is part of hf-shield.
+ * This file is part of the hf_shield module, a package build for Hyperf framework that is responsible for OAuth2 authentication and access control.
  *
+ * @author   Joao Zanon <jot@jot.com.br>
  * @link     https://github.com/JotJunior/hf-shield
- * @contact  hf-shield@jot.com.br
  * @license  MIT
  */
 
@@ -42,23 +42,24 @@ class SessionStrategy extends SessionMiddleware implements MiddlewareInterface
             $container->get(SessionManager::class),
             $container->get(ConfigInterface::class)
         );
+        $this->setEncryptionKey($this->container->get(ConfigInterface::class)->get('hf_shield.encryption_key'));
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $response = parent::process($request, $handler);
 
-        $this->validateBearerStrategy($request, $handler);
-
         $token = $request->getCookieParams()['access_token'] ?? null;
+
         if (! $token) {
             throw new UnauthorizedAccessException();
         }
 
         $token = $this->decrypt($token);
 
-        $request = $request->withAddedHeader('Authorization', sprintf('Bearer %s', $token));
-        $this->validateBearerStrategy($request, $handler);
+        $request = $request->withHeader('Authorization', sprintf('Bearer %s', $token));
+
+        $this->validateBearerStrategy($request);
 
         return $response;
     }

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 /**
- * This file is part of hf-shield.
+ * This file is part of the hf_shield module, a package build for Hyperf framework that is responsible for OAuth2 authentication and access control.
  *
+ * @author   Joao Zanon <jot@jot.com.br>
  * @link     https://github.com/JotJunior/hf-shield
- * @contact  hf-shield@jot.com.br
  * @license  MIT
  */
 
@@ -20,7 +20,6 @@ use Jot\HfShield\Exception\UnauthorizedClientException;
 use Jot\HfShield\Exception\UnauthorizedUserException;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 
 trait BearerTrait
 {
@@ -40,9 +39,8 @@ trait BearerTrait
      * it checks for the presence of required resource scopes and throws an exception if they are missing.
      *
      * @param ServerRequestInterface $request the incoming server request to be validated
-     * @param RequestHandlerInterface $handler the request handler interface instance
      */
-    protected function validateBearerStrategy(ServerRequestInterface $request, RequestHandlerInterface $handler): void
+    protected function validateBearerStrategy(ServerRequestInterface $request): void
     {
         try {
             $this->request = $this->server->validateAuthenticatedRequest($request);
@@ -92,6 +90,7 @@ trait BearerTrait
         }
 
         $userId = $this->request->getAttribute(self::ATTR_USER_ID);
+
         if (! $this->repository->isUserValid($userId, $this->resourceScopes)) {
             throw new UnauthorizedUserException();
         }
@@ -122,6 +121,21 @@ trait BearerTrait
     protected function tokenHasRequiredScopes(): bool
     {
         $tokenScopes = $this->request->getAttribute(self::ATTR_SCOPES);
-        return count(array_intersect($this->resourceScopes, $tokenScopes)) === count($this->resourceScopes);
+
+        foreach ($this->resourceScopes as $resourceScope) {
+            foreach ($tokenScopes as $tokenScope) {
+                $scopeParts = explode(':', $tokenScope);
+
+                if ($scopeParts < 3 && ! str_ends_with($tokenScope, ':')) {
+                    return false;
+                }
+
+                if (str_starts_with($resourceScope, $tokenScope)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

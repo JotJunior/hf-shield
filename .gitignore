@@ -16,3 +16,4 @@ runtime/
 vendor/
 sonar-scan.sh
 .scannerwork
+sonar-project.properties
