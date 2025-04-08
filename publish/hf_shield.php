@@ -1,7 +1,6 @@
 <?php
 
 declare(strict_types=1);
-
 /**
  * This file is part of the hf_shield module, a package build for Hyperf framework that is responsible for OAuth2 authentication and access control.
  *
@@ -9,7 +8,6 @@ declare(strict_types=1);
  * @link     https://github.com/JotJunior/hf-shield
  * @license  MIT
  */
-
 use function Hyperf\Support\env;
 
 return [
@@ -18,7 +16,7 @@ return [
      * Set this to false if the service is not responsible for user authentication.
      * The repositories, validations, and middlewares will still be available for credential checks.
      */
-    'enable_oauth_endpoints' => true,
+    'enable_oauth_endpoints' => env('OAUTH_ENABLE_ENDPOINTS', false),
 
     /*
      * The endpoint api version

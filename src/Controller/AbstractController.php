@@ -20,11 +20,6 @@ use Jot\HfRepository\RepositoryInterface;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\CryptTrait;
 
-#[SA\HyperfServer('http')]
-#[SA\Info(
-    version: '1.0.0',
-    title: 'HfShield'
-)]
 #[SA\SecurityScheme(
     securityScheme: 'shieldBearerAuth',
     type: 'http',
