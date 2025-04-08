@@ -24,6 +24,11 @@ return [
     'api_version' => env('API_VERSION', 'v1'),
 
     /*
+     * API description for swagger home documentation
+     */
+    'api_description' => env('API_DESCRIPTION', ''),
+
+    /*
      * The middleware strategy for request validation (bearer|session|signed_jwt|public)
      */
     'middleware_strategy' => env('OAUTH_MIDDLEWARE_STRATEGY', 'bearer'),

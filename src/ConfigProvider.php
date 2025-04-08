@@ -13,7 +13,6 @@ namespace Jot\HfShield;
 
 use Hyperf\Swagger\HttpServer;
 use Jot\HfRepository\Exception\Handler\ControllerExceptionHandler;
-use Jot\HfRepository\RequiredConfigListener;
 use Jot\HfRepository\Swagger\SwaggerHttpServer;
 use Jot\HfShield\Command\OAuthScopeCommand;
 use Jot\HfShield\Command\OAuthUserCommand;
@@ -62,12 +61,6 @@ class ConfigProvider
                     'description' => 'The config for hf_shield.',
                     'source' => __DIR__ . '/../publish/hf_shield.php',
                     'destination' => BASE_PATH . '/config/autoload/hf_shield.php',
-                ],
-                [
-                    'id' => 'config',
-                    'description' => 'The config for hf_elastic.',
-                    'source' => __DIR__ . '/../publish/hf_elastic.php',
-                    'destination' => BASE_PATH . '/config/autoload/hf_elastic.php',
                 ],
                 [
                     'id' => 'config',
