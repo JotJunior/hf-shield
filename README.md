@@ -1,45 +1,45 @@
 # hf-shield
 
-Um módulo para gerenciamento, validação de autenticação e autorização utilizando OAuth 2.0, com suporte robusto para
-hierarquia de escopos e fluxo de autenticação.
+A module for authentication and authorization management using OAuth 2.0, with robust support for
+scope hierarchy and authentication flow.
 
-## Índice
+## Table of Contents
 
-1. [Introdução](#introdução)
-2. [Instalação](#instalação)
-3. [Configuração](#configuração)
-4. [Traduções](#traduções)
-5. [Definindo as permissões](#definindo-as-permissões)
+1. [Introduction](#introduction)
+2. [Installation](#installation)
+3. [Configuration](#configuration)
+4. [Translations](#translations)
+5. [Defining Permissions](#defining-permissions)
 
 ---
 
-## Introdução
+## Introduction
 
-O **hf-shield** é um módulo projetado para facilitar a implementação de autenticação e controle de acesso baseado em
-escopos. Ele segue as diretrizes do protocolo OAuth 2.0 e é especialmente útil para sistemas distribuídos, multi-tenant
-e APIs que demandam hierarquias complexas de permissões.
+**hf-shield** is a module designed to facilitate the implementation of authentication and scope-based access control.
+It follows the guidelines of the OAuth 2.0 protocol and is especially useful for distributed systems, multi-tenant
+applications, and APIs that require complex permission hierarchies.
 
-Com fluxos customizáveis e validações bem definidas, o **hf-shield** oferece uma maneira segura e escalável de garantir
-o acesso a recursos, com validações focadas em tokens, usuários e clientes.
+With customizable flows and well-defined validations, **hf-shield** offers a secure and scalable way to ensure
+access to resources, with validations focused on tokens, users, and clients.
 
-## Instalação
+## Installation
 
-Certifique-se de que o seu projeto utiliza o PHP 8.2 ou superior para garantir a compatibilidade total.
+Make sure your project uses PHP 8.2 or higher to ensure full compatibility.
 
-Para começar a usar o **hf-shield**, sugerimos primeiro instalar o `hyperf/hyperf-skeleton`.
+To start using **hf-shield**, we suggest first installing `hyperf/hyperf-skeleton`.
 
 ```shell
 composer create-project hyperf/hyperf-skeleton my-project
 ```
 
-Durante a instalação, aceitar os seguintes pacotes:
+During installation, accept the following packages:
 
 - Redis client: `hyperf/redis`
-- Config Center: opção 3 ETCD
+- Config Center: option 3 ETCD
 - AMQP Component `hyperf/amqp`
 - Elasticsearch component `hyperf/elasticsearch`
 
-Após a instalação, entre no diretório do projeto e instale este módulo:
+After installation, navigate to the project directory and install this module:
 
 ```bash
 cd my-project
@@ -48,19 +48,19 @@ composer require jot/hf-shield
 
 ---
 
-## Configuração
+## Configuration
 
-Após instalar o módulo, é necessário configurá-lo. Verifique se todas as dependências estão instaladas em seu ambiente
-antes de iniciar o serviço.
+After installing the module, it needs to be configured. Make sure all dependencies are installed in your environment
+before starting the service.
 
-Você pode levantar seu ambiente de desenvolvimento a partir do [docker-composer](./docker-compose.yml) neste
-repositório.
+You can set up your development environment using the [docker-composer](./docker-compose.yml) in this
+repository.
 
-### Dependências
+### Dependencies
 
 #### ETCD
 
-Após instalação do serviço no seu ambiente, execute o comando abaixo:
+After installing the service in your environment, run the command below:
 
 ```shell
 php bin/hyperf.php vendor:publish hyperf/etcd
@@ -68,13 +68,13 @@ php bin/hyperf.php vendor:publish hyperf/etcd
 
 #### REDIS
 
-Toda a gestão de cache e rate-limit são armazenadas no Redis. Após a instalação do serviço, execute o comando abaixo:
+All cache management and rate-limiting are stored in Redis. After installing the service, run the command below:
 
 ```shell
 php bin/hyperf.php vendor:publish hyperf/redis
 ```
 
-Com a configuração criada, publique as credenciais no ETCD com o seguinte comando:
+With the configuration created, publish the credentials to ETCD with the following command:
 
 ```shell
 php bin/hyperf.php etcd:put redis
@@ -82,13 +82,13 @@ php bin/hyperf.php etcd:put redis
 
 #### ELASTICSEARCH
 
-Esta aplicação foi construída para usar o Elasticsearch como base de dados principal.
+This application was built to use Elasticsearch as the main database.
 
 ```shell
 php bin/hyperf.php vendor:publish jot/hf-elastic
 ```
 
-Após editar o arquivo `.env` com as credenciais necessárias, registre-as no etcd:
+After editing the `.env` file with the necessary credentials, register them in etcd:
 
 ```shell
 php bin/hyperf.php etcd:put hf_elastic
@@ -96,18 +96,17 @@ php bin/hyperf.php etcd:put hf_elastic
 
 #### SWAGGER
 
-Os comandos de geração de código disponibilizados pelo módulo `jot/hf-repository` já criam controladores, entidades e
-repositórios de dados com o básico necessário do Swagger, o que faz com que a aplicação já nasça com suas APIs
-documentadas.
+The code generation commands provided by the `jot/hf-repository` module already create controllers, entities, and
+data repositories with the necessary Swagger basics, which means the application is born with documented APIs.
 
 ```shell
-php bin/hyperf.php vendor:publish hyperf/swagger
+php bin/hyperf.php vendor:publish jot/hf-repository
 ```
 
 #### RATE-LIMIT
 
-Assim como o swagger, o módulo `jot/hf-repository` também implementa a configuração de _throttling_ da aplicação, que
-pode ser configurada globalmente e reimplementada caso a caso nos métodos dos controladores por meio de suas
+Like Swagger, the `jot/hf-repository` module also implements the application's throttling configuration, which
+can be configured globally and reimplemented on a case-by-case basis in controller methods through their
 _annotations_.
 
 ```shell
@@ -116,30 +115,30 @@ php bin/hyperf.php vendor:publish hyperf/rate-limit
 
 #### OAUTH2
 
-E por fim, adicione as configurações para o funcionamento deste módulo:
+Finally, add the configurations for this module to work:
 
 ```shell
 php bin/hyperf.php vendor:publish jot/hf-shield
 ```
 
-**Exemplo de `config/autoload/hf_oauth2.php`:**
+**Example of `config/autoload/hf_shield.php`:**
 
 ```php
 return [
-    'token_format' => 'JWT',            // formato do token. Por padrão, JWT
-    'private_key' => '',                // path ou conteúdo da chave privada
-    'public_key' => '',                 // path ou conteúdo da chave pública 
-    'encryption_key' => '',             // string para criptografia dos dados
-    'token_days' => 'P1D',              // validade do token no padrão DateTimeInterval do php
-    'refresh_token_days' => 'P1M',      // validade do refresh token no padrão DateTimeInterval do php
-    'revoke_user_old_tokens' => true,   // habilita gatilho que revoga os tokens anteriores do usuário/cliente
+    'token_format' => 'JWT',            // token format. By default, JWT
+    'private_key' => '',                // path or content of the private key
+    'public_key' => '',                 // path or content of the public key
+    'encryption_key' => '',             // string for data encryption
+    'token_days' => 'P1D',              // token validity in PHP DateTimeInterval format
+    'refresh_token_days' => 'P1M',      // refresh token validity in PHP DateTimeInterval format
+    'revoke_user_old_tokens' => true,   // enables trigger that revokes previous user/client tokens
 ];
 ```
 
 #### MIGRATIONS
 
-Depois de tudo configurado, é hora de executar as migrations para que os índices necessários para o processo de
-autenticação sejam criados:
+After everything is configured, it's time to run the migrations so that the necessary indices for the authentication
+process are created:
 
 ```shell
 php bin/hyperf.php elastic:migrate
@@ -147,64 +146,66 @@ php bin/hyperf.php elastic:migrate
 
 ---
 
-## Traduções
+## Translations
 
-O **hf-shield** suporta internacionalização (i18n) utilizando o pacote hyperf/translation. Os arquivos de tradução estão localizados em `storage/languages/{locale}/hf-shield.php`.
+**hf-shield** supports internationalization (i18n) using the hyperf/translation package. Translation files are located
+in `storage/languages/{locale}/hf-shield.php`.
 
-Atualmente, o módulo suporta os seguintes idiomas:
+Currently, the module supports the following languages:
 
-- Inglês (en)
-- Português do Brasil (pt_BR)
+- English (en)
+- Brazilian Portuguese (pt_BR)
 
-Para adicionar suporte a um novo idioma, crie um novo arquivo de tradução seguindo o padrão existente.
+To add support for a new language, create a new translation file following the existing pattern.
 
-### Publicando as traduções
+### Publishing Translations
 
-As traduções são publicadas automaticamente quando você executa o comando de publicação do pacote:
+Translations are automatically published when you run the package publish command:
 
 ```shell
-php bin/hyperf.php vendor:publish jot/hf-shield
+php bin/hyperf.php vendor:publish jot/hf-shield 
 ```
 
-### Personalizando as traduções
+Additional packages translations will be automatically published when you publish the `hf-*` package.
 
-Você pode personalizar as traduções editando os arquivos em `storage/languages/{locale}/hf-shield.php`. As chaves de tradução são organizadas nas seguintes categorias:
+eg:
 
-- Mensagens de comando (para CLI)
-- Rótulos e prompts de formulário
-- Mensagens de exceção
+```shell
+php bin/hyperf.php vendor:publish jot/hf-elastic 
+php bin/hyperf.php vendor:publish jot/hf-validator 
+php bin/hyperf.php vendor:publish jot/hf-repository 
+```
+
+### Customizing Translations
+
+You can customize translations by editing the files in `storage/languages/{locale}/messages.php`. Translation keys are
+organized into the following categories:
+
+- Command messages (for CLI)
+- Form labels and prompts
+- Exception messages
 
 ---
 
-## Definindo as permissões
+## Defining Permissions
 
----
+### Scopes
 
-### Hierarquia dos escopos de validação da API
+Scopes are automatically implemented in controllers when created by the repo:controller or repo:crud command,
+but if you are implementing a controller manually, add the following docblock before the desired action:
 
-O diagrama a seguir descreve como a hierarquia de escopos funciona no **hf-shield**:
-
-```mermaid
-flowchart TD
-    tenant[Tenant]
-    client[Client]
-    user[User]
-    token[Token]
-    scope[Scope]
-%% Relações hierárquicas revisadas:
-    tenant -->|Possui um ou mais| client
-    client -->|É usado para criar| token
-    token -->|É criado por| user
-    token -->|Contém escopos autorizados do Client| scope
-    client -->|Vincula escopos considerando o Tenant| scope
-    user -->|Relacionado com escopos do Tenant| scope
+```php
+#[Scope(allow: 'service:resource:permission')]
+public function myAction(string $id): PsrResponseInterface {
+   // ...
+}
 ```
 
-### Regras de nomenclatura dos escopos
+#### Scope Naming Rules
 
-Os escopos devem ser nomeados seguindo o seguinte padrão: `[serviço]:[recurso]:[permissão]`
+Scopes should be named following this pattern: `[service]:[resource]:[permission]`
 
-Exemplos:
+Examples:
 
 ```
 api-events:event:list
@@ -214,37 +215,81 @@ api-shopping:order:update
 api-shopping:order:list
 ```
 
-### Fluxo de autenticação
+To register the scopes in the application, run the command below:
 
-O fluxo de autenticação esperado pelo **hf-shield** é descrito no diagrama abaixo:
+```shell
+php bin/hyperf.php oauth:scope sync
+```
+
+### Token Validation
+
+If you want your action to be protected by token, you must add the middleware with the desired validation strategy:
+
+```php
+#[Middleware(middleware: BearerStragegy::class)]
+```
+
+Currently, there are 3 types of strategies for request validation:
+
+1. **BearerStrategy**, validates the token through the Authorization header: Bearer _{token}_, generated by the `/oauth/token` endpoint.
+2. **SessionStrategy**, validates the token from the access_token cookie, generated by the '/oauth/session' endpoint, which
+   encrypts the token and sends it to the browser cookies.
+3. **SignedJwtStrategy**, validates the token by its signature. In this case, the payload is sent in the JWT and validated by
+   the user's signature.
+
+---
+
+### API Validation Scope Hierarchy
+
+The following diagram describes how the scope hierarchy works in **hf-shield**:
+
+```mermaid
+flowchart TD
+    tenant[Tenant]
+    client[Client]
+    user[User]
+    token[Token]
+    scope[Scope]
+%% Revised hierarchical relationships:
+    tenant -->|Has one or more| client
+    client -->|Is used to create| token
+    token -->|Is created by| user
+    token -->|Contains authorized Client scopes| scope
+    client -->|Links scopes considering the Tenant| scope
+    user -->|Related to Tenant scopes| scope
+```
+
+### Authentication Flow
+
+The authentication flow expected by **hf-shield** is described in the diagram below:
 
 ```mermaid
 flowchart TD
     start((REQUEST))
-    validateToken[Verificar assinatura, validade e metadados do token]
+    validateToken[Verify token signature, validity, and metadata]
     invalidToken[HTTP 401: UnauthorizedAccessException]
-    checkResourceScopes[Verifica se o recurso tem escopos vinculados]
+    checkResourceScopes[Check if the resource has linked scopes]
     missingResourceScope[HTTP 400: MissingResourceScopeException]
-    checkTokenScopes[Verifica se o token possui os escopos necessários]
+    checkTokenScopes[Check if the token has the necessary scopes]
     unauthorizedToken[HTTP 401: UnauthorizedAccessException]
-    validateClient[Verifica se o cliente é válido e ativo]
+    validateClient[Check if the client is valid and active]
     invalidClient[HTTP 401: UnauthorizedClientException]
-    validateUser[Verifica se o Usuário é válido, ativo e possui os escopos necessários]
+    validateUser[Check if the User is valid, active, and has the necessary scopes]
     unauthorizedUser[HTTP 401: UnauthorizedUserException]
-    success[HTTP 200: Usuário pode acessar o recurso desejado]
+    success[HTTP 200: User can access the desired resource]
     response((RESPONSE))
-%% Fluxo principal
+%% Main flow
     start --> validateToken
-    validateToken -->|Válido| checkResourceScopes
-    validateToken -->|Inválido| invalidToken
-    checkResourceScopes -->|Vinculado| checkTokenScopes
-    checkResourceScopes -->|Não Vinculado| missingResourceScope
-    checkTokenScopes -->|Escopos Suficientes| validateClient
-    checkTokenScopes -->|Escopos Insuficientes| unauthorizedToken
-    validateClient -->|Válido| validateUser
-    validateClient -->|Inválido| invalidClient
-    validateUser -->|Inválido| unauthorizedUser
-    validateUser -->|Válido| success
+    validateToken -->|Valid| checkResourceScopes
+    validateToken -->|Invalid| invalidToken
+    checkResourceScopes -->|Linked| checkTokenScopes
+    checkResourceScopes -->|Not Linked| missingResourceScope
+    checkTokenScopes -->|Sufficient Scopes| validateClient
+    checkTokenScopes -->|Insufficient Scopes| unauthorizedToken
+    validateClient -->|Valid| validateUser
+    validateClient -->|Invalid| invalidClient
+    validateUser -->|Invalid| unauthorizedUser
+    validateUser -->|Valid| success
     success --> response
 ```
 

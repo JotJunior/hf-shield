@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Jot\HfShield;
 
-use Hyperf\Contract\ConfigInterface;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event;
@@ -22,12 +21,12 @@ use Symfony\Component\Console\Output\ConsoleOutput;
 class RequiredConfigListener implements ListenerInterface
 {
     private const REQUIRED_PACKAGES = [
-        'hyperf/etcd',
-        'hyperf/redis',
-        'hyperf/rate-limit',
-        'jot/hf-elastic',
-        'jot/hf-repository',
-        'jot/hf-validator',
+        'hyperf/etcd' => ['config/autoload/etcd.php'],
+        'hyperf/redis' => ['config/autoload/redis.php'],
+        'hyperf/rate-limit' => ['config/autoload/rate_limit.php'],
+        'jot/hf-elastic' => ['config/autoload/hf_elastic.php'],
+        'jot/hf-repository' => ['config/autoload/swagger.php', 'storage/languages/en/hf-repository.php'],
+        'jot/hf-validator' => ['storage/languages/en/hf-validator.php'],
     ];
 
     public function __construct(protected ContainerInterface $container)
@@ -46,8 +45,10 @@ class RequiredConfigListener implements ListenerInterface
         $output = new ConsoleOutput();
         $hasMissingRequiredPackages = false;
 
-        foreach (self::REQUIRED_PACKAGES as $package) {
-            $hasMissingRequiredPackages = $this->checkAndReportMissingConfiguration($package, $output, $hasMissingRequiredPackages);
+        foreach (self::REQUIRED_PACKAGES as $package => $files) {
+            foreach ($files as $fileName) {
+                $hasMissingRequiredPackages = $this->checkAndReportMissingConfiguration($package, $fileName, $output, $hasMissingRequiredPackages);
+            }
         }
 
         if ($hasMissingRequiredPackages) {
@@ -56,24 +57,18 @@ class RequiredConfigListener implements ListenerInterface
         }
     }
 
-    private function checkAndReportMissingConfiguration(string $package, ConsoleOutput $output, bool $hasMissingRequiredPackages): bool
+    private function checkAndReportMissingConfiguration(string $package, string $fileName, ConsoleOutput $output, bool $hasMissingRequiredPackages): bool
     {
-        $configService = $this->container->get(ConfigInterface::class);
-        $configName = str_replace('-', '_', explode('/', $package)[1]);
-
-        if (! $configService->get($configName)) {
-            if (! $hasMissingRequiredPackages) {
-                $output->writeln('');
-                $output->writeln(sprintf(
-                    '<options=bold;fg=red>[ERROR]</> The required packages <options=bold>%s</> are not configured. To proceed, please run the following commands before starting the application:',
-                    ucfirst($package)
-                ));
-                $output->writeln('');
-            }
+        if (! file_exists($fileName)) {
+            $output->writeln('');
+            $output->writeln(sprintf(
+                '<options=bold;fg=red>[ERROR]</> The required packages <options=bold>%s</> are not configured. To proceed, please run the following commands before starting the application:',
+                ucfirst($package)
+            ));
+            $output->writeln('');
             $output->writeln(sprintf('    <options=bold>php bin/hyperf.php vendor:publish %s</>', $package));
             return true;
         }
-
         return $hasMissingRequiredPackages;
     }
 }
