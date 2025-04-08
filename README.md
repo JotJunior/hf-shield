@@ -1,3 +1,5 @@
+![hf-shield HyperF security module](docs/hf-shield.png)
+
 # hf-shield
 
 A module for authentication and authorization management using OAuth 2.0, with robust support for
