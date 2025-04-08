@@ -13,6 +13,7 @@ scope hierarchy and authentication flow.
 4. [Translations](#translations)
 5. [Defining Permissions](#defining-permissions)
 6. [Creating migrations](#creating-migrations)
+7. [Code Generators](#code-generators)
 
 ---
 
