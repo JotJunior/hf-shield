@@ -611,7 +611,7 @@ use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
     description: 'Endpoints related to my_users management'
 )]
 #[SA\Schema(
-    schema: 'gk_admin.error.response',
+    schema: 'admin.error.response',
     required: ['result', 'error'],
     properties: [
         new SA\Property(property: 'result', description: self::DESCRIPTION_RESPONSE_ERROR_RESULT, type: 'string', example: 'error'),
@@ -623,13 +623,13 @@ use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 #[Controller(prefix: '/v2')]
 class MyUserController extends AbstractController
 {
-    private const REQUEST_PATH = '/v2/gk_admin/my_users';
+    private const REQUEST_PATH = '/v2/admin/my_users';
 
-    private const REQUEST_PATH_ID = '/v2/gk_admin/my_users/{id}';
+    private const REQUEST_PATH_ID = '/v2/admin/my_users/{id}';
 
     private const RESPONSE_SCHEMA_CONTENT = '#/components/schemas/app.entity.my_user.my_user';
 
-    private const RESPONSE_SCHEMA_ERROR = '#/components/schemas/gk_admin.error.response';
+    private const RESPONSE_SCHEMA_ERROR = '#/components/schemas/admin.error.response';
 
     #[Inject]
     protected MyUserService $service;
@@ -638,7 +638,7 @@ class MyUserController extends AbstractController
         path: self::REQUEST_PATH,
         description: 'Retrieve a list of my_users with optional pagination and filters.',
         summary: 'Get MyUsers List',
-        security: [['shieldBearerAuth' => ['gk_admin:my_user:list']]],
+        security: [['shieldBearerAuth' => ['admin:my_user:list']]],
         tags: ['MyUser'],
         parameters: [
             new SA\Parameter(
@@ -719,7 +719,7 @@ class MyUserController extends AbstractController
         ]
     )]
     #[RateLimit(create: 1, capacity: 10)]
-    #[Scope(allow: 'gk_admin:my_user:list')]
+    #[Scope(allow: 'admin:my_user:list')]
     #[Middleware(middleware: SessionStrategy::class)]
     public function getMyUserList(): PsrResponseInterface
     {
@@ -737,7 +737,7 @@ class MyUserController extends AbstractController
         path: self::REQUEST_PATH_ID,
         description: 'Retrieve the details of a specific my_users identified by ID.',
         summary: 'Get MyUser Data',
-        security: [['shieldBearerAuth' => ['gk_admin:my_user:view']]],
+        security: [['shieldBearerAuth' => ['admin:my_user:view']]],
         tags: ['MyUser'],
         parameters: [
             new SA\Parameter(
@@ -801,7 +801,7 @@ class MyUserController extends AbstractController
         ]
     )]
     #[RateLimit(create: 1, capacity: 10)]
-    #[Scope(allow: 'gk_admin:my_user:view')]
+    #[Scope(allow: 'admin:my_user:view')]
     #[Middleware(middleware: SessionStrategy::class)]
     public function getMyUserData(string $id): PsrResponseInterface
     {
@@ -822,7 +822,7 @@ class MyUserController extends AbstractController
         path: self::REQUEST_PATH,
         description: 'Create a new my_users.',
         summary: 'Create a New MyUser',
-        security: [['shieldBearerAuth' => ['gk_admin:my_user:create']]],
+        security: [['shieldBearerAuth' => ['admin:my_user:create']]],
         requestBody: new SA\RequestBody(
             required: true,
             content: new SA\JsonContent(ref: self::RESPONSE_SCHEMA_CONTENT)
@@ -857,7 +857,7 @@ class MyUserController extends AbstractController
         ]
     )]
     #[RateLimit(create: 1, capacity: 5)]
-    #[Scope(allow: 'gk_admin:my_user:create')]
+    #[Scope(allow: 'admin:my_user:create')]
     #[Middleware(middleware: SessionStrategy::class)]
     public function createMyUser(): PsrResponseInterface
     {
@@ -869,7 +869,7 @@ class MyUserController extends AbstractController
         path: self::REQUEST_PATH_ID,
         description: 'Update the details of an existing my_users.',
         summary: 'Update an existing MyUser',
-        security: [['shieldBearerAuth' => ['gk_admin:my_user:update']]],
+        security: [['shieldBearerAuth' => ['admin:my_user:update']]],
         requestBody: new SA\RequestBody(
             required: true,
             content: new SA\JsonContent(ref: self::RESPONSE_SCHEMA_CONTENT)
@@ -918,7 +918,7 @@ class MyUserController extends AbstractController
         ]
     )]
     #[RateLimit(create: 1, capacity: 2)]
-    #[Scope(allow: 'gk_admin:my_user:update')]
+    #[Scope(allow: 'admin:my_user:update')]
     #[Middleware(middleware: SessionStrategy::class)]
     public function updateMyUser(string $id): PsrResponseInterface
     {
@@ -930,7 +930,7 @@ class MyUserController extends AbstractController
         path: self::REQUEST_PATH_ID,
         description: 'Delete an existing my_users by its unique identifier.',
         summary: 'Delete an existing MyUser',
-        security: [['shieldBearerAuth' => ['gk_admin:my_user:delete']]],
+        security: [['shieldBearerAuth' => ['admin:my_user:delete']]],
         tags: ['MyUser'],
         parameters: [
             new SA\Parameter(
@@ -995,7 +995,7 @@ class MyUserController extends AbstractController
         ]
     )]
     #[RateLimit(create: 1, capacity: 2)]
-    #[Scope(allow: 'gk_admin:my_user:delete')]
+    #[Scope(allow: 'admin:my_user:delete')]
     #[Middleware(middleware: SessionStrategy::class)]
     public function deleteMyUser(string $id): PsrResponseInterface
     {
@@ -1007,7 +1007,7 @@ class MyUserController extends AbstractController
         path: self::REQUEST_PATH_ID,
         description: 'Check if a valid my_users exists by its unique identifier.',
         summary: 'Check my_users',
-        security: [['shieldBearerAuth' => ['gk_admin:my_user:verify']]],
+        security: [['shieldBearerAuth' => ['admin:my_user:verify']]],
         tags: ['MyUser'],
         parameters: [
             new SA\Parameter(
@@ -1052,7 +1052,7 @@ class MyUserController extends AbstractController
         ]
     )]
     #[RateLimit(create: 1, capacity: 5)]
-    #[Scope(allow: 'gk_admin:my_user:verify')]
+    #[Scope(allow: 'admin:my_user:verify')]
     #[Middleware(middleware: SessionStrategy::class)]
     public function verifyMyUser(string $id): PsrResponseInterface
     {
@@ -1060,7 +1060,7 @@ class MyUserController extends AbstractController
         return $this->response->withStatus($exists ? 204 : 404)->raw('');
     }
 
-    #[RequestMapping(path: '/v2/gk_admin/my_users[/[{id}]]', methods: ['OPTIONS'])]
+    #[RequestMapping(path: '/v2/admin/my_users[/[{id}]]', methods: ['OPTIONS'])]
     public function requestOptions(): PsrResponseInterface
     {
         return $this->response
