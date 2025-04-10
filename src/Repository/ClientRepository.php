@@ -44,6 +44,7 @@ class ClientRepository extends AbstractRepository implements ClientRepositoryInt
         $clientEntity->setIdentifier($clientData['id']);
         $clientEntity->setName($clientData['name']);
         $clientEntity->setRedirectUri($clientData['redirect_uri']);
+        $clientEntity->setTenantId($clientData['tenant']['id']);
 
         return $clientEntity;
     }

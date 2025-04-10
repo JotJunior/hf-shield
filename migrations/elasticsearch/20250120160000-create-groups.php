@@ -13,7 +13,7 @@ use Jot\HfElastic\Migration;
 use Jot\HfElastic\Migration\Mapping;
 
 return new class(ApplicationContext::getContainer()) extends Migration {
-    public const INDEX_NAME = 'access_tokens';
+    public const INDEX_NAME = 'users';
 
     public bool $addPrefix = true;
 
@@ -21,36 +21,19 @@ return new class(ApplicationContext::getContainer()) extends Migration {
     {
         $index = new Mapping(name: self::INDEX_NAME);
 
+        // basic user data
         $index->addField('keyword', 'id');
-        $index->addField('date_nanos', 'expiry_date_time');
-
-        $user = new Migration\ElasticType\ObjectType('user');
-        $user->addField('keyword', 'id');
-        $user->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
-        $index->object($user);
-
-        $client = new Migration\ElasticType\ObjectType('client');
-        $client->addField('keyword', 'id');
-        $client->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
-        $client->addField('keyword', 'redirect_uri');
-        $index->object($client);
-
-        $tenant = new Migration\ElasticType\ObjectType('tenant');
-        $tenant->addField('keyword', 'id');
-        $tenant->addField('keyword', 'name');
-        $index->object($tenant);
-
-        $index->addField('boolean', 'confidential');
+        $index->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
+        $index->addField('keyword', 'description');
+        $index->addField('keyword', 'status');
 
         $scopes = new Migration\ElasticType\NestedType('scopes');
         $scopes->addField('keyword', 'id');
         $scopes->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
+        $scopes->addField('keyword', 'tenant_id');
         $index->nested($scopes);
 
-        $index->alias('access_token_id')->path('id');
-        $index->alias('access_token_identifier')->path('id');
-        $index->alias('client_id')->path('client.id');
-        $index->alias('client_identifier')->path('client.id');
+        $index->alias('group_id')->path('id');
         $index->defaults();
 
         $index->settings([

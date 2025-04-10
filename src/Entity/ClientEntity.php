@@ -31,6 +31,8 @@ class ClientEntity implements ClientEntityInterface
 
     protected string $name;
 
+    protected ?string $tenantId = null;
+
     protected array|string $redirectUri;
 
     public function getIdentifier(): string
@@ -62,6 +64,17 @@ class ClientEntity implements ClientEntityInterface
     public function setRedirectUri(array|string $redirectUri): ClientEntity
     {
         $this->redirectUri = $redirectUri;
+        return $this;
+    }
+
+    public function getTenantId(): ?string
+    {
+        return $this->tenantId;
+    }
+
+    public function setTenantId(?string $tenantId): ClientEntity
+    {
+        $this->tenantId = $tenantId;
         return $this;
     }
 }

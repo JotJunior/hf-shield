@@ -27,32 +27,24 @@ return new class(ApplicationContext::getContainer()) extends Migration {
         $index->addField('keyword', 'email');
         $index->addField('keyword', 'phone');
         $index->addField('keyword', 'federal_document');
+        $index->addField('keyword', 'document_type');
         $index->addField('keyword', 'picture');
         $index->addField('keyword', 'password_salt');
         $index->addField('keyword', 'password');
         $index->addField('keyword', 'status');
         $index->addField('text', 'custom_settings');
 
-        // user tenant
-        $tenant = new Migration\ElasticType\NestedType('tenant');
+        $tenant = new Migration\ElasticType\NestedType('tenants');
         $tenant->addField('keyword', 'id');
         $tenant->addField('keyword', 'name');
-        $index->nested($tenant);
 
-        // oauth client
-        $client = new Migration\ElasticType\ObjectType('client');
-        $client->addField('keyword', 'id');
-        $client->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
-        $index->object($client);
-
-        // enabled scopes
         $scopes = new Migration\ElasticType\NestedType('scopes');
         $scopes->addField('keyword', 'id');
         $scopes->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
         $scopes->addField('keyword', 'tenant_id');
-        $index->nested($scopes);
+        $tenant->nested($scopes);
+        $index->nested($tenant);
 
-        $index->alias('client_id')->path('client.id');
         $index->alias('user_id')->path('id');
         $index->defaults();
 

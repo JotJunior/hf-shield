@@ -9,25 +9,25 @@ declare(strict_types=1);
  * @license  MIT
  */
 
-namespace Jot\HfShield\Entity\User;
+namespace Jot\HfShield\Dto\OAuth\User;
 
-use Hyperf\Swagger\Annotation as SA;
 use Jot\HfRepository\Entity;
 
-#[SA\Schema(schema: 'jot.hf-shield.entity.user.client')]
-class Client extends Entity
+class UserSessionDto extends Entity
 {
-    #[SA\Property(
-        property: 'id',
-        type: 'string',
-        example: ''
-    )]
+    protected ?string $email = null;
+
+    protected ?string $federalDocument = null;
+
     protected ?string $id = null;
 
-    #[SA\Property(
-        property: 'name',
-        type: 'string',
-        example: ''
-    )]
     protected ?string $name = null;
+
+    protected ?string $phone = null;
+
+    protected ?string $picture = null;
+
+    protected ?array $scopes = null;
+
+    protected ?string $status = null;
 }

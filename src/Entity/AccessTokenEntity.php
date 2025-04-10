@@ -26,19 +26,6 @@ class AccessTokenEntity implements AccessTokenEntityInterface
     use TokenEntityTrait;
     use EntityTrait;
 
-    protected ?Tenant $tenant = null;
-
-    public function setTenant(Tenant $tenant): self
-    {
-        $this->tenant = $tenant;
-        return $this;
-    }
-
-    public function getTenant(): ?Tenant
-    {
-        return $this->tenant;
-    }
-
     /**
      * Generates a JSON Web Token (JWT) using the current configuration and contextual data.
      *
@@ -55,7 +42,7 @@ class AccessTokenEntity implements AccessTokenEntityInterface
             ->canOnlyBeUsedAfter(new DateTimeImmutable())
             ->expiresAt($this->getExpiryDateTime())
             ->relatedTo($this->getSubjectIdentifier())
-            ->withClaim('tenant', Str::uuid()->toString())
+            ->withClaim('tnt', $this->getClient()?->getTenantId())
             ->withClaim('scopes', $this->getScopes())
             ->getToken($this->jwtConfiguration->signer(), $this->jwtConfiguration->signingKey());
     }

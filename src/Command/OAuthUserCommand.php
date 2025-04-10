@@ -30,6 +30,8 @@ class OAuthUserCommand extends AbstractCommand
     #[Inject]
     protected UserRepository $repository;
 
+    protected bool $force = false;
+
     public function __construct(protected ContainerInterface $container)
     {
         parent::__construct('oauth:user');
@@ -65,20 +67,27 @@ class OAuthUserCommand extends AbstractCommand
         }
     }
 
-    protected function scopes()
+    protected function scopes(): void
     {
+
+        $tenant = $this->selectTenant();
         $username = $this->ask(__('hf-shield.username') . ':');
         $user = $this->repository->first(['email' => $username]);
 
         if (empty($user)) {
             $this->failed(__('hf-shield.user_not_found'));
-            return;
+            exit(1);
         }
 
         $scopes = [];
         foreach ($this->repository->retrieveScopeList()['data'] as $scope) {
-            $selected = $this->ask(sprintf(__('hf-shield.add_scope_prompt'), $scope['name']), 'n');
-            if ($selected === 'y') {
+            if (! $this->force) {
+                $selected = $this->ask(sprintf(__('hf-shield.add_scope_prompt'), $scope['name']), 'n');
+            }
+            if (in_array(strtolower($selected), ['a', 't'])) {
+                $this->force = true;
+            }
+            if ($selected !== 'n' || $this->force) {
                 $scopes[] = [
                     'id' => $scope['id'],
                     'name' => $scope['name'],
@@ -92,7 +101,7 @@ class OAuthUserCommand extends AbstractCommand
         }
 
         try {
-            $result = $this->repository->updateScopes($user, $scopes)->toArray();
+            $result = $this->repository->updateScopes($user, $tenant, $scopes)->toArray();
         } catch (RepositoryUpdateException $th) {
             $this->failed($th->getMessage());
             return;
@@ -101,7 +110,7 @@ class OAuthUserCommand extends AbstractCommand
             return;
         }
         $this->success(__('hf-shield.all_scopes_updated_successfully'));
-        foreach ($result['scopes'] as $scope) {
+        foreach ($result['tenants'][0]['scopes'] as $scope) {
             $this->success('  <fg=#FFCC00>%s</> [%s]', [$scope['name'], $scope['id']]);
         }
     }
@@ -109,7 +118,6 @@ class OAuthUserCommand extends AbstractCommand
     protected function create(): void
     {
         $tenant = $this->selectTenant();
-        $client = $this->selectClient($tenant);
         $name = $this->ask(__('hf-shield.name') . ': <fg=yellow>(*)</>');
         $email = $this->retryIf('exists', __('hf-shield.email'), 'email', ['tenant.id' => $tenant]);
         $phone = $this->retryIf('exists', __('hf-shield.phone'), 'phone', ['tenant.id' => $tenant]);
@@ -127,14 +135,15 @@ class OAuthUserCommand extends AbstractCommand
             'name' => $name,
             'email' => $email,
             'phone' => $phone,
-            'tenant' => ['id' => $tenant],
+            'tenants' => [
+                [
+                    'id' => $tenant,
+                ],
+            ],
             'federal_document' => $federalDocument,
             'password' => $password,
             'status' => 'active',
         ];
-        if ($client) {
-            $payload['client'] = ['id' => $client];
-        }
         $data = make(User::class, [
             'data' => $payload,
         ]);

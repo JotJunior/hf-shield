@@ -12,12 +12,14 @@ declare(strict_types=1);
 namespace Jot\HfShield\Controller;
 
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\GetMapping;
 use Hyperf\HttpServer\Annotation\Middleware;
 use Hyperf\RateLimit\Annotation\RateLimit;
 use Hyperf\Swagger\Annotation as SA;
 use Jot\HfShield\Annotation\Scope;
 use Jot\HfShield\Entity\User\User;
 use Jot\HfShield\Middleware\BearerStrategy;
+use Jot\HfShield\Middleware\SessionStrategy;
 use Jot\HfShield\Repository\UserRepository;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 
@@ -77,6 +79,17 @@ class UserController extends AbstractController
         $user = make(User::class, ['data' => $userData]);
 
         return $this->saveUser($user);
+    }
+
+    #[GetMapping(path: '/oauth/users/me')]
+    #[Scope(allow: 'oauth:user:create')]
+    #[Middleware(SessionStrategy::class)]
+    #[RateLimit(create: 1, capacity: 10)]
+    public function userSessionData(): PsrResponseInterface
+    {
+        return $this->response->json(
+            $this->request->getAttribute('oauth_session_user')
+        );
     }
 
     #[SA\Put(

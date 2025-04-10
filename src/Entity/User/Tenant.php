@@ -14,7 +14,7 @@ namespace Jot\HfShield\Entity\User;
 use Hyperf\Swagger\Annotation as SA;
 use Jot\HfRepository\Entity;
 
-#[SA\Schema(schema: 'jot.hf-shield.entity.user.tenant')]
+#[SA\Schema(schema: 'jot.shield.entity.user.tenant')]
 class Tenant extends Entity
 {
     #[SA\Property(
@@ -30,4 +30,12 @@ class Tenant extends Entity
         example: ''
     )]
     protected ?string $name = null;
+
+    #[SA\Property(
+        property: 'scopes',
+        type: 'array',
+        items: new SA\Items(ref: '#/components/schemas/jot.shield.entity.user.scope'),
+        x: ['php_type' => '\Jot\HfShield\Entity\User\Scope[]']
+    )]
+    protected ?array $scopes = null;
 }

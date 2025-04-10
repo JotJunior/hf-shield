@@ -38,7 +38,7 @@ return [
     'tenant_id' => 'ID do Tenant',
     'username' => 'Nome de usuário',
     'description' => 'Descrição',
-    'add_scope_prompt' => 'Adicionar escopo :scope? (s/n)',
+    'add_scope_prompt' => 'Adicionar escopo :scope? (s/n/t)',
     'pick_a_number' => 'Escolha um número',
     'client_list_prompt' => 'ID do Cliente: (*) [ENTER para pular ou digite "-" para obter a lista de clientes]',
     'tenant_list_prompt' => 'ID do Tenant: (*) [Digite "-" para obter a lista de tenants]',

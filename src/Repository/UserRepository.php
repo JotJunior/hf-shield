@@ -89,19 +89,28 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
      *
      * @throws RepositoryUpdateException
      */
-    public function updateScopes(EntityInterface $user, array $scopes): EntityInterface
+    public function updateScopes(EntityInterface $user, string $tenantId, array $scopes): EntityInterface
     {
         $userData = $user->toArray();
+        $tenantScopes = [];
+        foreach ($userData['tenants'] ?? [] as $tenant) {
+            if ($tenant['id'] == $tenantId) {
+                $tenantScopes = $tenant['scopes'] ?? [];
+            }
+        }
+
         $scopes
             = array_values(
                 array_unique(
-                    array_merge($scopes, $userData['scopes'] ?? []),
+                    array_merge($scopes, $tenantScopes ?? []),
                     SORT_REGULAR
                 )
             );
         $user = make(User::class, ['data' => [
             'id' => $user->getId(),
-            'scopes' => $scopes,
+            'tenants' => [
+                ['id' => $tenantId, 'scopes' => $scopes],
+            ],
         ]]);
         $user
             ->setEntityState(Entity::STATE_UPDATE)
@@ -130,6 +139,7 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
      * If validation fails, an exception containing validation errors will be thrown.
      *
      * @param EntityInterface $user the user entity to be validated
+     * @throws EntityValidationWithErrorsException
      */
     private function validateUser(EntityInterface $user): void
     {
@@ -152,4 +162,5 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
             encryptionKey: $encryptionKey
         );
     }
+
 }

@@ -85,15 +85,20 @@ trait BearerTrait
             throw new UnauthorizedAccessException();
         }
 
-        if (! $this->repository->isClientValid($this->request->getAttribute(self::ATTR_CLIENT_ID))) {
+        $client = $this->repository->isClientValid(
+            $this->request->getAttribute(self::ATTR_CLIENT_ID)
+        );
+        if (! $client) {
             throw new UnauthorizedClientException();
         }
 
         $userId = $this->request->getAttribute(self::ATTR_USER_ID);
 
-        if (! $this->repository->isUserValid($userId, $this->resourceScopes)) {
+        if (! $this->repository->isUserValid($userId, $client['tenant']['id'], $this->resourceScopes)) {
             throw new UnauthorizedUserException();
         }
+
+        $this->request->withAttribute('oauth_user_session', $this->repository->getUserSessionData($userId));
     }
 
     /**

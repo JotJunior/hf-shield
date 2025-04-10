@@ -38,7 +38,7 @@ return [
     'tenant_id' => 'Tenant ID',
     'username' => 'Username',
     'description' => 'Description',
-    'add_scope_prompt' => 'Add scope :scope? (y/n)',
+    'add_scope_prompt' => 'Add scope :scope? (y/n/a)',
     'pick_a_number' => 'Pick a number',
     'client_list_prompt' => 'Client ID: (*) [ENTER to skip or type "-" for get the client list]',
     'tenant_list_prompt' => 'Tenant ID: (*) [Type "-" for get the tenant list]',

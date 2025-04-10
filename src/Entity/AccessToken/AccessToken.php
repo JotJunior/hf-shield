@@ -17,7 +17,7 @@ use Jot\HfRepository\Entity;
 use Jot\HfRepository\Entity\Traits\HasLogicRemovalTrait as HasLogicRemoval;
 use Jot\HfRepository\Entity\Traits\HasTimestampsTrait as HasTimestamps;
 
-#[SA\Schema(schema: 'jot.shield.entity.accesstoken.access_token')]
+#[SA\Schema(schema: 'jot.shield.entity.access_token.access_token')]
 class AccessToken extends Entity
 {
     use HasLogicRemoval;
@@ -33,7 +33,7 @@ class AccessToken extends Entity
 
     #[SA\Property(
         property: 'client',
-        ref: '#/components/schemas/jot.shield.entity.accesstoken.client',
+        ref: '#/components/schemas/jot.shield.entity.access_token.client',
         x: ['php_type' => '\Jot\HfShield\Entity\AccessToken\Client']
     )]
     protected ?Client $client = null;
@@ -81,7 +81,7 @@ class AccessToken extends Entity
     #[SA\Property(
         property: 'scopes',
         type: 'array',
-        items: new SA\Items(ref: '#/components/schemas/jot.shield.entity.accesstoken.scope'),
+        items: new SA\Items(ref: '#/components/schemas/jot.shield.entity.access_token.scope'),
         x: ['php_type' => '\Jot\HfShield\Entity\AccessToken\Scope[]']
     )]
     protected ?array $scopes = null;
@@ -97,8 +97,15 @@ class AccessToken extends Entity
 
     #[SA\Property(
         property: 'user',
-        ref: '#/components/schemas/jot.shield.entity.accesstoken.user',
+        ref: '#/components/schemas/jot.shield.entity.access_token.user',
         x: ['php_type' => '\Jot\HfShield\Entity\AccessToken\User']
     )]
     protected ?User $user = null;
+
+    #[SA\Property(
+        property: 'tenant',
+        ref: '#/components/schemas/jot.shield.entity.access_token.tenant',
+        x: ['php_type' => '\Jot\HfShield\Entity\AccessToken\Tenant']
+    )]
+    protected ?Tenant $tenant = null;
 }

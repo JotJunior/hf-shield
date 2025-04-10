@@ -12,9 +12,6 @@ declare(strict_types=1);
 namespace Jot\HfShield\Middleware;
 
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Contract\SessionInterface;
-use Hyperf\Session\Middleware\SessionMiddleware;
-use Hyperf\Session\SessionManager;
 use Jot\HfShield\Exception\UnauthorizedAccessException;
 use Jot\HfShield\Repository\AccessTokenRepository;
 use League\OAuth2\Server\CryptTrait;
@@ -25,7 +22,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-class SessionStrategy extends SessionMiddleware implements MiddlewareInterface
+class SessionStrategy implements MiddlewareInterface
 {
     use BearerTrait;
     use CryptTrait;
@@ -35,21 +32,15 @@ class SessionStrategy extends SessionMiddleware implements MiddlewareInterface
         protected ResourceServer $server,
         protected AccessTokenRepository $repository,
         protected ServerRequestInterface $request,
-        protected SessionInterface $session,
         protected array $resourceScopes = []
     ) {
-        parent::__construct(
-            $container->get(SessionManager::class),
-            $container->get(ConfigInterface::class)
-        );
         $this->setEncryptionKey($this->container->get(ConfigInterface::class)->get('hf_shield.encryption_key'));
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $response = parent::process($request, $handler);
-
         $token = $request->getCookieParams()['access_token'] ?? null;
+
 
         if (! $token) {
             throw new UnauthorizedAccessException();
@@ -61,6 +52,14 @@ class SessionStrategy extends SessionMiddleware implements MiddlewareInterface
 
         $this->validateBearerStrategy($request);
 
-        return $response;
+        $userId = $this->request->getAttribute(self::ATTR_USER_ID);
+        $userSession = $this->repository->getUserSessionData($userId);
+
+        return $handler->handle(
+            $this->request->withAttribute(
+                'oauth_session_user',
+                $userSession
+            )
+        );
     }
 }

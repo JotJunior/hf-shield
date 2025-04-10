@@ -78,4 +78,18 @@ return [
      * Revokes all active tokens of the user that were created under the same client ID.
      */
     'revoke_user_old_tokens' => env('OAUTH_REVOKE_USER_OLD_TOKENS', true),
+
+    /*
+     * S3 bucket configuration
+     */
+    's3_bucket_url' => env('S3_BUCKET_URL', ''),
+
+    's3_bucket_name' => env('S3_BUCKET_NAME', ''),
+
+    's3_bucket_region' => env('S3_BUCKET_REGION', ''),
+
+    's3_bucket_access_key' => env('S3_BUCKET_ACCESS_KEY', ''),
+
+    's3_bucket_secret_key' => env('S3_BUCKET_SECRET_KEY', ''),
+
 ];

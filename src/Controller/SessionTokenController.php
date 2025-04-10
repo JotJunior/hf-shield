@@ -12,10 +12,9 @@ declare(strict_types=1);
 namespace Jot\HfShield\Controller;
 
 use Hyperf\HttpMessage\Cookie\Cookie;
-use Hyperf\HttpMessage\Stream\SwooleStream;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\GetMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use Hyperf\HttpServer\Contract\ResponseInterface;
 use Hyperf\RateLimit\Annotation\RateLimit;
 use Hyperf\Swagger\Annotation as SA;
 use Jot\HfShield\Exception\UnauthorizedSessionException;
@@ -54,36 +53,13 @@ class SessionTokenController extends AbstractController
 {
     use CryptTrait;
 
+    private const AUTH_ERROR_RESPONSE_SCHEMA = '#/components/schemas/jot.hf-shield.auth-error.response';
+
+    private const AUTH_TOKEN_RESPONSE_SCHEMA = '#/components/schemas/oauth.access-token.response';
+
+    private const AUTH_TOKEN_REQUEST_SCHEMA = '#/components/schemas/oauth.access-token.request';
+
     protected string $repository = AccessTokenRepository::class;
-
-    #[GetMapping(path: '/oauth/session')]
-    public function form()
-    {
-        $content = <<<'HTML'
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blank Page</title>
-</head>
-<body>
-
-<form action="/oauth/session" method="post">
-    <input type="text" name="username" placeholder="Username" value="jot@jot.com.br" required>
-    <input type="password" name="password" placeholder="Password" value="A!b2C#d4" required>
-    <input type="hidden" name="client_id" value="0d010942-8e9e-49ef-a4a1-1a7f9f32b95c">
-    <input type="hidden" name="client_secret" value="a0b95ccf-24f3-40d2-9e25-1697aff8e4a3">
-    <input type="hidden" name="grant_type" value="YOUR_GRANT_TYPE">
-    <input type="hidden" name="scopes" value="YOUR_SCOPES">
-    <button type="submit">Submit</button>
-</form>
-
-</body>
-</html>
-HTML;
-        return $this->response->withStatus(200)->withBody(new SwooleStream($content));
-    }
 
     #[SA\Post(
         path: '/oauth/session',
@@ -91,29 +67,29 @@ HTML;
         summary: 'Create a new user token',
         requestBody: new SA\RequestBody(
             required: true,
-            content: new SA\JsonContent(ref: '#/components/schemas/oauth.access-token.request')
+            content: new SA\JsonContent(ref: self::AUTH_TOKEN_REQUEST_SCHEMA)
         ),
         tags: ['JWT Access token'],
         responses: [
             new SA\Response(
                 response: 200,
                 description: 'Access token created',
-                content: new SA\JsonContent(ref: '#/components/schemas/oauth.access-token.response')
+                content: new SA\JsonContent(ref: self::AUTH_TOKEN_RESPONSE_SCHEMA)
             ),
             new SA\Response(
                 response: 400,
                 description: 'Bad request',
-                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.auth-error.response')
+                content: new SA\JsonContent(ref: self::AUTH_ERROR_RESPONSE_SCHEMA)
             ),
             new SA\Response(
                 response: 401,
                 description: 'Unauthorized access',
-                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.auth-error.response')
+                content: new SA\JsonContent(ref: self::AUTH_ERROR_RESPONSE_SCHEMA)
             ),
             new SA\Response(
                 response: 500,
                 description: 'Application error',
-                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.auth-error.response')
+                content: new SA\JsonContent(ref: self::AUTH_ERROR_RESPONSE_SCHEMA)
             ),
         ]
     )]
@@ -139,6 +115,42 @@ HTML;
         return $response
             ->withAddedHeader('Set-Cookie', (string) $cookie)
             ->redirect($sessionConfig['redirect_uri']);
+    }
+
+
+    #[SA\Post(
+        path: '/oauth/logout',
+        description: 'Remove the session cookie.',
+        summary: 'Remove the user session cookie',
+        requestBody: null,
+        tags: ['Session cookie'],
+        responses: [
+            new SA\Response(
+                response: 200,
+                description: 'Session logged out',
+                content: new SA\JsonContent(ref: self::AUTH_TOKEN_RESPONSE_SCHEMA)
+            ),
+            new SA\Response(
+                response: 400,
+                description: 'Bad request',
+                content: new SA\JsonContent(ref: self::AUTH_ERROR_RESPONSE_SCHEMA)
+            ),
+            new SA\Response(
+                response: 500,
+                description: 'Application error',
+                content: new SA\JsonContent(ref: self::AUTH_ERROR_RESPONSE_SCHEMA)
+            ),
+        ]
+    )]
+    #[RateLimit(create: 1, capacity: 2)]
+    public function logout(RequestInterface $request): PsrResponseInterface
+    {
+        $sessionConfig = $this->configService->get('hf_session');
+        $response = $this->container->get(ResponseInterface::class);
+        $cookie = $this->buildAccessTokenCookie('revoked', -1);
+        return $response
+            ->withAddedHeader('Set-Cookie', (string) $cookie)
+            ->redirect($sessionConfig['redirect_login']);
     }
 
     /**
