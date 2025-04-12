@@ -69,7 +69,6 @@ class OAuthUserCommand extends AbstractCommand
 
     protected function scopes(): void
     {
-
         $tenant = $this->selectTenant();
         $username = $this->ask(__('hf-shield.username') . ':');
         $user = $this->repository->first(['email' => $username]);
@@ -79,6 +78,8 @@ class OAuthUserCommand extends AbstractCommand
             exit(1);
         }
 
+        $this->repository->retrieveTenantList();
+
         $scopes = [];
         foreach ($this->repository->retrieveScopeList()['data'] as $scope) {
             if (! $this->force) {
@@ -87,10 +88,14 @@ class OAuthUserCommand extends AbstractCommand
             if (in_array(strtolower($selected), ['a', 't'])) {
                 $this->force = true;
             }
-            if ($selected !== 'n' || $this->force) {
+            $parts = explode(':', $scope['id']);
+            if ($selected !== 'n' || $this->force && ! empty($parts[2])) {
                 $scopes[] = [
                     'id' => $scope['id'],
                     'name' => $scope['name'],
+                    'domain' => $scope['domain'],
+                    'resource' => $scope['resource'],
+                    'action' => $scope['action'],
                 ];
             }
         }

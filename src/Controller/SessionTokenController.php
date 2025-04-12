@@ -117,7 +117,6 @@ class SessionTokenController extends AbstractController
             ->redirect($sessionConfig['redirect_uri']);
     }
 
-
     #[SA\Post(
         path: '/oauth/logout',
         description: 'Remove the session cookie.',

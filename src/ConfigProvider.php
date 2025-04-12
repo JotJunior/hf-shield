@@ -11,15 +11,29 @@ declare(strict_types=1);
 
 namespace Jot\HfShield;
 
+use Hyperf\Cache\AnnotationManager;
+use Hyperf\Contract\ConfigInterface;
+use Hyperf\Contract\ContainerInterface;
 use Hyperf\Swagger\HttpServer;
+use Jot\HfElastic\ClientBuilder;
 use Jot\HfRepository\Exception\Handler\ControllerExceptionHandler;
 use Jot\HfRepository\Swagger\SwaggerHttpServer;
+use Jot\HfShield\Command\OAuthKeyPairsCommand;
 use Jot\HfShield\Command\OAuthScopeCommand;
 use Jot\HfShield\Command\OAuthUserCommand;
+use Jot\HfShield\Command\SetupLoggerCommand;
 use Jot\HfShield\Exception\Handler\AuthExceptionHandler;
+use Jot\HfShield\Helper\CacheAnnotationManagerWrapper;
+use Jot\HfShield\Helper\ShieldElasticsearchFormatter;
 use Jot\HfValidator\BootValidatorsListener;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\ResourceServer;
+use Monolog\Formatter\ElasticsearchFormatter;
+use Monolog\Handler\ElasticsearchHandler;
+use Monolog\Level;
+use stdClass;
+
+use function Hyperf\Support\env;
 
 class ConfigProvider
 {
@@ -42,16 +56,147 @@ class ConfigProvider
                 HttpServer::class => SwaggerHttpServer::class,
                 AuthorizationServer::class => AuthorizationServerFactory::class,
                 ResourceServer::class => ResourceServerFactory::class,
+                AnnotationManager::class => CacheAnnotationManagerWrapper::class,
+                ElasticsearchHandler::class => function (ContainerInterface $container) {
+                    $client = $container->get(ClientBuilder::class)->build();
+                    return new ElasticsearchHandler(
+                        client: $client,
+                        options: [
+                            'op_type' => 'create',
+                        ],
+                        level: Level::Info,
+                        bubble: true,
+                    );
+                },
+                ElasticsearchFormatter::class => function (ContainerInterface $container) {
+                    $indexPrefix = $container->get(ConfigInterface::class)->get('hf_elastic.prefix');
+                    return new ShieldElasticsearchFormatter(index: sprintf('%s-hf-shield-logs', $indexPrefix), type: '_doc');
+                },
             ],
             'commands' => [
+                OAuthKeyPairsCommand::class,
                 OAuthScopeCommand::class,
                 OAuthUserCommand::class,
+                SetupLoggerCommand::class,
             ],
             'exceptions' => [
                 'handler' => [
                     'http' => [
                         AuthExceptionHandler::class,
                         ControllerExceptionHandler::class,
+                    ],
+                ],
+            ],
+            'logger' => [
+                'elastic' => [
+                    'handler' => [
+                        'class' => ElasticsearchHandler::class,
+                        'constructor' => [],
+                    ],
+                    'formatter' => [
+                        'class' => ElasticsearchFormatter::class,
+                        'constructor' => [],
+                    ],
+                ],
+            ],
+            'hf_elastic' => [
+                'data_stream' => [
+                    'name' => 'hf-shield-log-template',
+                    'body' => [
+                        'index_patterns' => ['hf-shield-logs*'],
+                        'data_stream' => new stdClass(),
+                        'template' => [
+                            'settings' => [
+                                'number_of_shards' => env('ELASTICSEARCH_SHARDS', 3),
+                                'number_of_replicas' => env('ELASTICSEARCH_REPLICAS', 1),
+                                'mode' => 'logsdb',
+                            ],
+                            'mappings' => [
+                                'properties' => [
+                                    '@timestamp' => [
+                                        'type' => 'date_nanos',
+                                    ],
+                                    'datetime' => [
+                                        'type' => 'date',
+                                        'format' => 'strict_date_optional_time||epoch_millis',
+                                    ],
+                                    'channel' => [
+                                        'type' => 'keyword',
+                                    ],
+                                    'level' => [
+                                        'type' => 'integer',
+                                    ],
+                                    'level_name' => [
+                                        'type' => 'keyword',
+                                    ],
+                                    'message' => [
+                                        'type' => 'text',
+                                    ],
+                                    'context' => [
+                                        'type' => 'object',
+                                        'dynamic' => true,
+                                    ],
+                                    'extra' => [
+                                        'type' => 'object',
+                                        'dynamic' => true,
+                                    ],
+                                    'tenant_id' => [
+                                        'type' => 'keyword',
+                                    ],
+                                    'request' => [
+                                        'properties' => [
+                                            'request_method' => [
+                                                'type' => 'keyword',
+                                            ],
+                                            'request_uri' => [
+                                                'type' => 'keyword',
+                                            ],
+                                            'path_info' => [
+                                                'type' => 'keyword',
+                                            ],
+                                            'request_time' => [
+                                                'type' => 'long',
+                                            ],
+                                            'request_time_float' => [
+                                                'type' => 'double',
+                                            ],
+                                            'server_protocol' => [
+                                                'type' => 'keyword',
+                                            ],
+                                            'server_port' => [
+                                                'type' => 'long',
+                                            ],
+                                            'remote_port' => [
+                                                'type' => 'long',
+                                            ],
+                                            'remote_addr' => [
+                                                'type' => 'ip',
+                                            ],
+                                            'master_time' => [
+                                                'type' => 'long',
+                                            ],
+                                        ],
+                                    ],
+                                    'user' => [
+                                        'properties' => [
+                                            'id' => [
+                                                'type' => 'keyword',
+                                            ],
+                                            'name' => [
+                                                'type' => 'keyword',
+                                            ],
+                                            'picture' => [
+                                                'type' => 'keyword',
+                                            ],
+                                        ],
+                                    ],
+                                ],
+                            ],
+                            'lifecycle' => [
+                                'enabled' => env('ELASTICSEARCH_LOGGER_LIFECYCLE', true),
+                                'data_retention' => env('ELASTICSEARCH_LOGGER_RETENTION', '7d'),
+                            ],
+                        ],
                     ],
                 ],
             ],

@@ -49,4 +49,20 @@ return [
     'unauthorized_user' => 'Usuário não autorizado',
     'unauthorized_session' => 'Acesso não autorizado. Por favor, verifique sua configuração de sessão.',
     'missing_resource_scope' => 'Nenhum escopo de autorização foi registrado para este recurso. Por favor, verifique sua configuração.',
+
+    // logger setup
+    'no_data_stream_configured' => 'Nenhum data stream configurado. Por favor, verifique sua configuração.',
+    'logger_setup_successfully' => 'Configuração do logger concluída com sucesso.',
+
+    // Messages
+    'session_actions' => [
+        'list' => 'listou',
+        'view' => 'visualizou',
+        'create' => 'criou',
+        'update' => 'alterou',
+        'delete' => 'deletou',
+        'verify' => 'verificou',
+        'read' => 'leu',
+    ],
+
 ];

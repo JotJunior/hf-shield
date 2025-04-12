@@ -12,8 +12,6 @@ declare(strict_types=1);
 namespace Jot\HfShield\Entity;
 
 use DateTimeImmutable;
-use Hyperf\Stringable\Str;
-use Jot\HfShield\Entity\AccessToken\Tenant;
 use Lcobucci\JWT\Token;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\Traits\AccessTokenTrait;

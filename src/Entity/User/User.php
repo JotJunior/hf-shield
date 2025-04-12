@@ -17,6 +17,7 @@ use Hyperf\Swagger\Annotation as SA;
 use Jot\HfRepository\Entity;
 use Jot\HfRepository\Entity\Traits\HasLogicRemovalTrait as HasLogicRemoval;
 use Jot\HfRepository\Entity\Traits\HasTimestampsTrait as HasTimestamps;
+use Jot\HfValidator\Annotation as VA;
 
 #[SA\Schema(schema: 'jot.shield.entity.user.user')]
 class User extends Entity
@@ -52,6 +53,9 @@ class User extends Entity
         type: 'string',
         example: ''
     )]
+    #[VA\Email]
+    #[VA\Required(onUpdate: false)]
+    #[VA\Unique(index: 'users', field: 'email')]
     protected ?string $email = null;
 
     #[SA\Property(
@@ -59,6 +63,8 @@ class User extends Entity
         type: 'string',
         example: ''
     )]
+    #[VA\Required(onUpdate: false)]
+    #[VA\Unique(index: 'users', field: 'federal_document')]
     protected ?string $federalDocument = null;
 
     #[SA\Property(
@@ -67,6 +73,7 @@ class User extends Entity
         enum: ['CPF', 'RG', 'Passport', 'IE', 'Other'],
         example: 'CPF'
     )]
+    #[VA\Required(onUpdate: false)]
     protected ?string $documentType = null;
 
     #[SA\Property(
@@ -82,6 +89,7 @@ class User extends Entity
         type: 'string',
         example: ''
     )]
+    #[VA\Required(onUpdate: false)]
     protected ?string $name = null;
 
     #[SA\Property(
@@ -89,6 +97,8 @@ class User extends Entity
         type: 'string',
         example: ''
     )]
+    #[VA\Required(onUpdate: false)]
+    #[VA\Password]
     protected ?string $password = null;
 
     #[SA\Property(
@@ -103,6 +113,7 @@ class User extends Entity
         type: 'string',
         example: ''
     )]
+    #[VA\Unique(index: 'users', field: 'phone')]
     protected ?string $phone = null;
 
     #[SA\Property(
@@ -110,6 +121,7 @@ class User extends Entity
         type: 'string',
         example: ''
     )]
+    #[VA\Url]
     protected ?string $picture = null;
 
     #[SA\Property(
@@ -117,6 +129,7 @@ class User extends Entity
         type: 'string',
         example: ''
     )]
+    #[VA\Enum(values: ['active', 'inactive', 'pending'])]
     protected ?string $status = null;
 
     #[SA\Property(

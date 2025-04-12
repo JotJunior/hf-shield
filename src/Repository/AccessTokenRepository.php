@@ -120,6 +120,7 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
      * @return bool returns true if the user is valid, false otherwise
      * @throws ReflectionException
      */
+    #[Cacheable(prefix: 'scope-validated-user', ttl: 120)]
     public function isUserValid(string $userId, string $tenantId, array|string $scope): bool
     {
         $query = $this->queryBuilder
@@ -205,7 +206,11 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
                     'tenants',
                     fn ($query) => $query
                         ->where('tenants.id', $tenantId)
-                        ->whereNested('tenants.scopes', fn ($query) => $query->where('tenants.scopes.id', $item))
+                        ->whereNested(
+                            'tenants.scopes',
+                            fn ($query) => $query->orWhere('tenants.scopes.id', $item)
+                                ->orWhere('tenants.scopes.id', 'root:all:all')
+                        )
                 );
             }
         } else {
@@ -213,7 +218,11 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
                 'tenants',
                 fn ($query) => $query
                     ->where('tenants.id', $tenantId)
-                    ->whereNested('tenants.scopes', fn ($query) => $query->where('tenants.scopes.id', $scope))
+                    ->whereNested(
+                        'tenants.scopes',
+                        fn ($query) => $query->orWhere('tenants.scopes.id', $scope)
+                            ->orWhere('tenants.scopes.id', 'root:all:all')
+                    )
             );
         }
     }

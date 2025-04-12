@@ -32,6 +32,27 @@ class Scope extends Entity
     protected ?string $name = null;
 
     #[SA\Property(
+        property: 'domain',
+        type: 'string',
+        example: ''
+    )]
+    protected ?string $domain = null;
+
+    #[SA\Property(
+        property: 'resource',
+        type: 'string',
+        example: ''
+    )]
+    protected ?string $resource = null;
+
+    #[SA\Property(
+        property: 'action',
+        type: 'string',
+        example: ''
+    )]
+    protected ?string $action = null;
+
+    #[SA\Property(
         property: 'tenant_id',
         description: 'An alias of tenant id',
         type: 'string',

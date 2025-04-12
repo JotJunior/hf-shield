@@ -92,24 +92,19 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
     public function updateScopes(EntityInterface $user, string $tenantId, array $scopes): EntityInterface
     {
         $userData = $user->toArray();
-        $tenantScopes = [];
-        foreach ($userData['tenants'] ?? [] as $tenant) {
-            if ($tenant['id'] == $tenantId) {
-                $tenantScopes = $tenant['scopes'] ?? [];
-            }
-        }
 
-        $scopes
-            = array_values(
-                array_unique(
-                    array_merge($scopes, $tenantScopes ?? []),
-                    SORT_REGULAR
-                )
-            );
+        $this->resetTenantScopes($user, $tenantId);
+
+        $tenant = current($this->getTenantPairs($tenantId)['data']);
+
         $user = make(User::class, ['data' => [
             'id' => $user->getId(),
             'tenants' => [
-                ['id' => $tenantId, 'scopes' => $scopes],
+                [
+                    'id' => $tenant['id'],
+                    'name' => $tenant['name'],
+                    'scopes' => $scopes,
+                ],
             ],
         ]]);
         $user
@@ -163,4 +158,24 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
         );
     }
 
+    /**
+     * Resets the scopes for a specific tenant within the user's tenant data by
+     * setting the scopes for the given tenant ID to null.
+     *
+     * @param EntityInterface $user the user entity whose tenant scopes need to be reset
+     * @param string $tenantId the identifier of the tenant whose scopes should be reset
+     *
+     * @throws RepositoryUpdateException
+     */
+    private function resetTenantScopes(EntityInterface $user, string $tenantId): void
+    {
+        $userData = $user->toArray();
+        $userData['tenants'] = null;
+
+        $user = make($user::class, ['data' => $userData]);
+        $this->queryBuilder->from('users')->update(
+            $userData['id'],
+            $userData
+        );
+    }
 }

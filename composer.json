@@ -36,7 +36,8 @@
     "ext-openssl": "*",
     "hyperf/translation": "^3.1",
     "hyperf/logger": "^3.1",
-    "aws/aws-sdk-php": "^3.342"
+    "aws/aws-sdk-php": "^3.342",
+    "hyperf/cache": "^3.1"
   },
   "extra": {
     "hyperf": {

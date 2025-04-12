@@ -13,6 +13,7 @@ namespace Jot\HfShield\Middleware;
 
 use Hyperf\HttpServer\Router\Dispatched;
 use Hyperf\HttpServer\Router\Handler;
+use Hyperf\Stringable\Str;
 use Jot\HfShield\AllowedScopes;
 use Jot\HfShield\Exception\MissingResourceScopeException;
 use Jot\HfShield\Exception\UnauthorizedAccessException;
@@ -20,6 +21,8 @@ use Jot\HfShield\Exception\UnauthorizedClientException;
 use Jot\HfShield\Exception\UnauthorizedUserException;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ServerRequestInterface;
+
+use function Hyperf\Translation\__;
 
 trait BearerTrait
 {
@@ -30,6 +33,55 @@ trait BearerTrait
     public const ATTR_USER_ID = 'oauth_user_id';
 
     public const ATTR_SCOPES = 'oauth_scopes';
+
+    /**
+     * Generates a descriptive message based on the provided content and the current resource scope.
+     *
+     * This method constructs a message that describes the user's action, such as creating or performing
+     * other operations on a resource. The generated message dynamically incorporates the user's name,
+     * the action performed, the type of resource, and the resource's name, depending on the context.
+     *
+     * @param array $content An associative array containing details about the user, resource, and context.
+     *                       Expected keys include:
+     *                       - 'user' => ['name'] (string): The name of the user performing the action.
+     *                       - 'context' => ['request' => ['body' => ['name']]] (string): The name of the resource.
+     * @return string a string message describing the user action on the resource
+     */
+    public function generateMessage($content): string
+    {
+        $scope = current($this->resourceScopes);
+        $parts = explode(':', $scope);
+
+        $domain = $parts[0];
+        $resource = Str::singular($parts[1]);
+        $resources = Str::plural($parts[1]);
+        $action = $parts[2] ?? '';
+        $module = str_replace('_', '-', $domain);
+
+        // Recupera os valores do array com valores padrão
+        $user = $content['user']['name'] ?? 'Usuário desconhecido';
+        $action = $action ? __(sprintf('hf-shield.session_actions.%s', $action)) : '';
+        $resourceType = $resource ? __(sprintf('%s.scopes.%s', $module, $resource)) : '';
+        $pluralResourceType = __(sprintf('%s.scopes.%s', $module, $resources));
+        $resourceName = $content['request']['body']['name'] ?? '';
+
+        // Define a mensagem baseada na ação
+        if ($parts[2] === 'create') {
+            $message = sprintf("%s criou um novo %s chamado '%s'.", $user, $resourceType, $resourceName);
+        } elseif ($parts[2] === 'list') {
+            $message = sprintf('%s visualizou uma lista de %s.', $user, $pluralResourceType);
+        } elseif ($parts[2] === 'pairs') {
+            $message = sprintf('O sistema carregou uma lista de %s.', $pluralResourceType);
+        } elseif ($parts[2] === 'session') {
+            $message = sprintf('O sistema carregou os dados de %s.', $user);
+        } elseif (empty($resourceName)) {
+            $message = sprintf('%s %s um %s.', $user, $action, $resourceType);
+        } else {
+            $message = sprintf("%s %s o %s '%s'.", $user, $action, $resourceType, $resourceName);
+        }
+
+        return $message;
+    }
 
     /**
      * Validates the bearer authentication strategy for the incoming request and ensures the presence of required scopes.
@@ -142,5 +194,34 @@ trait BearerTrait
         }
 
         return false;
+    }
+
+    /**
+     * Collects and structures metadata including user details, server parameters, and request data.
+     *
+     * This method organizes metadata into a structured array containing information about the user,
+     * server parameters, and request specifics. It also generates an additional message based on the
+     * collected metadata.
+     *
+     * @return array an associative array containing organized metadata
+     */
+    protected function collectMetadata(): array
+    {
+        $metadata = [
+            'user' => [
+                'id' => $this->user['id'] ?? null,
+                'name' => $this->user['name'] ?? null,
+                'picture' => $this->user['picture'] ?? null,
+            ],
+            'server_params' => $this->request->getServerParams(),
+            'request' => [
+                'query' => $this->request->getQueryParams(),
+                'body' => json_decode($this->request->getBody()->getContents(), true),
+            ],
+        ];
+
+        $metadata['message'] = $this->generateMessage($metadata);
+
+        return $metadata;
     }
 }

@@ -38,7 +38,16 @@ class AbstractRepository extends Repository
             ->select(['id', 'name'])
             ->from('tenants')
             ->orderBy('name')
-            ->limit(1000)
+            ->limit(10000)
+            ->execute();
+    }
+
+    public function getTenantPairs(string $id): array
+    {
+        return $this->queryBuilder
+            ->select()
+            ->from('tenants')
+            ->where('id', $id)
             ->execute();
     }
 
@@ -65,7 +74,7 @@ class AbstractRepository extends Repository
     public function retrieveScopeList(): array
     {
         return $this->queryBuilder
-            ->select(['id', 'name'])
+            ->select(['id', 'name', 'domain', 'resource', 'action'])
             ->from('scopes')
             ->orderBy('name')
             ->limit(1000)

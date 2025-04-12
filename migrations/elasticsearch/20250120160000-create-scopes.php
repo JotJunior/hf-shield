@@ -23,6 +23,9 @@ return new class(ApplicationContext::getContainer()) extends Migration {
 
         $index->addField('keyword', 'id');
         $index->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
+        $index->addField('keyword', 'domain');
+        $index->addField('keyword', 'resource');
+        $index->addField('keyword', 'action');
         $index->alias('scope_id')->path('id');
         $index->defaults();
 

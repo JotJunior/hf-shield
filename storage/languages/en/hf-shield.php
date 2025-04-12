@@ -49,4 +49,19 @@ return [
     'unauthorized_user' => 'Unauthorized User',
     'unauthorized_session' => 'Unauthorized access. Please check your session configuration.',
     'missing_resource_scope' => 'No authorization scopes have been registered for this resource. Please verify your configuration.',
+
+    // logger setup
+    'no_data_stream_configured' => 'No data stream configured. Please verify your configuration.',
+    'logger_setup_successfully' => 'Logger setup successfully.',
+
+    // Messages
+    'session_actions' => [
+        'list' => 'listed',
+        'view' => 'viewed',
+        'create' => 'created',
+        'update' => 'updated',
+        'delete' => 'deleted',
+        'verify' => 'verified',
+        'read' => 'read',
+    ],
 ];

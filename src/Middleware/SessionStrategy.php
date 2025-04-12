@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Jot\HfShield\Middleware;
 
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Logger\LoggerFactory;
 use Jot\HfShield\Exception\UnauthorizedAccessException;
 use Jot\HfShield\Repository\AccessTokenRepository;
 use League\OAuth2\Server\CryptTrait;
@@ -21,28 +22,37 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Psr\Log\LoggerInterface;
 
 class SessionStrategy implements MiddlewareInterface
 {
     use BearerTrait;
     use CryptTrait;
 
+    protected array $user = [];
+
+    protected ?string $tokenId = null;
+
+    protected LoggerInterface $logger;
+
     public function __construct(
         protected ContainerInterface $container,
         protected ResourceServer $server,
         protected AccessTokenRepository $repository,
         protected ServerRequestInterface $request,
+        protected LoggerFactory $loggerFactory,
         protected array $resourceScopes = []
     ) {
         $this->setEncryptionKey($this->container->get(ConfigInterface::class)->get('hf_shield.encryption_key'));
+        $this->logger = $this->loggerFactory->get('session', 'elastic');
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $token = $request->getCookieParams()['access_token'] ?? null;
 
-
         if (! $token) {
+            $this->logger->warning('Access token not found in cookie');
             throw new UnauthorizedAccessException();
         }
 
@@ -52,13 +62,16 @@ class SessionStrategy implements MiddlewareInterface
 
         $this->validateBearerStrategy($request);
 
-        $userId = $this->request->getAttribute(self::ATTR_USER_ID);
-        $userSession = $this->repository->getUserSessionData($userId);
+        $this->user = $this->repository->getUserSessionData($this->request->getAttribute(self::ATTR_USER_ID));
+        $this->tokenId = $this->request->getAttribute(self::ATTR_ACCESS_TOKEN_ID);
+
+        $metadata = $this->collectMetadata();
+        $this->logger->info(message: $metadata['message'], context: $metadata);
 
         return $handler->handle(
             $this->request->withAttribute(
                 'oauth_session_user',
-                $userSession
+                $this->user
             )
         );
     }

@@ -22,5 +22,4 @@ class PublicStrategy implements MiddlewareInterface
     {
         return $handler->handle($request);
     }
-
 }

@@ -91,5 +91,4 @@ return [
     's3_bucket_access_key' => env('S3_BUCKET_ACCESS_KEY', ''),
 
     's3_bucket_secret_key' => env('S3_BUCKET_SECRET_KEY', ''),
-
 ];

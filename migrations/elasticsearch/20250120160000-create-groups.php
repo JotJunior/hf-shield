@@ -13,7 +13,7 @@ use Jot\HfElastic\Migration;
 use Jot\HfElastic\Migration\Mapping;
 
 return new class(ApplicationContext::getContainer()) extends Migration {
-    public const INDEX_NAME = 'users';
+    public const INDEX_NAME = 'groups';
 
     public bool $addPrefix = true;
 
@@ -29,8 +29,10 @@ return new class(ApplicationContext::getContainer()) extends Migration {
 
         $scopes = new Migration\ElasticType\NestedType('scopes');
         $scopes->addField('keyword', 'id');
-        $scopes->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
-        $scopes->addField('keyword', 'tenant_id');
+        $scopes->addField('keyword', 'name');
+        $scopes->addField('keyword', 'domain');
+        $scopes->addField('keyword', 'resource');
+        $scopes->addField('keyword', 'action');
         $index->nested($scopes);
 
         $index->alias('group_id')->path('id');

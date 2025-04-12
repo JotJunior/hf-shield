@@ -41,7 +41,9 @@ return new class(ApplicationContext::getContainer()) extends Migration {
         $scopes = new Migration\ElasticType\NestedType('scopes');
         $scopes->addField('keyword', 'id');
         $scopes->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
-        $scopes->addField('keyword', 'tenant_id');
+        $scopes->addField('keyword', 'domain');
+        $scopes->addField('keyword', 'resource');
+        $scopes->addField('keyword', 'action');
         $tenant->nested($scopes);
         $index->nested($tenant);
 
