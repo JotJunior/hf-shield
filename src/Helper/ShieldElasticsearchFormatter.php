@@ -18,9 +18,15 @@ class ShieldElasticsearchFormatter extends ElasticsearchFormatter
     protected function getDocument(array $record): array
     {
         $record['@timestamp'] = $record['datetime'];
-        $record['server_params'] = $record['context']['server_params'];
-        $record['user'] = $record['context']['user'];
-        unset($record['context']['server_params'], $record['context']['user'], $record['context']['message']);
+        $record['server_params'] = $record['context']['server_params'] ?? null;
+        $record['user'] = $record['context']['user'] ?? null;
+        $record['access'] = $record['context']['access'] ?? null;
+        unset(
+            $record['context']['server_params'],
+            $record['context']['user'],
+            $record['context']['message'],
+            $record['context']['access']
+        );
 
         return parent::getDocument($record);
     }

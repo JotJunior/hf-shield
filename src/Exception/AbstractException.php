@@ -13,16 +13,18 @@ namespace Jot\HfShield\Exception;
 
 use RuntimeException;
 
-use function Hyperf\Translation\__;
-
-
-class MissingResourceScopeException extends AbstractException
+class AbstractException extends RuntimeException
 {
-    public function __construct(array $metadata = [])
+    protected array $metadata = [];
+
+    public function getMetadata(): array
+    {
+        return $this->metadata;
+    }
+
+    public function setMetadata(array $metadata): self
     {
         $this->metadata = $metadata;
-        $this->message = __('hf-shield.missing_resource_scope');
-        $this->code = 401;
-        parent::__construct($this->message, $this->code);
+        return $this;
     }
 }

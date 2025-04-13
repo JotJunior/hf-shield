@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Jot\HfShield\Middleware;
 
+use Exception;
 use Hyperf\HttpServer\Router\Dispatched;
 use Hyperf\HttpServer\Router\Handler;
 use Hyperf\Stringable\Str;
@@ -34,6 +35,12 @@ trait BearerTrait
 
     public const ATTR_SCOPES = 'oauth_scopes';
 
+    protected array $oauthClient = [];
+
+    protected array $oauthUser = [];
+
+    protected ?string $oauthTokenId = null;
+
     /**
      * Generates a descriptive message based on the provided content and the current resource scope.
      *
@@ -47,37 +54,38 @@ trait BearerTrait
      *                       - 'context' => ['request' => ['body' => ['name']]] (string): The name of the resource.
      * @return string a string message describing the user action on the resource
      */
-    public function generateMessage($content): string
+    public function generateMessage(array $content): string
     {
         $scope = current($this->resourceScopes);
+        if (empty($scope)) {
+            return '';
+        }
         $parts = explode(':', $scope);
 
-        $domain = $parts[0];
         $resource = Str::singular($parts[1]);
         $resources = Str::plural($parts[1]);
         $action = $parts[2] ?? '';
-        $module = str_replace('_', '-', $domain);
 
         // Recupera os valores do array com valores padrão
         $user = $content['user']['name'] ?? 'Usuário desconhecido';
         $action = $action ? __(sprintf('hf-shield.session_actions.%s', $action)) : '';
-        $resourceType = $resource ? __(sprintf('%s.scopes.%s', $module, $resource)) : '';
-        $pluralResourceType = __(sprintf('%s.scopes.%s', $module, $resources));
+        $resourceType = $resource ? __(sprintf('messages.scopes.%s', $resource)) : '';
+        $pluralResourceType = __(sprintf('messages.scopes.%s', $resources));
         $resourceName = $content['request']['body']['name'] ?? '';
 
         // Define a mensagem baseada na ação
         if ($parts[2] === 'create') {
-            $message = sprintf("%s criou um novo %s chamado '%s'.", $user, $resourceType, $resourceName);
+            $message = __('hf-shield.log_messages.user_create_new', ['resource' => $resourceType, 'name' => $resourceName]);
         } elseif ($parts[2] === 'list') {
-            $message = sprintf('%s visualizou uma lista de %s.', $user, $pluralResourceType);
+            $message = __('hf-shield.log_messages.user_list_resources', ['resources' => $pluralResourceType]);
         } elseif ($parts[2] === 'pairs') {
-            $message = sprintf('O sistema carregou uma lista de %s.', $pluralResourceType);
+            $message = __('hf-shield.log_messages.system_list_resources', ['resources' => $pluralResourceType]);
         } elseif ($parts[2] === 'session') {
-            $message = sprintf('O sistema carregou os dados de %s.', $user);
+            $message = __('hf-shield.log_messages.system_view_user', ['user' => $user]);
         } elseif (empty($resourceName)) {
-            $message = sprintf('%s %s um %s.', $user, $action, $resourceType);
+            $message = __('hf-shield.log_messages.user_action_resource', ['action' => $action, 'resource' => $resourceType]);
         } else {
-            $message = sprintf("%s %s o %s '%s'.", $user, $action, $resourceType, $resourceName);
+            $message = __('hf-shield.log_messages.user_action_resource_name', ['action' => $action, 'resource' => $resourceType, 'name' => $resourceName]);
         }
 
         return $message;
@@ -97,14 +105,52 @@ trait BearerTrait
         try {
             $this->request = $this->server->validateAuthenticatedRequest($request);
         } catch (OAuthServerException $e) {
-            throw new UnauthorizedAccessException();
+            throw new UnauthorizedAccessException($this->collectMetadata());
         }
 
         $this->collectResourceScopes();
         if (empty($this->resourceScopes)) {
+            $this->logger->error('Missing resource scope', $this->collectMetadata());
             throw new MissingResourceScopeException();
         }
         $this->validateRequestAttributes();
+    }
+
+    /**
+     * Collects and structures metadata including user details, server parameters, and request data.
+     *
+     * This method organizes metadata into a structured array containing information about the user,
+     * server parameters, and request specifics. It also generates an additional message based on the
+     * collected metadata.
+     *
+     * @return array an associative array containing organized metadata
+     */
+    protected function collectMetadata(): array
+    {
+        $this->oauthTokenId = $this->request->getAttribute(self::ATTR_ACCESS_TOKEN_ID);
+
+        $metadata = [
+            'user' => [
+                'id' => $this->oauthUser['id'] ?? null,
+                'name' => $this->oauthUser['name'] ?? null,
+                'picture' => $this->oauthUser['picture'] ?? null,
+            ],
+            'access' => [
+                'token' => $this->oauthTokenId ?? null,
+                'client' => $this->oauthClient['id'] ?? null,
+                'tenant' => $this->oauthClient['tenant']['id'] ?? null,
+                'scopes' => $this->request->getAttribute(self::ATTR_SCOPES) ?? null,
+            ],
+            'server_params' => $this->request->getServerParams(),
+            'request' => [
+                'query' => $this->request->getQueryParams(),
+                'body' => json_decode($this->request->getBody()->getContents(), true),
+            ],
+        ];
+
+        $metadata['message'] = $this->generateMessage($metadata);
+
+        return $metadata;
     }
 
     /**
@@ -134,23 +180,25 @@ trait BearerTrait
         $this->assertRequestAttribute(self::ATTR_ACCESS_TOKEN_ID, UnauthorizedAccessException::class);
 
         if (! $this->tokenHasRequiredScopes()) {
-            throw new UnauthorizedAccessException();
+            throw new UnauthorizedAccessException($this->collectMetadata());
         }
 
         $client = $this->repository->isClientValid(
             $this->request->getAttribute(self::ATTR_CLIENT_ID)
         );
         if (! $client) {
-            throw new UnauthorizedClientException();
+            throw new UnauthorizedClientException($this->collectMetadata());
         }
+        $this->oauthClient = $client;
 
         $userId = $this->request->getAttribute(self::ATTR_USER_ID);
 
         if (! $this->repository->isUserValid($userId, $client['tenant']['id'], $this->resourceScopes)) {
-            throw new UnauthorizedUserException();
+            throw new UnauthorizedUserException($this->collectMetadata());
         }
+        $this->oauthUser = $this->repository->getUserSessionData($userId);
 
-        $this->request->withAttribute('oauth_user_session', $this->repository->getUserSessionData($userId));
+        $this->request->withAttribute('oauth_user_session', $this->oauthUser);
     }
 
     /**
@@ -163,7 +211,7 @@ trait BearerTrait
     protected function assertRequestAttribute(string $attributeName, string $exceptionClass): void
     {
         if (empty($this->request->getAttribute($attributeName))) {
-            throw new $exceptionClass();
+            throw new $exceptionClass($this->collectMetadata());
         }
     }
 
@@ -196,32 +244,9 @@ trait BearerTrait
         return false;
     }
 
-    /**
-     * Collects and structures metadata including user details, server parameters, and request data.
-     *
-     * This method organizes metadata into a structured array containing information about the user,
-     * server parameters, and request specifics. It also generates an additional message based on the
-     * collected metadata.
-     *
-     * @return array an associative array containing organized metadata
-     */
-    protected function collectMetadata(): array
+    protected function logRequest(): void
     {
-        $metadata = [
-            'user' => [
-                'id' => $this->user['id'] ?? null,
-                'name' => $this->user['name'] ?? null,
-                'picture' => $this->user['picture'] ?? null,
-            ],
-            'server_params' => $this->request->getServerParams(),
-            'request' => [
-                'query' => $this->request->getQueryParams(),
-                'body' => json_decode($this->request->getBody()->getContents(), true),
-            ],
-        ];
-
-        $metadata['message'] = $this->generateMessage($metadata);
-
-        return $metadata;
+        $metadata = $this->collectMetadata();
+        $this->logger->info(message: $metadata['message'], context: $metadata);
     }
 }

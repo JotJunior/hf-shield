@@ -65,6 +65,7 @@ class User extends Entity
     )]
     #[VA\Required(onUpdate: false)]
     #[VA\Unique(index: 'users', field: 'federal_document')]
+    #[VA\CPF]
     protected ?string $federalDocument = null;
 
     #[SA\Property(
@@ -90,6 +91,7 @@ class User extends Entity
         example: ''
     )]
     #[VA\Required(onUpdate: false)]
+    #[VA\StringLength(min: 3, max: 100)]
     protected ?string $name = null;
 
     #[SA\Property(

@@ -29,9 +29,6 @@ class SessionStrategy implements MiddlewareInterface
     use BearerTrait;
     use CryptTrait;
 
-    protected array $user = [];
-
-    protected ?string $tokenId = null;
 
     protected LoggerInterface $logger;
 
@@ -52,7 +49,7 @@ class SessionStrategy implements MiddlewareInterface
         $token = $request->getCookieParams()['access_token'] ?? null;
 
         if (! $token) {
-            $this->logger->warning('Access token not found in cookie');
+            $this->logger->warning('Access token not found in cookie', $this->collectMetadata());
             throw new UnauthorizedAccessException();
         }
 
@@ -62,16 +59,12 @@ class SessionStrategy implements MiddlewareInterface
 
         $this->validateBearerStrategy($request);
 
-        $this->user = $this->repository->getUserSessionData($this->request->getAttribute(self::ATTR_USER_ID));
-        $this->tokenId = $this->request->getAttribute(self::ATTR_ACCESS_TOKEN_ID);
-
-        $metadata = $this->collectMetadata();
-        $this->logger->info(message: $metadata['message'], context: $metadata);
+        $this->logRequest();
 
         return $handler->handle(
             $this->request->withAttribute(
                 'oauth_session_user',
-                $this->user
+                $this->oauthUser
             )
         );
     }

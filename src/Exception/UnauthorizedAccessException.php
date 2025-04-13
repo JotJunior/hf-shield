@@ -15,10 +15,11 @@ use RuntimeException;
 
 use function Hyperf\Translation\__;
 
-class UnauthorizedAccessException extends RuntimeException
+class UnauthorizedAccessException extends AbstractException
 {
-    public function __construct()
+    public function __construct(array $metadata = [])
     {
+        $this->metadata = $metadata;
         $this->message = __('hf-shield.unauthorized_access');
         $this->code = 401;
 

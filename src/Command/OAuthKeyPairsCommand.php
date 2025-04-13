@@ -56,9 +56,9 @@ class OAuthKeyPairsCommand extends AbstractCommand
     public function configure(): void
     {
         parent::configure();
-        $this->setDescription('Create an OAuth token encryption key pairs');
-        $this->addOption('force', 'F', InputArgument::OPTIONAL, 'Replace current keys', false);
-        $this->addOption('keys-path', 'P', InputArgument::OPTIONAL, 'Destination keys directory', BASE_PATH . '/storage/keys');
+        $this->setDescription(__('hf-shield.create_key_pairs_description'));
+        $this->addOption('force', 'F', InputArgument::OPTIONAL, __('hf-shield.force'), false);
+        $this->addOption('keys-path', 'P', InputArgument::OPTIONAL, __('hf-shield.keys_path'), BASE_PATH . '/storage/keys');
         $this->configureUsageExamples();
     }
 
@@ -76,7 +76,7 @@ class OAuthKeyPairsCommand extends AbstractCommand
 
         $this->generateKeyPair($keysPath);
 
-        $this->success(__('key_success'));
+        $this->success(__('hf-shield.key_success'));
     }
 
     /**
@@ -122,10 +122,10 @@ class OAuthKeyPairsCommand extends AbstractCommand
     private function confirmOverwrite(): bool
     {
         $response = $this->ask(
-            'Keys already exist, overwrite? [y/n]',
+            __('hf-shield.key_exists'),
             self::USER_PROMPT_DEFAULT
         );
-        return $response === self::USER_PROMPT_CONFIRM;
+        return in_array($response, ['y', 'Y', 's', 'S']);
     }
 
     /**

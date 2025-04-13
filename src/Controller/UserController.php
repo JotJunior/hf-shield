@@ -82,7 +82,7 @@ class UserController extends AbstractController
     }
 
     #[GetMapping(path: '/oauth/users/me')]
-    #[Scope(allow: 'oauth:user:create')]
+    #[Scope(allow: 'oauth:user:view')]
     #[Middleware(SessionStrategy::class)]
     #[RateLimit(create: 1, capacity: 10)]
     public function userSessionData(): PsrResponseInterface

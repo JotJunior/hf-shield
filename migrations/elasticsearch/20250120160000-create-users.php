@@ -24,6 +24,7 @@ return new class(ApplicationContext::getContainer()) extends Migration {
         // basic user data
         $index->addField('keyword', 'id');
         $index->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
+        $index->addField('keyword', 'language');
         $index->addField('keyword', 'email');
         $index->addField('keyword', 'phone');
         $index->addField('keyword', 'federal_document');
@@ -45,6 +46,12 @@ return new class(ApplicationContext::getContainer()) extends Migration {
         $scopes->addField('keyword', 'resource');
         $scopes->addField('keyword', 'action');
         $tenant->nested($scopes);
+
+        $groups = new Migration\ElasticType\NestedType('groups');
+        $groups->addField('keyword', 'id');
+        $groups->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
+        $tenant->nested($groups);
+
         $index->nested($tenant);
 
         $index->alias('user_id')->path('id');

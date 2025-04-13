@@ -91,12 +91,8 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
      */
     public function updateScopes(EntityInterface $user, string $tenantId, array $scopes): EntityInterface
     {
-        $userData = $user->toArray();
-
         $this->resetTenantScopes($user, $tenantId);
-
         $tenant = current($this->getTenantPairs($tenantId)['data']);
-
         $user = make(User::class, ['data' => [
             'id' => $user->getId(),
             'tenants' => [
@@ -111,6 +107,76 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
             ->setEntityState(Entity::STATE_UPDATE)
             ->hide(['password', 'password_salt']);
         return $this->update($user);
+    }
+
+    /**
+     * Resets the scopes for a specific tenant within the user's tenant data by
+     * setting the scopes for the given tenant ID to null.
+     *
+     * @param EntityInterface $user the user entity whose tenant scopes need to be reset
+     * @param string $tenantId the identifier of the tenant whose scopes should be reset
+     *
+     * @throws RepositoryUpdateException
+     */
+    public function resetTenantScopes(EntityInterface $user, ?string $tenantId = null): void
+    {
+        $userData = $user->toArray();
+        $userData['tenants'] = null;
+
+        $this->queryBuilder
+            ->from('users')
+            ->update(
+                $userData['id'],
+                $userData
+            );
+    }
+
+    public function update(EntityInterface $entity): EntityInterface
+    {
+        $entity->setEntityState(Entity::STATE_UPDATE);
+        $this->validateUser($entity);
+
+        $this->resetTenantScopes($entity);
+        $this->mergeScopes($entity);
+
+        if ($entity->getPassword()) {
+            $encryptionKey = $this->config['encryption_key'];
+            $entity->addSalt();
+            $this->hashUserPassword($entity, $encryptionKey);
+        }
+
+        return parent::update($entity);
+    }
+
+    /**
+     * Merges scopes into a user's tenant data by aggregating scopes from associated groups
+     * and ensures uniqueness. Updates the user entity with the modified data.
+     *
+     * @param EntityInterface $user the user entity whose tenant scopes need to be merged
+     */
+    public function mergeScopes(EntityInterface $user): void
+    {
+        $userData = $user->toArray();
+        $tenants = [];
+        foreach ($userData['tenants'] ?? [] as $tenant) {
+            foreach ($tenant['groups'] ?? [] as $group) {
+                $groupData = $this->queryBuilder
+                    ->select()
+                    ->from('groups')
+                    ->where('id', $group['id'])
+                    ->execute();
+
+                foreach ($groupData['data'][0]['scopes'] ?? [] as $scope) {
+                    $tenant['scopes'][] = $scope;
+                }
+                $tenant['scopes'] = array_values(
+                    array_unique($tenant['scopes'], SORT_REGULAR)
+                );
+            }
+            $tenants[] = $tenant;
+        }
+        $userData['tenants'] = $tenants;
+        $user->hydrate($userData);
     }
 
     /**
@@ -155,27 +221,6 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
             property: 'password',
             salt: $user->getPasswordSalt(),
             encryptionKey: $encryptionKey
-        );
-    }
-
-    /**
-     * Resets the scopes for a specific tenant within the user's tenant data by
-     * setting the scopes for the given tenant ID to null.
-     *
-     * @param EntityInterface $user the user entity whose tenant scopes need to be reset
-     * @param string $tenantId the identifier of the tenant whose scopes should be reset
-     *
-     * @throws RepositoryUpdateException
-     */
-    private function resetTenantScopes(EntityInterface $user, string $tenantId): void
-    {
-        $userData = $user->toArray();
-        $userData['tenants'] = null;
-
-        $user = make($user::class, ['data' => $userData]);
-        $this->queryBuilder->from('users')->update(
-            $userData['id'],
-            $userData
         );
     }
 }

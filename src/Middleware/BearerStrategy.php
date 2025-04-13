@@ -46,6 +46,7 @@ class BearerStrategy implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $this->validateBearerStrategy($request);
-        return $handler->handle($request);
+        $this->logRequest();
+        return $handler->handle($this->request);
     }
 }

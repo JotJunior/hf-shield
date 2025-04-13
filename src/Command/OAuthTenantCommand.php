@@ -22,6 +22,7 @@ use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 
 use function Hyperf\Support\make;
+use function Hyperf\Translation\__;
 
 #[Command]
 class OAuthTenantCommand extends HyperfCommand
@@ -39,8 +40,8 @@ class OAuthTenantCommand extends HyperfCommand
     public function configure()
     {
         parent::configure();
-        $this->setDescription('Create an OAuth Tenant');
-        $this->addArgument('sub', InputArgument::REQUIRED, 'Sub command');
+        $this->setDescription(__('hf-shield.oauth_tenant_description'));
+        $this->addArgument('action', InputArgument::REQUIRED, __('hf-shield.action_description'));
         $this->addUsage('oauth:tenant list');
         $this->addUsage('oauth:tenant create');
         $this->addUsage('oauth:tenant change-password');
@@ -49,7 +50,7 @@ class OAuthTenantCommand extends HyperfCommand
 
     public function handle()
     {
-        $sub = $this->input->getArgument('sub');
+        $sub = $this->input->getArgument('action');
 
         if (method_exists($this, $sub)) {
             $this->{$sub}();

@@ -38,4 +38,12 @@ class Tenant extends Entity
         x: ['php_type' => '\Jot\HfShield\Entity\User\Scope[]']
     )]
     protected ?array $scopes = null;
+
+    #[SA\Property(
+        property: 'groups',
+        type: 'array',
+        items: new SA\Items(ref: '#/components/schemas/jot.shield.entity.user.group'),
+        x: ['php_type' => '\Jot\HfShield\Entity\User\Group[]']
+    )]
+    protected ?array $groups = null;
 }

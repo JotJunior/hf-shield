@@ -11,24 +11,28 @@ declare(strict_types=1);
 
 namespace Jot\HfShield\Exception\Handler;
 
-use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\ExceptionHandler\ExceptionHandler;
 use Hyperf\HttpMessage\Stream\SwooleStream;
+use Hyperf\Logger\LoggerFactory;
 use Jot\HfShield\Exception\MissingResourceScopeException;
 use Jot\HfShield\Exception\UnauthorizedAccessException;
 use Jot\HfShield\Exception\UnauthorizedClientException;
 use Jot\HfShield\Exception\UnauthorizedSessionException;
 use Jot\HfShield\Exception\UnauthorizedUserException;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Log\LoggerInterface;
 use Throwable;
 
 class AuthExceptionHandler extends ExceptionHandler
 {
-    public function __construct(protected StdoutLoggerInterface $logger)
+    private LoggerInterface $logger;
+
+    public function __construct(LoggerFactory $loggerFactory)
     {
+        $this->logger = $loggerFactory->get('auth', 'elastic');
     }
 
-    public function handle(Throwable $throwable, ResponseInterface $response)
+    public function handle(Throwable $throwable, ResponseInterface $response): ResponseInterface
     {
         if ($throwable instanceof MissingResourceScopeException
             || $throwable instanceof UnauthorizedAccessException
@@ -36,6 +40,14 @@ class AuthExceptionHandler extends ExceptionHandler
             || $throwable instanceof UnauthorizedUserException
             || $throwable instanceof UnauthorizedClientException) {
             $this->stopPropagation();
+            $context = $throwable->getMetadata();
+            $context['exception'] = [
+                'message' => $throwable->getMessage(),
+                'file' => $throwable->getFile(),
+                'line' => $throwable->getLine(),
+                'trace' => $throwable->getTraceAsString(),
+            ];
+            $this->logger->error($throwable->getMessage(), $context);
             return $this->createJsonResponse($response, 401, ['message' => $throwable->getMessage()]);
         }
 

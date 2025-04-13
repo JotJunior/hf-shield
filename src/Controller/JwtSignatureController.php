@@ -135,7 +135,7 @@ class JwtSignatureController extends AbstractController
         description: 'Retrieve the details of a specific jwt_signatures identified by ID.',
         summary: 'Get JwtSignature Data',
         security: [
-            ['shieldBearerAuth' => ['oauth:jwt_signature:read']],
+            ['shieldBearerAuth' => ['oauth:jwt_signature:view']],
         ],
         tags: ['JwtSignature'],
         parameters: [
@@ -195,7 +195,7 @@ class JwtSignatureController extends AbstractController
         ]
     )]
     #[Middleware(BearerStrategy::class)]
-    #[Scope(allow: 'oauth:jwt_signature:read')]
+    #[Scope(allow: 'oauth:jwt_signature:view')]
     #[RateLimit(create: 1, capacity: 2)]
     public function getJwtSignatureData(string $id): PsrResponseInterface
     {

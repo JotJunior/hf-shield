@@ -40,8 +40,8 @@ class OAuthUserCommand extends AbstractCommand
     public function configure()
     {
         parent::configure();
-        $this->setDescription('Create an OAuth user');
-        $this->addArgument('sub', InputArgument::REQUIRED, 'Sub command');
+        $this->setDescription(__('hf-shield.oauth_user_description'));
+        $this->addArgument('action', InputArgument::REQUIRED, __('hf-shield.action_description'));
         $this->addUsage('oauth:user list');
         $this->addUsage('oauth:user create');
         $this->addUsage('oauth:user scopes');
@@ -51,7 +51,7 @@ class OAuthUserCommand extends AbstractCommand
 
     public function handle()
     {
-        $sub = $this->input->getArgument('sub');
+        $sub = $this->input->getArgument('action');
 
         if (method_exists($this, $sub)) {
             $this->{$sub}();
@@ -126,6 +126,7 @@ class OAuthUserCommand extends AbstractCommand
         $name = $this->ask(__('hf-shield.name') . ': <fg=yellow>(*)</>');
         $email = $this->retryIf('exists', __('hf-shield.email'), 'email', ['tenant.id' => $tenant]);
         $phone = $this->retryIf('exists', __('hf-shield.phone'), 'phone', ['tenant.id' => $tenant]);
+        $documentType = $this->retryIf('exists', __('hf-shield.document_type'), 'document_type', ['tenant.id' => $tenant]);
         $federalDocument = $this->retryIf('exists', __('hf-shield.federal_document'), 'federal_document', ['tenant.id' => $tenant]);
 
         do {
@@ -146,6 +147,7 @@ class OAuthUserCommand extends AbstractCommand
                 ],
             ],
             'federal_document' => $federalDocument,
+            'document_type' => $documentType,
             'password' => $password,
             'status' => 'active',
         ];

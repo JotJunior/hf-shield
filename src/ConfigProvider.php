@@ -140,9 +140,6 @@ class ConfigProvider
                                         'type' => 'object',
                                         'dynamic' => true,
                                     ],
-                                    'tenant_id' => [
-                                        'type' => 'keyword',
-                                    ],
                                     'request' => [
                                         'properties' => [
                                             'request_method' => [
@@ -190,6 +187,22 @@ class ConfigProvider
                                             ],
                                         ],
                                     ],
+                                    'access' => [
+                                        'properties' => [
+                                            'token_id' => [
+                                                'type' => 'keyword',
+                                            ],
+                                            'scope' => [
+                                                'type' => 'keyword',
+                                            ],
+                                            'client' => [
+                                                'type' => 'keyword',
+                                            ],
+                                            'tenant' => [
+                                                'type' => 'keyword',
+                                            ],
+                                        ],
+                                    ],
                                 ],
                             ],
                             'lifecycle' => [
@@ -232,6 +245,12 @@ class ConfigProvider
                     'destination' => BASE_PATH . '/storage/languages/en/hf-shield.php',
                 ],
                 [
+                    'id' => 'translations-es',
+                    'description' => 'The spanish translation files for hf_shield.',
+                    'source' => __DIR__ . '/../storage/languages/es/hf-shield.php',
+                    'destination' => BASE_PATH . '/storage/languages/es/hf-shield.php',
+                ],
+                [
                     'id' => 'translations-pt-br',
                     'description' => 'The portuguese translation files for hf_shield.',
                     'source' => __DIR__ . '/../storage/languages/pt_BR/hf-shield.php',
@@ -241,3 +260,4 @@ class ConfigProvider
         ];
     }
 }
+

@@ -16,6 +16,7 @@ use Hyperf\Command\Annotation\Command;
 use Hyperf\Contract\ConfigInterface;
 use Jot\HfElastic\ClientBuilder;
 use Psr\Container\ContainerInterface;
+use stdClass;
 use Symfony\Component\Console\Input\InputArgument;
 use Throwable;
 
@@ -35,8 +36,8 @@ class SetupLoggerCommand extends AbstractCommand
     public function configure()
     {
         parent::configure();
-        $this->addArgument('setup', InputArgument::REQUIRED, 'Create data stream template');
-        $this->setDescription('Setup HfShield logger');
+        $this->setDescription(__('hf-shield.setup_logger_description'));
+        $this->addArgument('setup', InputArgument::REQUIRED, __('hf-shield.data_stream'));
         $this->addUsage('oauth:logger setup');
     }
 
@@ -48,6 +49,8 @@ class SetupLoggerCommand extends AbstractCommand
             return;
         }
 
+        $alias = sprintf('%s-hf-shield-logger', $elasticConfig['prefix']);
+        $elasticConfig['data_stream']['body']['template']['aliases'][$alias] = new stdClass();
         $elasticConfig['data_stream']['body']['index_patterns'] = [sprintf('%s-hf-shield-logs*', $elasticConfig['prefix'])];
 
         try {

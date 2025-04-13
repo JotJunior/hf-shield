@@ -42,8 +42,8 @@ class OAuthScopeCommand extends HyperfCommand
     public function configure()
     {
         parent::configure();
-        $this->setDescription('Create an OAuth scope');
-        $this->addArgument('sub', InputArgument::REQUIRED, 'Sub command');
+        $this->setDescription(__('hf-shield.oauth_scope_description'));
+        $this->addArgument('action', InputArgument::REQUIRED, __('hf-shield.action_description'));
         $this->addUsage('oauth:scope list');
         $this->addUsage('oauth:scope sync');
         $this->addUsage('oauth:scope create scope.fqdn.name "Scope description"');
@@ -52,7 +52,7 @@ class OAuthScopeCommand extends HyperfCommand
 
     public function handle()
     {
-        $sub = $this->input->getArgument('sub');
+        $sub = $this->input->getArgument('action');
 
         if (method_exists($this, $sub)) {
             $this->{$sub}();

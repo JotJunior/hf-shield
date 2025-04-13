@@ -39,8 +39,8 @@ class OAuthClientCommand extends AbstractCommand
     public function configure()
     {
         parent::configure();
-        $this->setDescription('Create an OAuth Client');
-        $this->addArgument('sub', InputArgument::REQUIRED, 'Sub command');
+        $this->setDescription(__('hf-shield.oauth_client_description'));
+        $this->addArgument('action', InputArgument::REQUIRED, __('hf-shield.action_description'));
         $this->addUsage('oauth:user list');
         $this->addUsage('oauth:user create');
         $this->addUsage('oauth:user delete client-id');
@@ -48,7 +48,7 @@ class OAuthClientCommand extends AbstractCommand
 
     public function handle()
     {
-        $sub = $this->input->getArgument('sub');
+        $sub = $this->input->getArgument('action');
 
         if (method_exists($this, $sub)) {
             $this->{$sub}();
@@ -83,7 +83,7 @@ class OAuthClientCommand extends AbstractCommand
             [$plainSecret, $result] = $this->repository->createNewClient($client);
             $clientId = $result->toArray()['id'];
             $this->success(__('hf-shield.client_id') . ':     <fg=#FFCC00>%s</>', [$clientId]);
-            $this->success('Client Secret: <fg=#FFCC00>%s</>', [$plainSecret]);
+            $this->success(__('hf-shield.client_secret') . ': <fg=#FFCC00>%s</>', [$plainSecret]);
             $this->success(__('hf-shield.save_secret_warning'));
         } catch (EntityValidationWithErrorsException $th) {
             foreach ($th->getErrors() as $field => $message) {

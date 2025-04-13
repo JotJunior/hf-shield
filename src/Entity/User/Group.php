@@ -14,8 +14,8 @@ namespace Jot\HfShield\Entity\User;
 use Hyperf\Swagger\Annotation as SA;
 use Jot\HfRepository\Entity;
 
-#[SA\Schema(schema: 'jot.shield.entity.user.scope')]
-class Scope extends Entity
+#[SA\Schema(schema: 'jot.shield.entity.user.group')]
+class Group extends Entity
 {
     #[SA\Property(
         property: 'id',
@@ -30,26 +30,5 @@ class Scope extends Entity
         example: ''
     )]
     protected ?string $name = null;
-
-    #[SA\Property(
-        property: 'domain',
-        type: 'string',
-        example: ''
-    )]
-    protected ?string $domain = null;
-
-    #[SA\Property(
-        property: 'resource',
-        type: 'string',
-        example: ''
-    )]
-    protected ?string $resource = null;
-
-    #[SA\Property(
-        property: 'action',
-        type: 'string',
-        example: ''
-    )]
-    protected ?string $action = null;
 
 }
