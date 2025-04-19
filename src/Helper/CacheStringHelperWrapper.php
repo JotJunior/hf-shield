@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace Jot\HfShield\Helper;
 
 use Hyperf\Cache\Helper\StringHelper;
+use Hyperf\Stringable\Str;
+use function Hyperf\Collection\data_get;
 
 class CacheStringHelperWrapper extends StringHelper
 {
@@ -25,7 +27,7 @@ class CacheStringHelperWrapper extends StringHelper
                 foreach ($matches as $search) {
                     $k = str_replace(['#{', '}'], '', $search);
 
-                    $value = Str::replaceFirst($search, (string) data_get($arguments, $k), $value);
+                    $value = Str::replaceFirst($search, (string)  data_get($arguments, $k), $value);
                 }
             }
         } else {

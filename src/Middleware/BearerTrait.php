@@ -23,6 +23,7 @@ use Jot\HfShield\Exception\UnauthorizedUserException;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ServerRequestInterface;
 
+use Psr\Log\LoggerInterface;
 use function Hyperf\Translation\__;
 
 trait BearerTrait
@@ -34,6 +35,8 @@ trait BearerTrait
     public const ATTR_USER_ID = 'oauth_user_id';
 
     public const ATTR_SCOPES = 'oauth_scopes';
+
+    protected LoggerInterface $logger;
 
     protected array $oauthClient = [];
 

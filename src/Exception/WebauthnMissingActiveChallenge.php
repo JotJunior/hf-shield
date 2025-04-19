@@ -13,7 +13,7 @@ namespace Jot\HfShield\Exception;
 
 use function Hyperf\Translation\__;
 
-class UnauthorizedUserException extends AbstractException
+class WebauthnMissingActiveChallenge extends AbstractException
 {
     public function __construct(array $metadata = [])
     {

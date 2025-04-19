@@ -14,7 +14,6 @@ namespace Jot\HfShield\Command;
 use Hyperf\Command\Annotation\Command;
 use Hyperf\Di\Annotation\Inject;
 use Jot\HfRepository\Command\HfFriendlyLinesTrait;
-use Jot\HfShield\Repository\ClientRepository;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 
@@ -41,9 +40,6 @@ class OAuthKeyPairsCommand extends AbstractCommand
     ];
 
     private const DIRECTORY_PERMISSIONS = 0755;
-
-    #[Inject]
-    protected ClientRepository $repository;
 
     public function __construct(protected ContainerInterface $container)
     {

@@ -1,0 +1,12 @@
+{
+  "id": "uuid",
+  "user": {
+    "id": "uuid-user",
+    "name": "John Doe"
+  },
+  "challenge": "challenge_content",
+  "status": "pending",
+  "deleted": false,
+  "created_at": "2023-01-01T00:00:00Z",
+  "updated_at": "2023-01-01T00:00:00Z"
+}

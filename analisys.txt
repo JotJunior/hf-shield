@@ -1,0 +1,68 @@
+ ------ --------------------------------------------------------------------------
+  Line   Service/WebauthnService.php                                               
+ ------ -------------------------------------------------------------------------- 
+  197    Access to an undefined property                                           
+         Jot\HfShield\Service\WebauthnService::$response.                          
+         🪪  property.notFound                                                     
+         💡 Learn more:                                                            
+            https://phpstan.org/blog/solving-phpstan-access-to-undefined-property  
+  229    Class Webauthn\AttestationStatement\AttestationObject constructor         
+         invoked with 1 parameter, 3 required.                                     
+         🪪  arguments.count                                                       
+  243    Instantiated class                                                        
+         Jot\HfShield\Exception\WebauthnInvalidCredentialResponse not found.       
+         🪪  class.notFound                                                        
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols       
+  264    Access to an undefined property                                           
+         Jot\HfShield\Service\WebauthnService::$response.                          
+         🪪  property.notFound                                                     
+         💡 Learn more:                                                            
+            https://phpstan.org/blog/solving-phpstan-access-to-undefined-property  
+  273    Access to an undefined property                                           
+         Jot\HfShield\Service\WebauthnService::$response.                          
+         🪪  property.notFound                                                     
+         💡 Learn more:                                                            
+            https://phpstan.org/blog/solving-phpstan-access-to-undefined-property  
+  311    Access to an undefined property                                           
+         Jot\HfShield\Service\WebauthnService::$response.                          
+         🪪  property.notFound                                                     
+         💡 Learn more:                                                            
+            https://phpstan.org/blog/solving-phpstan-access-to-undefined-property  
+  320    Access to an undefined property                                           
+         Jot\HfShield\Service\WebauthnService::$response.                          
+         🪪  property.notFound                                                     
+         💡 Learn more:                                                            
+            https://phpstan.org/blog/solving-phpstan-access-to-undefined-property  
+  332    Instantiated class Jot\HfShield\Service\InvalidArgumentException not      
+         found.                                                                    
+         🪪  class.notFound                                                        
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols       
+  336    Call to an undefined method                                               
+         Jot\HfShield\Service\WebauthnService::getCredentialSourcesForUser().      
+         🪪  method.notFound                                                       
+  338    Instantiated class Jot\HfShield\Service\InvalidArgumentException not      
+         found.                                                                    
+         🪪  class.notFound                                                        
+         💡 Learn more at https://phpstan.org/user-guide/discovering-symbols       
+  361    Call to an undefined method                                               
+         Jot\HfShield\Service\WebauthnService::repository().                       
+         🪪  method.notFound                                                       
+  363    Access to an undefined property                                           
+         Jot\HfShield\Service\WebauthnService::$response.                          
+         🪪  property.notFound                                                     
+         💡 Learn more:                                                            
+            https://phpstan.org/blog/solving-phpstan-access-to-undefined-property  
+  369    Access to an undefined property                                           
+         Jot\HfShield\Service\WebauthnService::$response.                          
+         🪪  property.notFound                                                     
+         💡 Learn more:                                                            
+            https://phpstan.org/blog/solving-phpstan-access-to-undefined-property  
+  376    Access to an undefined property                                           
+         Jot\HfShield\Service\WebauthnService::$response.                          
+         🪪  property.notFound                                                     
+         💡 Learn more:                                                            
+            https://phpstan.org/blog/solving-phpstan-access-to-undefined-property  
+ ------ -------------------------------------------------------------------------- 
+
+ [ERROR] Found 17 errors                                                        
+

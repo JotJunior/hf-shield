@@ -11,10 +11,7 @@ declare(strict_types=1);
 
 namespace Jot\HfShield\Exception;
 
-use RuntimeException;
-
 use function Hyperf\Translation\__;
-
 
 class MissingResourceScopeException extends AbstractException
 {

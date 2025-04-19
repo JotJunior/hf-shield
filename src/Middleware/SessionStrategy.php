@@ -29,7 +29,6 @@ class SessionStrategy implements MiddlewareInterface
     use BearerTrait;
     use CryptTrait;
 
-
     protected LoggerInterface $logger;
 
     public function __construct(

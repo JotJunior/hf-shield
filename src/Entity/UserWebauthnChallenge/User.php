@@ -9,13 +9,13 @@ declare(strict_types=1);
  * @license  MIT
  */
 
-namespace Jot\HfShield\Entity\User;
+namespace Jot\HfShield\Entity\UserWebauthnChallenge;
 
 use Hyperf\Swagger\Annotation as SA;
 use Jot\HfRepository\Entity;
 
-#[SA\Schema(schema: 'jot.shield.entity.user.group')]
-class Group extends Entity
+#[SA\Schema(schema: 'jot.shield.entity.user_webauthn_challenge.user')]
+class User extends Entity
 {
     #[SA\Property(
         property: 'id',

@@ -80,15 +80,19 @@ return [
     'revoke_user_old_tokens' => env('OAUTH_REVOKE_USER_OLD_TOKENS', true),
 
     /*
+     * Webauthn configuration
+     */
+    'rp_name' => env('WEBAUTHN_RP_NAME', 'Jot Application'),
+    'rp_id' => env('WEBAUTHN_RP_ID', null), // Default to the hostname of the origin
+    'rp_icon' => env('WEBAUTHN_RP_ICON', null),
+    'origin' => env('WEBAUTHN_ORIGIN', 'https://example.com'),
+
+    /*
      * S3 bucket configuration
      */
     's3_bucket_url' => env('S3_BUCKET_URL', ''),
-
     's3_bucket_name' => env('S3_BUCKET_NAME', ''),
-
     's3_bucket_region' => env('S3_BUCKET_REGION', ''),
-
     's3_bucket_access_key' => env('S3_BUCKET_ACCESS_KEY', ''),
-
     's3_bucket_secret_key' => env('S3_BUCKET_SECRET_KEY', ''),
 ];

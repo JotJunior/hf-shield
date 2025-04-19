@@ -51,5 +51,4 @@ class Scope extends Entity
         example: ''
     )]
     protected ?string $action = null;
-
 }

@@ -11,15 +11,12 @@ declare(strict_types=1);
 
 namespace Jot\HfShield\Exception;
 
-use function Hyperf\Translation\__;
+use RuntimeException;
 
-class UnauthorizedUserException extends AbstractException
+class WebauthnInvalidCredentialResponse extends RuntimeException
 {
-    public function __construct(array $metadata = [])
+    public function __construct(string $message = 'Invalid credential response data', int $code = 400, \Throwable $previous = null)
     {
-        $this->metadata = $metadata;
-        $this->message = __('hf-shield.unauthorized_user');
-        $this->code = 401;
-        parent::__construct($this->message, $this->code);
+        parent::__construct($message, $code, $previous);
     }
 }

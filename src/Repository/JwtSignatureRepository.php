@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Jot\HfShield\Repository;
 
 use Hyperf\Stringable\Str;
-use Jot\HfRepository\EntityInterface;
+use Jot\HfRepository\Entity\EntityInterface;
 use Jot\HfShield\Entity\JwtSignature\JwtSignature;
 use League\OAuth2\Server\CryptTrait;
 
