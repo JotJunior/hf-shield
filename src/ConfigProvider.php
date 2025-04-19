@@ -47,6 +47,13 @@ class ConfigProvider
                     ],
                 ],
             ],
+            'swagger' => [
+                'scan' => [
+                    'paths' => [
+                        __DIR__,
+                    ],
+                ],
+            ],
             'listeners' => [
                 AllowedScopesListener::class,
                 BootValidatorsListener::class,

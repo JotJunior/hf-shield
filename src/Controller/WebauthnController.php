@@ -23,6 +23,110 @@ use Jot\HfShield\Repository\UserRepository;
 use Jot\HfShield\Service\WebauthnService;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 
+#[SA\Schema(
+    schema: 'webauthn.registration.options.request',
+    required: ['user_id', 'user_name'],
+    properties: [
+        new SA\Property(property: 'user_id', description: 'ID do usuário', type: 'string'),
+        new SA\Property(property: 'user_name', description: 'Nome do usuário', type: 'string'),
+    ],
+    type: 'object'
+)]
+
+#[SA\Schema(
+    schema: 'webauthn.registration.options.response',
+    properties: [
+        new SA\Property(property: 'id', type: 'string'),
+        new SA\Property(property: 'user', type: 'object'),
+        new SA\Property(property: 'challenge', type: 'string'),
+        new SA\Property(property: 'status', type: 'string'),
+        new SA\Property(property: 'created_at', type: 'string', format: 'date-time'),
+        new SA\Property(property: 'updated_at', type: 'string', format: 'date-time'),
+    ],
+    type: 'object'
+)]
+
+#[SA\Schema(
+    schema: 'webauthn.registration.verify.request',
+    required: ['user_id', 'user_name', 'credential'],
+    properties: [
+        new SA\Property(property: 'user_id', description: 'ID do usuário', type: 'string'),
+        new SA\Property(property: 'user_name', description: 'Nome do usuário', type: 'string'),
+        new SA\Property(property: 'credential', description: 'Credencial WebAuthn', type: 'object'),
+    ],
+    type: 'object'
+)]
+
+#[SA\Schema(
+    schema: 'webauthn.registration.verify.response',
+    properties: [
+        new SA\Property(property: 'result', type: 'string', enum: ['success', 'error']),
+        new SA\Property(property: 'data', type: 'object'),
+        new SA\Property(property: 'error', type: 'string'),
+    ],
+    type: 'object'
+)]
+
+#[SA\Schema(
+    schema: 'webauthn.authentication.options.request',
+    required: ['user_id'],
+    properties: [
+        new SA\Property(property: 'user_id', description: 'ID do usuário', type: 'string'),
+    ],
+    type: 'object'
+)]
+
+#[SA\Schema(
+    schema: 'webauthn.authentication.options.response',
+    properties: [
+        new SA\Property(property: 'result', type: 'string', enum: ['success', 'error']),
+        new SA\Property(property: 'data', type: 'object'),
+        new SA\Property(property: 'challenge', type: 'object'),
+        new SA\Property(property: 'error', type: 'string'),
+    ],
+    type: 'object'
+)]
+
+#[SA\Schema(
+    schema: 'webauthn.authentication.verify.request',
+    required: ['user_id', 'credential'],
+    properties: [
+        new SA\Property(property: 'user_id', description: 'ID do usuário', type: 'string'),
+        new SA\Property(property: 'credential', description: 'Credencial WebAuthn', type: 'object'),
+    ],
+    type: 'object'
+)]
+
+#[SA\Schema(
+    schema: 'webauthn.authentication.verify.response',
+    properties: [
+        new SA\Property(property: 'result', type: 'string', enum: ['success', 'error']),
+        new SA\Property(property: 'data', type: 'object'),
+        new SA\Property(property: 'error', type: 'string'),
+    ],
+    type: 'object'
+)]
+
+#[SA\Schema(
+    schema: 'webauthn.credentials.list.response',
+    type: 'array',
+    items: new SA\Items(properties: [
+        new SA\Property(property: 'id', type: 'string'),
+        new SA\Property(property: 'user_id', type: 'string'),
+        new SA\Property(property: 'name', type: 'string'),
+        new SA\Property(property: 'created_at', type: 'string', format: 'date-time'),
+    ], type: 'object')
+)]
+
+#[SA\Schema(
+    schema: 'webauthn.credentials.delete.response',
+    properties: [
+        new SA\Property(property: 'result', type: 'string', enum: ['success', 'error']),
+        new SA\Property(property: 'error', type: 'string'),
+    ],
+    type: 'object'
+)]
+
 #[SA\HyperfServer('http')]
 #[SA\Tag(
     name: 'Webauthn',
@@ -36,37 +140,40 @@ class WebauthnController extends AbstractController
     #[Inject]
     protected WebauthnService $webauthnService;
 
+    /**
+     * Obter opções para registro de credencial WebAuthn
+     */
     #[SA\Post(
         path: '/webauthn/register/options',
-        description: 'Create a new users.',
-        summary: 'Create a New User',
+        description: 'Obter opções para registro de credencial WebAuthn',
+        summary: 'Obter opções para registro WebAuthn',
         security: [
-            ['shieldBearerAuth' => ['oauth:user:create']],
+            ['shieldBearerAuth' => ['webauthn:register']],
         ],
         requestBody: new SA\RequestBody(
             required: true,
-            content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.entity.user.user')
+            content: new SA\JsonContent(ref: '#/components/schemas/webauthn.registration.options.request')
         ),
-        tags: ['User'],
+        tags: ['Webauthn'],
         responses: [
             new SA\Response(
-                response: 201,
-                description: 'User created',
-                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.entity.user.user')
+                response: 200,
+                description: 'Opções para registro',
+                content: new SA\JsonContent(ref: '#/components/schemas/webauthn.registration.options.response')
             ),
             new SA\Response(
                 response: 401,
-                description: 'Unauthorized access',
+                description: 'Acesso não autorizado',
                 content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.auth-error.response')
             ),
             new SA\Response(
                 response: 400,
-                description: 'Bad request',
+                description: 'Requisição inválida',
                 content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
             ),
             new SA\Response(
                 response: 500,
-                description: 'Application error',
+                description: 'Erro interno',
                 content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
             ),
         ]
@@ -78,79 +185,85 @@ class WebauthnController extends AbstractController
         return $this->response->json($this->webauthnService->getRegistrationOptions($data));
     }
 
+    /**
+     * Verificar resposta de registro WebAuthn
+     */
     #[SA\Post(
         path: '/webauthn/register/verify',
-        description: 'Create a new users.',
-        summary: 'Create a New User',
+        description: 'Verificar resposta de registro WebAuthn',
+        summary: 'Verificar registro WebAuthn',
         security: [
-            ['shieldBearerAuth' => ['oauth:user:create']],
+            ['shieldBearerAuth' => ['webauthn:register']],
         ],
         requestBody: new SA\RequestBody(
             required: true,
-            content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.entity.user.user')
+            content: new SA\JsonContent(ref: '#/components/schemas/webauthn.registration.verify.request')
         ),
-        tags: ['User'],
+        tags: ['Webauthn'],
         responses: [
             new SA\Response(
-                response: 201,
-                description: 'User created',
-                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.entity.user.user')
+                response: 200,
+                description: 'Registro verificado com sucesso',
+                content: new SA\JsonContent(ref: '#/components/schemas/webauthn.registration.verify.response')
             ),
             new SA\Response(
                 response: 401,
-                description: 'Unauthorized access',
+                description: 'Acesso não autorizado',
                 content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.auth-error.response')
             ),
             new SA\Response(
                 response: 400,
-                description: 'Bad request',
+                description: 'Requisição inválida',
                 content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
             ),
             new SA\Response(
                 response: 500,
-                description: 'Application error',
+                description: 'Erro interno',
                 content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
             ),
         ]
     )]
     #[RateLimit(create: 1, capacity: 3)]
-    public function verifyRegistration()
+    public function verifyRegistration(): PsrResponseInterface
     {
         $data = $this->request->all();
         return $this->response->json($this->webauthnService->verifyRegistration($data));
     }
 
+    /**
+     * Obter opções para autenticação WebAuthn
+     */
     #[SA\Post(
         path: '/webauthn/authenticate/options',
-        description: 'Create a new users.',
-        summary: 'Create a New User',
+        description: 'Obter opções para autenticação WebAuthn',
+        summary: 'Obter opções para autenticação WebAuthn',
         security: [
-            ['shieldBearerAuth' => ['oauth:user:create']],
+            ['shieldBearerAuth' => ['webauthn:authenticate']],
         ],
         requestBody: new SA\RequestBody(
             required: true,
-            content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.entity.user.user')
+            content: new SA\JsonContent(ref: '#/components/schemas/webauthn.authentication.options.request')
         ),
-        tags: ['User'],
+        tags: ['Webauthn'],
         responses: [
             new SA\Response(
-                response: 201,
-                description: 'User created',
-                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.entity.user.user')
+                response: 200,
+                description: 'Opções para autenticação',
+                content: new SA\JsonContent(ref: '#/components/schemas/webauthn.authentication.options.response')
             ),
             new SA\Response(
                 response: 401,
-                description: 'Unauthorized access',
+                description: 'Acesso não autorizado',
                 content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.auth-error.response')
             ),
             new SA\Response(
                 response: 400,
-                description: 'Bad request',
+                description: 'Requisição inválida',
                 content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
             ),
             new SA\Response(
                 response: 500,
-                description: 'Application error',
+                description: 'Erro interno',
                 content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
             ),
         ]
@@ -165,39 +278,39 @@ class WebauthnController extends AbstractController
     }
 
     /**
-     * Verify authentication response.
+     * Verificar resposta de autenticação WebAuthn
      */
     #[SA\Post(
         path: '/webauthn/authenticate/verify',
-        description: 'Create a new users.',
-        summary: 'Create a New User',
+        description: 'Verificar resposta de autenticação WebAuthn',
+        summary: 'Verificar autenticação WebAuthn',
         security: [
-            ['shieldBearerAuth' => ['oauth:user:create']],
+            ['shieldBearerAuth' => ['webauthn:authenticate']],
         ],
         requestBody: new SA\RequestBody(
             required: true,
-            content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.entity.user.user')
+            content: new SA\JsonContent(ref: '#/components/schemas/webauthn.authentication.verify.request')
         ),
-        tags: ['User'],
+        tags: ['Webauthn'],
         responses: [
             new SA\Response(
-                response: 201,
-                description: 'User created',
-                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.entity.user.user')
+                response: 200,
+                description: 'Autenticação verificada com sucesso',
+                content: new SA\JsonContent(ref: '#/components/schemas/webauthn.authentication.verify.response')
             ),
             new SA\Response(
                 response: 401,
-                description: 'Unauthorized access',
+                description: 'Acesso não autorizado',
                 content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.auth-error.response')
             ),
             new SA\Response(
                 response: 400,
-                description: 'Bad request',
+                description: 'Requisição inválida',
                 content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
             ),
             new SA\Response(
                 response: 500,
-                description: 'Application error',
+                description: 'Erro interno',
                 content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
             ),
         ]
@@ -209,37 +322,45 @@ class WebauthnController extends AbstractController
         return $this->response->json($this->webauthnService->verifyAuthentication($data));
     }
 
+    /**
+     * Listar credenciais WebAuthn de um usuário
+     */
     #[SA\Get(
         path: '/webauthn/credentials/{id}',
-        description: 'Create a new users.',
-        summary: 'Create a New User',
+        description: 'Listar credenciais WebAuthn de um usuário',
+        summary: 'Listar credenciais WebAuthn',
         security: [
-            ['shieldBearerAuth' => ['oauth:user:create']],
+            ['shieldBearerAuth' => ['webauthn:read']],
         ],
-        requestBody: new SA\RequestBody(
-            required: true,
-            content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.entity.user.user')
-        ),
-        tags: ['User'],
+        tags: ['Webauthn'],
+        parameters: [
+            new SA\Parameter(
+                name: 'id',
+                description: 'ID do usuário',
+                in: 'path',
+                required: true,
+                schema: new SA\Schema(type: 'string')
+            )
+        ],
         responses: [
             new SA\Response(
-                response: 201,
-                description: 'User created',
-                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.entity.user.user')
+                response: 200,
+                description: 'Lista de credenciais',
+                content: new SA\JsonContent(ref: '#/components/schemas/webauthn.credentials.list.response')
             ),
             new SA\Response(
                 response: 401,
-                description: 'Unauthorized access',
+                description: 'Acesso não autorizado',
                 content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.auth-error.response')
             ),
             new SA\Response(
                 response: 400,
-                description: 'Bad request',
+                description: 'Requisição inválida',
                 content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
             ),
             new SA\Response(
                 response: 500,
-                description: 'Application error',
+                description: 'Erro interno',
                 content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
             ),
         ]
@@ -252,37 +373,45 @@ class WebauthnController extends AbstractController
         return $this->response->json($this->webauthnService->listCredentials($id));
     }
 
+    /**
+     * Excluir uma credencial WebAuthn
+     */
     #[SA\Delete(
         path: '/webauthn/credentials/{id}',
-        description: 'Create a new users.',
-        summary: 'Create a New User',
+        description: 'Excluir uma credencial WebAuthn',
+        summary: 'Excluir credencial WebAuthn',
         security: [
-            ['shieldBearerAuth' => ['oauth:user:create']],
+            ['shieldBearerAuth' => ['webauthn:delete']],
         ],
-        requestBody: new SA\RequestBody(
-            required: true,
-            content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.entity.user.user')
-        ),
-        tags: ['User'],
+        tags: ['Webauthn'],
+        parameters: [
+            new SA\Parameter(
+                name: 'id',
+                description: 'ID da credencial',
+                in: 'path',
+                required: true,
+                schema: new SA\Schema(type: 'string')
+            )
+        ],
         responses: [
             new SA\Response(
-                response: 201,
-                description: 'User created',
-                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.entity.user.user')
+                response: 200,
+                description: 'Credencial excluída com sucesso',
+                content: new SA\JsonContent(ref: '#/components/schemas/webauthn.credentials.delete.response')
             ),
             new SA\Response(
                 response: 401,
-                description: 'Unauthorized access',
+                description: 'Acesso não autorizado',
                 content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.auth-error.response')
             ),
             new SA\Response(
-                response: 400,
-                description: 'Bad request',
+                response: 404,
+                description: 'Credencial não encontrada',
                 content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
             ),
             new SA\Response(
                 response: 500,
-                description: 'Application error',
+                description: 'Erro interno',
                 content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.error.response')
             ),
         ]
@@ -305,5 +434,4 @@ class WebauthnController extends AbstractController
             'result' => 'success',
         ]);
     }
-
 }
