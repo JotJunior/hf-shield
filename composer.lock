@@ -62,16 +62,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.342.30",
+            "version": "3.342.33",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "eaa4f64784fdf8e66b511df18de43c43fbeb4f63"
+                "reference": "ddd3747bd08f04159aec5d102a60c7d29906ee0b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/eaa4f64784fdf8e66b511df18de43c43fbeb4f63",
-                "reference": "eaa4f64784fdf8e66b511df18de43c43fbeb4f63",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/ddd3747bd08f04159aec5d102a60c7d29906ee0b",
+                "reference": "ddd3747bd08f04159aec5d102a60c7d29906ee0b",
                 "shasum": ""
             },
             "require": {
@@ -153,9 +153,9 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.342.30"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.342.33"
             },
-            "time": "2025-04-18T18:05:51+00:00"
+            "time": "2025-04-23T18:07:32+00:00"
         },
         {
             "name": "brick/math",
@@ -3918,16 +3918,16 @@
         },
         {
             "name": "jot/hf-elastic",
-            "version": "v0.17.23",
+            "version": "v0.17.24",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JotJunior/hf-elastic.git",
-                "reference": "ae8eb2b53430eae0deca18a684dc5d30c4d3d0c5"
+                "reference": "e32bf7278f4c22a7b8494ea72744f95a0b2518d8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JotJunior/hf-elastic/zipball/ae8eb2b53430eae0deca18a684dc5d30c4d3d0c5",
-                "reference": "ae8eb2b53430eae0deca18a684dc5d30c4d3d0c5",
+                "url": "https://api.github.com/repos/JotJunior/hf-elastic/zipball/e32bf7278f4c22a7b8494ea72744f95a0b2518d8",
+                "reference": "e32bf7278f4c22a7b8494ea72744f95a0b2518d8",
                 "shasum": ""
             },
             "require": {
@@ -3976,22 +3976,22 @@
             ],
             "support": {
                 "issues": "https://github.com/JotJunior/hf-elastic/issues",
-                "source": "https://github.com/JotJunior/hf-elastic/tree/v0.17.23"
+                "source": "https://github.com/JotJunior/hf-elastic/tree/v0.17.24"
             },
-            "time": "2025-04-19T14:46:36+00:00"
+            "time": "2025-04-23T00:36:37+00:00"
         },
         {
             "name": "jot/hf-repository",
-            "version": "v0.15.20",
+            "version": "v0.15.21",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JotJunior/hf-repository.git",
-                "reference": "f8a884742c0622da73503debbdbd6f6090eb165d"
+                "reference": "9eb43a6804c552a2950bfc41d3700253cf886833"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JotJunior/hf-repository/zipball/f8a884742c0622da73503debbdbd6f6090eb165d",
-                "reference": "f8a884742c0622da73503debbdbd6f6090eb165d",
+                "url": "https://api.github.com/repos/JotJunior/hf-repository/zipball/9eb43a6804c552a2950bfc41d3700253cf886833",
+                "reference": "9eb43a6804c552a2950bfc41d3700253cf886833",
                 "shasum": ""
             },
             "require": {
@@ -4044,9 +4044,9 @@
             ],
             "support": {
                 "issues": "https://github.com/JotJunior/hf-repository/issues",
-                "source": "https://github.com/JotJunior/hf-repository/tree/v0.15.20"
+                "source": "https://github.com/JotJunior/hf-repository/tree/v0.15.21"
             },
-            "time": "2025-04-19T14:47:35+00:00"
+            "time": "2025-04-23T23:03:38+00:00"
         },
         {
             "name": "jot/hf-utils",
@@ -4106,16 +4106,16 @@
         },
         {
             "name": "jot/hf-validator",
-            "version": "v0.1.20",
+            "version": "v0.1.21",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JotJunior/hf-validator.git",
-                "reference": "972eeae6a3a70007c7df6ee3a06bead1d8dc34ac"
+                "reference": "ccc3df4913b6abc4bd13de1c6be24b60b1e7907e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JotJunior/hf-validator/zipball/972eeae6a3a70007c7df6ee3a06bead1d8dc34ac",
-                "reference": "972eeae6a3a70007c7df6ee3a06bead1d8dc34ac",
+                "url": "https://api.github.com/repos/JotJunior/hf-validator/zipball/ccc3df4913b6abc4bd13de1c6be24b60b1e7907e",
+                "reference": "ccc3df4913b6abc4bd13de1c6be24b60b1e7907e",
                 "shasum": ""
             },
             "require": {
@@ -4158,9 +4158,9 @@
             ],
             "support": {
                 "issues": "https://github.com/JotJunior/hf-validator/issues",
-                "source": "https://github.com/JotJunior/hf-validator/tree/v0.1.20"
+                "source": "https://github.com/JotJunior/hf-validator/tree/v0.1.21"
             },
-            "time": "2025-04-19T14:48:26+00:00"
+            "time": "2025-04-24T04:31:47+00:00"
         },
         {
             "name": "laminas/laminas-mime",

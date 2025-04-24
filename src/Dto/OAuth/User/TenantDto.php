@@ -13,25 +13,10 @@ namespace Jot\HfShield\Dto\OAuth\User;
 
 use Jot\HfRepository\Entity;
 
-class UserSessionDto extends Entity
+class TenantDto extends Entity
 {
-    protected ?string $email = null;
-
-    protected ?string $federalDocument = null;
-
     protected ?string $id = null;
 
     protected ?string $name = null;
-
-    protected ?string $phone = null;
-
-    protected ?string $picture = null;
-
-    protected ?array $scopes = null;
-
-    protected ?string $status = null;
-
-    protected ?TenantDto $tenant = null;
-
 
 }

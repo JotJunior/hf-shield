@@ -20,7 +20,6 @@ use Jot\HfShield\Repository\UserRepository;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Throwable;
-
 use function Hyperf\Support\make;
 use function Hyperf\Translation\__;
 
@@ -141,6 +140,10 @@ class OAuthUserCommand extends AbstractCommand
             'name' => $name,
             'email' => $email,
             'phone' => $phone,
+            'tenant' => [
+                'id' => $tenant['id'],
+                'name' => $tenant['name'],
+            ],
             'tenants' => [
                 [
                     'id' => $tenant['id'],

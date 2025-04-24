@@ -57,7 +57,7 @@ class User extends Entity
     )]
     #[VA\Email]
     #[VA\Required(onUpdate: false)]
-    #[VA\Unique(index: 'users', field: 'email')]
+    #[VA\Unique(index: 'users', field: 'email', level: 'tenant')]
     protected ?string $email = null;
 
     #[SA\Property(
@@ -66,7 +66,7 @@ class User extends Entity
         example: ''
     )]
     #[VA\Required(onUpdate: false)]
-    #[VA\Unique(index: 'users', field: 'federal_document')]
+    #[VA\Unique(index: 'users', field: 'federal_document', level: 'tenant')]
     #[VA\CPF]
     protected ?string $federalDocument = null;
 
@@ -137,7 +137,16 @@ class User extends Entity
     protected ?string $status = null;
 
     #[SA\Property(
+        property: 'tenant',
+        ref: '#/components/schemas/jot.shield.entity.access_token.tenant',
+        description: 'The user main tenant',
+        x: ['php_type' => '\Jot\HfShield\Entity\User\Tenant']
+    )]
+    protected ?Tenant $tenant = null;
+
+    #[SA\Property(
         property: 'tenants',
+        description: 'The user allowed tenants',
         type: 'array',
         items: new SA\Items(ref: '#/components/schemas/jot.shield.entity.user.tenant'),
         x: ['php_type' => '\Jot\HfShield\Entity\User\Tenant[]']
