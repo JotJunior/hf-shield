@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * This file is part of the hf_shield module, a package build for Hyperf framework that is responsible for OAuth2 authentication and access control.
  *
@@ -8,16 +9,17 @@ declare(strict_types=1);
  * @link     https://github.com/JotJunior/hf-shield
  * @license  MIT
  */
+
 use Hyperf\Context\ApplicationContext;
 use Jot\HfElastic\Migration;
 use Jot\HfElastic\Migration\Mapping;
 
 return new class(ApplicationContext::getContainer()) extends Migration {
-    public const INDEX_NAME = 'user_webauthn_challenges';
+    public const INDEX_NAME = 'users_challenges';
 
     public bool $addPrefix = true;
 
-    public function up(): void
+    public function mapping(): Mapping
     {
         $index = new Mapping(name: self::INDEX_NAME);
 
@@ -28,7 +30,7 @@ return new class(ApplicationContext::getContainer()) extends Migration {
 
         $user = new Migration\ElasticType\ObjectType('user');
         $user->addField('keyword', 'id');
-        $user->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
+        $user->addField('keyword', 'name')->normalizer('normalizer_ascii_lower')->searchable();
         $index->object($user);
 
         $index->addField('alias', 'user_id')->path('user.id');
@@ -54,7 +56,12 @@ return new class(ApplicationContext::getContainer()) extends Migration {
             ],
         ]);
 
-        $this->create($index);
+        return $index;
+    }
+
+    public function up(): void
+    {
+        $this->create($this->mapping());
     }
 
     public function down(): void

@@ -1,12 +1,179 @@
 {
-  "id": "uuid",
-  "user": {
-    "id": "uuid-user",
-    "name": "John Doe"
-  },
-  "challenge": "challenge_content",
-  "status": "pending",
-  "deleted": false,
-  "created_at": "2023-01-01T00:00:00Z",
-  "updated_at": "2023-01-01T00:00:00Z"
+  "id": "b279c9e4-6155-4088-979c-819a83249e45",
+  "role": "admin",
+  "displayName": "João Zanon",
+  "email": "jot@jot.com.br",
+  "loginRedirectUrl": "/",
+  "status": "active",
+  "photoUrl": null,
+  "shortcuts": [],
+  "settings": {
+    "customScrollbars": true,
+    "direction": "ltr",
+    "layout": {
+      "style": "layout1",
+      "config": {
+        "mode": "container",
+        "containerWidth": 1120,
+        "navbar": {
+          "display": true,
+          "style": "style-2",
+          "folded": false,
+          "position": "left",
+          "open": true
+        },
+        "toolbar": {
+          "display": true,
+          "style": "fixed"
+        },
+        "footer": {
+          "display": false,
+          "style": "fixed"
+        },
+        "leftSidePanel": {
+          "display": true
+        },
+        "rightSidePanel": {
+          "display": false
+        }
+      }
+    },
+    "theme": {
+      "main": {
+        "palette": {
+          "mode": "dark",
+          "primary": {
+            "light": "#d5ca8a",
+            "main": "#c5b86d",
+            "dark": "#a89b4d",
+            "contrastText": "#000000"
+          },
+          "secondary": {
+            "light": "#2a7d96",
+            "main": "#1f677d",
+            "dark": "#154857",
+            "contrastText": "#ffffff"
+          },
+          "background": {
+            "default": "#101e23",
+            "paper": "#1a2c33"
+          },
+          "text": {
+            "primary": "rgb(255,255,255)",
+            "secondary": "rgb(148, 163, 184)",
+            "disabled": "rgb(156, 163, 175)"
+          },
+          "divider": "#2d3e45"
+        }
+      },
+      "navbar": {
+        "palette": {
+          "mode": "dark",
+          "primary": {
+            "light": "#d5ca8a",
+            "main": "#c5b86d",
+            "dark": "#a89b4d",
+            "contrastText": "#000000"
+          },
+          "secondary": {
+            "light": "#2a7d96",
+            "main": "#1f677d",
+            "dark": "#154857",
+            "contrastText": "#ffffff"
+          },
+          "background": {
+            "default": "#101e23",
+            "paper": "#1a2c33"
+          },
+          "text": {
+            "primary": "rgb(255,255,255)",
+            "secondary": "rgb(148, 163, 184)",
+            "disabled": "rgb(156, 163, 175)"
+          },
+          "divider": "#2d3e45"
+        }
+      },
+      "toolbar": {
+        "palette": {
+          "mode": "dark",
+          "primary": {
+            "light": "#d5ca8a",
+            "main": "#c5b86d",
+            "dark": "#a89b4d",
+            "contrastText": "#000000"
+          },
+          "secondary": {
+            "light": "#2a7d96",
+            "main": "#1f677d",
+            "dark": "#154857",
+            "contrastText": "#ffffff"
+          },
+          "background": {
+            "default": "#101e23",
+            "paper": "#1a2c33"
+          },
+          "text": {
+            "primary": "rgb(255,255,255)",
+            "secondary": "rgb(148, 163, 184)",
+            "disabled": "rgb(156, 163, 175)"
+          },
+          "divider": "#2d3e45",
+          "common": {
+            "black": "#000000",
+            "white": "#FFFFFF"
+          },
+          "error": {
+            "light": "#FFCDD2",
+            "main": "#D32F2F",
+            "dark": "#B71C1C",
+            "contrastText": "#FFFFFF"
+          }
+        }
+      },
+      "footer": {
+        "palette": {
+          "mode": "dark",
+          "primary": {
+            "light": "#d5ca8a",
+            "main": "#c5b86d",
+            "dark": "#a89b4d",
+            "contrastText": "#000000"
+          },
+          "secondary": {
+            "light": "#2a7d96",
+            "main": "#1f677d",
+            "dark": "#154857",
+            "contrastText": "#ffffff"
+          },
+          "background": {
+            "default": "#101e23",
+            "paper": "#1a2c33"
+          },
+          "text": {
+            "primary": "rgb(255,255,255)",
+            "secondary": "rgb(148, 163, 184)",
+            "disabled": "rgb(156, 163, 175)"
+          },
+          "divider": "#2d3e45",
+          "common": {
+            "black": "#000000",
+            "white": "#FFFFFF"
+          },
+          "error": {
+            "light": "#FFCDD2",
+            "main": "#D32F2F",
+            "dark": "#B71C1C",
+            "contrastText": "#FFFFFF"
+          }
+        }
+      }
+    },
+    "defaultAuth": [
+      "admin"
+    ],
+    "defaultAuthProvider": "cookie-session",
+    "loginRedirectUrl": "/",
+    "screen_mode": "dark"
+  }
 }
+

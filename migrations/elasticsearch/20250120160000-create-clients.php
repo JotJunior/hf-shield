@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * This file is part of the hf_shield module, a package build for Hyperf framework that is responsible for OAuth2 authentication and access control.
  *
@@ -8,6 +9,7 @@ declare(strict_types=1);
  * @link     https://github.com/JotJunior/hf-shield
  * @license  MIT
  */
+
 use Hyperf\Context\ApplicationContext;
 use Jot\HfElastic\Migration;
 use Jot\HfElastic\Migration\Mapping;
@@ -17,12 +19,12 @@ return new class(ApplicationContext::getContainer()) extends Migration {
 
     public bool $addPrefix = true;
 
-    public function up(): void
+    public function mapping(): Mapping
     {
         $index = new Mapping(name: self::INDEX_NAME);
 
         $index->addField('keyword', 'id');
-        $index->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
+        $index->addField('keyword', 'name')->normalizer('normalizer_ascii_lower')->searchable();
         $index->addField('keyword', 'redirect_uri');
         $index->addField('keyword', 'secret');
         $index->addField('boolean', 'confidential');
@@ -37,7 +39,7 @@ return new class(ApplicationContext::getContainer()) extends Migration {
         // enabled scopes
         $scopes = new Migration\ElasticType\NestedType('scopes');
         $scopes->addField('keyword', 'id');
-        $scopes->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
+        $scopes->addField('keyword', 'name')->normalizer('normalizer_ascii_lower')->searchable();
         $index->nested($scopes);
 
         $index->alias('client_id')->path('id');
@@ -63,7 +65,12 @@ return new class(ApplicationContext::getContainer()) extends Migration {
             ],
         ]);
 
-        $this->create($index);
+        return $index;
+    }
+
+    public function up(): void
+    {
+        $this->create($this->mapping());
     }
 
     public function down(): void

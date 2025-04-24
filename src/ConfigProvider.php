@@ -77,7 +77,11 @@ class ConfigProvider
                 },
                 ElasticsearchFormatter::class => function (ContainerInterface $container) {
                     $indexPrefix = $container->get(ConfigInterface::class)->get('hf_elastic.prefix');
-                    return new ShieldElasticsearchFormatter(index: sprintf('%s-hf-shield-logs', $indexPrefix), type: '_doc');
+                    return new ShieldElasticsearchFormatter(
+                        index: sprintf('%s-hf-shield-logs', $indexPrefix),
+                        type: '_doc',
+                        encryptionKey: $container->get(ConfigInterface::class)->get('hf_shield.encryption_key'),
+                    );
                 },
             ],
             'commands' => [

@@ -25,6 +25,8 @@ class User extends Entity
     use HasLogicRemoval;
     use HasTimestamps;
 
+    public const SEARCHABLE = ['name.search', 'email.search', 'federal_document.search'];
+
     #[SA\Property(
         property: 'created_at',
         type: 'string',
@@ -38,7 +40,7 @@ class User extends Entity
         type: 'string',
         example: ''
     )]
-    protected ?string $customSettings = null;
+    protected mixed $customSettings = null;
 
     #[SA\Property(
         property: 'deleted',

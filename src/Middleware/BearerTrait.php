@@ -70,7 +70,7 @@ trait BearerTrait
         $action = $parts[2] ?? '';
 
         // Recupera os valores do array com valores padrão
-        $user = $content['user']['name'] ?? 'Usuário desconhecido';
+        $user = $content['user']['name'] ?? 'hf-shield.session_actions.undefined_user';
         $action = $action ? __(sprintf('hf-shield.session_actions.%s', $action)) : '';
         $resourceType = $resource ? __(sprintf('messages.scopes.%s', $resource)) : '';
         $pluralResourceType = __(sprintf('messages.scopes.%s', $resources));

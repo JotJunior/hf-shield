@@ -17,8 +17,7 @@ return new class(ApplicationContext::getContainer()) extends Migration {
 
     public bool $addPrefix = true;
 
-    public function up(): void
-    {
+    public function mapping(): Mapping {
         $index = new Mapping(name: self::INDEX_NAME);
 
         $index->addField('keyword', 'id');
@@ -26,12 +25,12 @@ return new class(ApplicationContext::getContainer()) extends Migration {
 
         $user = new Migration\ElasticType\ObjectType('user');
         $user->addField('keyword', 'id');
-        $user->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
+        $user->addField('keyword', 'name')->normalizer('normalizer_ascii_lower')->searchable();
         $index->object($user);
 
         $client = new Migration\ElasticType\ObjectType('client');
         $client->addField('keyword', 'id');
-        $client->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
+        $client->addField('keyword', 'name')->normalizer('normalizer_ascii_lower')->searchable();
         $client->addField('keyword', 'redirect_uri');
         $index->object($client);
 
@@ -44,7 +43,7 @@ return new class(ApplicationContext::getContainer()) extends Migration {
 
         $scopes = new Migration\ElasticType\NestedType('scopes');
         $scopes->addField('keyword', 'id');
-        $scopes->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
+        $scopes->addField('keyword', 'name')->normalizer('normalizer_ascii_lower')->searchable();
         $index->nested($scopes);
 
         $index->alias('access_token_id')->path('id');
@@ -72,7 +71,12 @@ return new class(ApplicationContext::getContainer()) extends Migration {
             ],
         ]);
 
-        $this->create($index);
+        return $index;
+    }
+
+    public function up(): void
+    {
+        $this->create($this->mapping());
     }
 
     public function down(): void

@@ -77,13 +77,14 @@ return [
         'delete' => 'excluiu',
         'verify' => 'verificou',
         'read' => 'leu',
+        'undefined_user' => 'usuário desconhecido',
     ],
     'log_messages' => [
         'user_create_new' => 'criou um novo :resource chamado \':name\'.',
         'user_list_resources' => 'visualizou uma lista de :resources.',
         'system_list_resources' => 'O sistema carregou uma lista de :resources.',
         'system_view_user' => 'O sistema carregou as informações do :user.',
-        'user_action_resource' => ':action o :resource.',
-        'user_action_resource_name' => ':action o :resource \':name\'.',
+        'user_action_resource' => ':action o recurso :resource.',
+        'user_action_resource_name' => ':action o recurso :resource \':name\'.',
     ],
 ];
