@@ -143,7 +143,12 @@ class OAuthUserCommand extends AbstractCommand
             'phone' => $phone,
             'tenants' => [
                 [
-                    'id' => $tenant,
+                    'id' => $tenant['id'],
+                    'name' => $tenant['name'],
+                    'scopes' => [
+                        ['id' => 'root:all:all', 'name' => 'root', 'domain' => 'all', 'resource' => 'all', 'action' => 'all'],
+                    ],
+                    'groups' => []
                 ],
             ],
             'federal_document' => $federalDocument,

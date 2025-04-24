@@ -20,7 +20,7 @@ abstract class AbstractCommand extends HyperfCommand
 {
     use HfFriendlyLinesTrait;
 
-    protected function selectClient(string $tenantId): ?string
+    protected function selectClient(string $tenantId): ?array
     {
         return $this->selectItem(
             __('hf-shield.client_list_prompt'),
@@ -29,7 +29,7 @@ abstract class AbstractCommand extends HyperfCommand
         );
     }
 
-    protected function selectItem(string $prompt, string $error, callable $fetchItems): ?string
+    protected function selectItem(string $prompt, string $error, callable $fetchItems): ?array
     {
         $itemInput = $this->ask($prompt);
         if ($itemInput === '-') {
@@ -39,7 +39,7 @@ abstract class AbstractCommand extends HyperfCommand
                 $this->success('<fg=yellow>%d</> - %s : %s', [$index + 1, $item['id'], $item['name']]);
             }
             $pickedNumber = $this->ask(__('hf-shield.pick_a_number') . ': ');
-            $selectedItem = $items[(int) $pickedNumber - 1]['id'] ?? null;
+            $selectedItem = $items[(int) $pickedNumber - 1] ?? null;
 
             if (! $selectedItem) {
                 $this->failed($error);
@@ -53,7 +53,7 @@ abstract class AbstractCommand extends HyperfCommand
         exit(1); // Exit if no valid input
     }
 
-    protected function selectTenant(): ?string
+    protected function selectTenant(): ?array
     {
         return $this->selectItem(
             __('hf-shield.tenant_list_prompt'),
