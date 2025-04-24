@@ -126,7 +126,8 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
         $query = $this->queryBuilder
             ->from('users')
             ->where('id', $userId)
-            ->where('status', 'active');
+            ->andWhere('deleted', false)
+            ->andWhere('status', 'active');
 
         $this->addScopeConditions($query, $tenantId, $scope);
 
@@ -147,6 +148,7 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
             ->from('users')
             ->where('id', $userId)
             ->andWhere('deleted', false)
+            ->andWhere('status', 'active')
             ->execute();
     }
 
@@ -163,6 +165,7 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
             ->select()
             ->from('users')
             ->where('id', $id)
+            ->andWhere('status', 'active')
             ->andWhere('deleted', false)
             ->execute();
 
@@ -185,7 +188,8 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
                 ->select(['id', 'name', 'tenant'])
                 ->from('clients')
                 ->where('id', $clientId)
-                ->where('status', 'active')
+                ->andWhere('status', 'active')
+                ->andWhere('deleted', false)
                 ->execute()['data']
         );
     }

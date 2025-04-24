@@ -49,8 +49,10 @@ class SetupLoggerCommand extends AbstractCommand
             return;
         }
 
-        $alias = sprintf('%s-hf-shield-logger', $elasticConfig['prefix']);
-        $elasticConfig['data_stream']['body']['template']['aliases'][$alias] = new stdClass();
+        $alias1 = sprintf('%s-hf-shield-logger', $elasticConfig['prefix']);
+        $elasticConfig['data_stream']['body']['template']['aliases'][$alias1] = new stdClass();
+        $alias2 = sprintf('%s_logs', $elasticConfig['prefix']);
+        $elasticConfig['data_stream']['body']['template']['aliases'][$alias2] = new stdClass();
         $elasticConfig['data_stream']['body']['index_patterns'] = [sprintf('%s-hf-shield-logs*', $elasticConfig['prefix'])];
 
         try {
