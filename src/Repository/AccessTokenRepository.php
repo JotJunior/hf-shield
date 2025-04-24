@@ -160,6 +160,7 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
     public function getUserSessionData(string $id): array
     {
         $user = $this->queryBuilder
+            ->select()
             ->from('users')
             ->where('id', $id)
             ->andWhere('deleted', false)

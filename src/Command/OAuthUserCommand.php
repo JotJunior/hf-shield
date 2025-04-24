@@ -125,7 +125,7 @@ class OAuthUserCommand extends AbstractCommand
         $name = $this->ask(__('hf-shield.name') . ': <fg=yellow>(*)</>');
         $email = $this->retryIf('exists', __('hf-shield.email'), 'email', ['tenant.id' => $tenant['id']]);
         $phone = $this->retryIf('exists', __('hf-shield.phone'), 'phone', ['tenant.id' => $tenant['id']]);
-        $documentType = $this->retryIf('exists', __('hf-shield.document_type'), 'document_type', ['tenant.id' => $tenant['id']]);
+        $documentType = $this->ask(__('hf-shield.document_type') . ': <fg=yellow>(*)</>');
         $federalDocument = $this->retryIf('exists', __('hf-shield.federal_document'), 'federal_document', ['tenant.id' => $tenant['id']]);
 
         do {

@@ -13,7 +13,7 @@ namespace Jot\HfShield\Dto\OAuth\User;
 
 use Jot\HfRepository\Entity;
 
-class TenantDto extends Entity
+class Tenant extends Entity
 {
     protected ?string $id = null;
 

@@ -12,16 +12,18 @@ declare(strict_types=1);
 namespace Jot\HfShield\Dto\OAuth\User;
 
 use Jot\HfRepository\Entity;
+use Jot\HfShield\Entity\User\Tenant;
+use Hyperf\Swagger\Annotation as SA;
 
 class UserSessionDto extends Entity
 {
-    protected ?string $email = null;
-
-    protected ?string $federalDocument = null;
-
     protected ?string $id = null;
 
     protected ?string $name = null;
+
+    protected ?string $email = null;
+
+    protected ?string $federalDocument = null;
 
     protected ?string $phone = null;
 
@@ -30,8 +32,15 @@ class UserSessionDto extends Entity
     protected ?array $scopes = null;
 
     protected ?string $status = null;
+    protected mixed $customSettings = null;
 
-    protected ?TenantDto $tenant = null;
+    #[SA\Property(
+        property: 'tenant',
+        ref: '#/components/schemas/jot.shield.entity.access_token.tenant',
+        description: 'The user main tenant',
+        x: ['php_type' => '\Jot\HfShield\Entity\User\Tenant']
+    )]
+    protected ?Tenant $tenant = null;
 
 
 }

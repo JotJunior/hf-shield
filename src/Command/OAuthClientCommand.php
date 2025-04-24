@@ -74,7 +74,7 @@ class OAuthClientCommand extends AbstractCommand
             'data' => [
                 'name' => $name,
                 'redirect_uri' => $email,
-                'tenant' => ['id' => $tenant],
+                'tenant' => ['id' => $tenant['id']],
                 'status' => 'active',
             ],
         ]);
