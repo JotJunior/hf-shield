@@ -46,7 +46,7 @@ abstract class AbstractCommand extends HyperfCommand
                 exit(1);
             }
 
-            $this->success(__('hf-shield.selected', ['value' => $selectedItem]));
+            $this->success(__('hf-shield.selected', ['value' => $selectedItem['name']]));
             return $selectedItem;
         }
 
