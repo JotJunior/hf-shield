@@ -26,6 +26,7 @@ return [
     'passwords_must_match' => 'Passwords must match.',
     'key_success' => 'Key pairs created successfully',
     'key_exists' => 'Keys already exist, overwrite? [y/n]',
+    'document_type' => 'Document Type',
 
     // Form labels and prompts
     'name' => 'Name',

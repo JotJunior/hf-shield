@@ -26,6 +26,7 @@ return [
     'passwords_must_match' => 'As senhas devem coincidir.',
     'key_success' => 'Pares de chaves criados com sucesso',
     'key_exists' => 'As chaves já existem, sobrescrever? [s/n]',
+    'document_type' => 'Tipo de documento (cpf|rg|passport|ie|other)',
 
     // Form labels and prompts
     'name' => 'Nome',

@@ -36,6 +36,11 @@ return new class(ApplicationContext::getContainer()) extends Migration {
         $index->addField('keyword', 'status');
         $index->addField('text', 'custom_settings');
 
+        $tenant = new Migration\ElasticType\ObjectType('tenant');
+        $tenant->addField('keyword', 'id');
+        $tenant->addField('keyword', 'name')->normalizer('normalizer_ascii_lower');
+        $index->object($tenant);
+
         $tenant = new Migration\ElasticType\NestedType('tenants');
         $tenant->addField('keyword', 'id');
         $tenant->addField('keyword', 'name');

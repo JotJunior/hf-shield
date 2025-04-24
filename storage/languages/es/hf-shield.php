@@ -26,6 +26,7 @@ return [
     'passwords_must_match' => 'Las contraseñas deben coincidir.',
     'key_success' => 'Pares de claves creados exitosamente',
     'key_exists' => 'Las claves ya existen, ¿sobrescribir? [s/n]',
+    'document_type' => 'Tipo de Documento',
 
     // Form labels and prompts
     'name' => 'Nombre',
