@@ -20,19 +20,26 @@ use Jot\HfShield\Exception\UnauthorizedClientException;
 use Jot\HfShield\Exception\UnauthorizedSessionException;
 use Jot\HfShield\Exception\UnauthorizedUserException;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Log\LoggerInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerAwareTrait;
 use Throwable;
 
 class AuthExceptionHandler extends ExceptionHandler
 {
-    private LoggerInterface $logger;
+    use LoggerAwareTrait;
 
-    public function __construct(LoggerFactory $loggerFactory)
+    public function __construct(
+        private readonly ServerRequestInterface $request,
+        LoggerFactory                           $loggerFactory
+    )
     {
-        $this->logger = $loggerFactory->get('auth', 'elastic');
+        $this->setLogger($loggerFactory->get('auth', 'elastic'));
     }
 
-    public function handle(Throwable $throwable, ResponseInterface $response): ResponseInterface
+    public function handle(
+        Throwable         $throwable,
+        ResponseInterface $response
+    ): ResponseInterface
     {
         if ($throwable instanceof MissingResourceScopeException
             || $throwable instanceof UnauthorizedAccessException
@@ -47,16 +54,18 @@ class AuthExceptionHandler extends ExceptionHandler
                 'line' => $throwable->getLine(),
                 'trace' => $throwable->getTraceAsString(),
             ];
-            $this->logger->error($throwable->getMessage(), $context);
+            $this->logError($throwable);
             return $this->createJsonResponse($response, 401, ['message' => $throwable->getMessage()]);
         }
 
         return $response;
     }
 
-    public function isValid(Throwable $throwable): bool
+    private function logError(\Throwable $throwable): void
     {
-        return true;
+
+        $this->logger->error($throwable->getMessage(), $context);
+
     }
 
     private function createJsonResponse(ResponseInterface $response, int $statusCode, array $data): ResponseInterface
@@ -65,5 +74,10 @@ class AuthExceptionHandler extends ExceptionHandler
             ->withHeader('Content-Type', 'application/json')
             ->withStatus($statusCode)
             ->withBody(new SwooleStream(json_encode($data, JSON_UNESCAPED_UNICODE)));
+    }
+
+    public function isValid(Throwable $throwable): bool
+    {
+        return true;
     }
 }

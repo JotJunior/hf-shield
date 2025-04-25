@@ -18,8 +18,10 @@ use Jot\HfRepository\Exception\RepositoryUpdateException;
 use Jot\HfShield\Entity\User\User;
 use Jot\HfShield\Repository\UserRepository;
 use Psr\Container\ContainerInterface;
+use stdClass;
 use Symfony\Component\Console\Input\InputArgument;
 use Throwable;
+
 use function Hyperf\Support\make;
 use function Hyperf\Translation\__;
 
@@ -151,10 +153,11 @@ class OAuthUserCommand extends AbstractCommand
                     'scopes' => [
                         ['id' => 'root:all:all', 'name' => 'root', 'domain' => 'all', 'resource' => 'all', 'action' => 'all'],
                     ],
-                    'groups' => []
+                    'groups' => [],
                 ],
             ],
             'federal_document' => $federalDocument,
+            'custom_settings' => new stdClass(),
             'document_type' => $documentType,
             'password' => $password,
             'status' => 'active',

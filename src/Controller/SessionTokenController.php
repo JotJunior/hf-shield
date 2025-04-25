@@ -22,6 +22,7 @@ use Jot\HfShield\Repository\AccessTokenRepository;
 use League\OAuth2\Server\CryptTrait;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
+use function Hyperf\Translation\__;
 
 #[SA\HyperfServer('http')]
 #[SA\Schema(
@@ -112,44 +113,11 @@ class SessionTokenController extends AbstractController
         $token = json_decode($response->getBody()->getContents(), true);
         $cookie = $this->buildAccessTokenCookie($token['access_token'], $token['expires_in']);
 
-        return $response
-            ->withAddedHeader('Set-Cookie', (string) $cookie)
-            ->redirect($sessionConfig['redirect_uri']);
-    }
+        $this->logger->info(__('hf-shield.log_messages.user_logged_in', ['username' => $request->input('username')]));
 
-    #[SA\Post(
-        path: '/oauth/logout',
-        description: 'Remove the session cookie.',
-        summary: 'Remove the user session cookie',
-        requestBody: null,
-        tags: ['Session cookie'],
-        responses: [
-            new SA\Response(
-                response: 200,
-                description: 'Session logged out',
-                content: new SA\JsonContent(ref: self::AUTH_TOKEN_RESPONSE_SCHEMA)
-            ),
-            new SA\Response(
-                response: 400,
-                description: 'Bad request',
-                content: new SA\JsonContent(ref: self::AUTH_ERROR_RESPONSE_SCHEMA)
-            ),
-            new SA\Response(
-                response: 500,
-                description: 'Application error',
-                content: new SA\JsonContent(ref: self::AUTH_ERROR_RESPONSE_SCHEMA)
-            ),
-        ]
-    )]
-    #[RateLimit(create: 1, capacity: 2)]
-    public function logout(RequestInterface $request): PsrResponseInterface
-    {
-        $sessionConfig = $this->configService->get('hf_session');
-        $response = $this->container->get(ResponseInterface::class);
-        $cookie = $this->buildAccessTokenCookie('revoked', -1);
         return $response
-            ->withAddedHeader('Set-Cookie', (string) $cookie)
-            ->redirect($sessionConfig['redirect_login']);
+            ->withAddedHeader('Set-Cookie', (string)$cookie)
+            ->redirect($sessionConfig['redirect_uri']);
     }
 
     /**
@@ -196,9 +164,44 @@ class SessionTokenController extends AbstractController
             value: $this->encrypt($accessToken),
             expire: time() + $expiresIn,
             path: '/',
-            secure: false,
+            secure: true,
             httpOnly: true,
             sameSite: 'Strict'
         );
+    }
+
+    #[SA\Post(
+        path: '/oauth/logout',
+        description: 'Remove the session cookie.',
+        summary: 'Remove the user session cookie',
+        requestBody: null,
+        tags: ['Session cookie'],
+        responses: [
+            new SA\Response(
+                response: 200,
+                description: 'Session logged out',
+                content: new SA\JsonContent(ref: self::AUTH_TOKEN_RESPONSE_SCHEMA)
+            ),
+            new SA\Response(
+                response: 400,
+                description: 'Bad request',
+                content: new SA\JsonContent(ref: self::AUTH_ERROR_RESPONSE_SCHEMA)
+            ),
+            new SA\Response(
+                response: 500,
+                description: 'Application error',
+                content: new SA\JsonContent(ref: self::AUTH_ERROR_RESPONSE_SCHEMA)
+            ),
+        ]
+    )]
+    #[RateLimit(create: 1, capacity: 2)]
+    public function logout(RequestInterface $request): PsrResponseInterface
+    {
+        $sessionConfig = $this->configService->get('hf_session');
+        $response = $this->container->get(ResponseInterface::class);
+        $cookie = $this->buildAccessTokenCookie('revoked', -1);
+        return $response
+            ->withAddedHeader('Set-Cookie', (string)$cookie)
+            ->redirect($sessionConfig['redirect_login']);
     }
 }

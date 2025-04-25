@@ -17,7 +17,8 @@ return new class(ApplicationContext::getContainer()) extends Migration {
 
     public bool $addPrefix = true;
 
-    public function mapping(): Mapping {
+    public function mapping(): Mapping
+    {
         $index = new Mapping(name: self::INDEX_NAME);
 
         $index->addField('keyword', 'id');

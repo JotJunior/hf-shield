@@ -87,5 +87,6 @@ return [
         'system_view_user' => 'O sistema carregou as informações do :user.',
         'user_action_resource' => ':action o recurso :resource.',
         'user_action_resource_name' => ':action o recurso :resource \':name\'.',
+        'user_logged_in' => ':username logou com sucesso.',
     ],
 ];

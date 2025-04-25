@@ -22,25 +22,24 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Psr\Log\LoggerInterface;
+use Psr\Log\LoggerAwareTrait;
 
 class SessionStrategy implements MiddlewareInterface
 {
     use BearerTrait;
     use CryptTrait;
-
-    protected LoggerInterface $logger;
+    use LoggerAwareTrait;
 
     public function __construct(
         protected ContainerInterface $container,
         protected ResourceServer $server,
         protected AccessTokenRepository $repository,
         protected ServerRequestInterface $request,
-        protected LoggerFactory $loggerFactory,
+        LoggerFactory $loggerFactory,
         protected array $resourceScopes = []
     ) {
         $this->setEncryptionKey($this->container->get(ConfigInterface::class)->get('hf_shield.encryption_key'));
-        $this->logger = $this->loggerFactory->get('session', 'elastic');
+        $this->setLogger($loggerFactory->get('session', 'elastic'));
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface

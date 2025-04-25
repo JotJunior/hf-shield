@@ -20,14 +20,17 @@ use Jot\HfShield\Exception\MissingResourceScopeException;
 use Jot\HfShield\Exception\UnauthorizedAccessException;
 use Jot\HfShield\Exception\UnauthorizedClientException;
 use Jot\HfShield\Exception\UnauthorizedUserException;
+use Jot\HfShield\LoggerContextCollector;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ServerRequestInterface;
-
+use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
+
 use function Hyperf\Translation\__;
 
 trait BearerTrait
 {
+    use LoggerContextCollector;
     public const ATTR_ACCESS_TOKEN_ID = 'oauth_access_token_id';
 
     public const ATTR_CLIENT_ID = 'oauth_client_id';
@@ -35,8 +38,6 @@ trait BearerTrait
     public const ATTR_USER_ID = 'oauth_user_id';
 
     public const ATTR_SCOPES = 'oauth_scopes';
-
-    protected LoggerInterface $logger;
 
     protected array $oauthClient = [];
 
@@ -131,26 +132,7 @@ trait BearerTrait
     protected function collectMetadata(): array
     {
         $this->oauthTokenId = $this->request->getAttribute(self::ATTR_ACCESS_TOKEN_ID);
-
-        $metadata = [
-            'user' => [
-                'id' => $this->oauthUser['id'] ?? null,
-                'name' => $this->oauthUser['name'] ?? null,
-                'picture' => $this->oauthUser['picture'] ?? null,
-            ],
-            'access' => [
-                'token' => $this->oauthTokenId ?? null,
-                'client' => $this->oauthClient['id'] ?? null,
-                'tenant' => $this->oauthClient['tenant']['id'] ?? null,
-                'scopes' => $this->request->getAttribute(self::ATTR_SCOPES) ?? null,
-            ],
-            'server_params' => $this->request->getServerParams(),
-            'request' => [
-                'query' => $this->request->getQueryParams(),
-                'body' => json_decode($this->request->getBody()->getContents(), true),
-            ],
-        ];
-
+        $metadata = parent::collectMetadata();
         $metadata['message'] = $this->generateMessage($metadata);
 
         return $metadata;

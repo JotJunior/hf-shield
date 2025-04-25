@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Jot\HfShield\Command;
 
 use Hyperf\Command\Annotation\Command;
-use Hyperf\Di\Annotation\Inject;
 use Jot\HfRepository\Command\HfFriendlyLinesTrait;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Input\InputArgument;

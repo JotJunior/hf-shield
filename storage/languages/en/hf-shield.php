@@ -86,5 +86,6 @@ return [
         'system_view_user' => 'The sustem load :user\`s information.',
         'user_action_resource' => ':action the :resource.',
         'user_action_resource_name' => ':action the :resource \':name\'.',
+        'user_logged_in' => ':username logged in successfully.',
     ],
 ];

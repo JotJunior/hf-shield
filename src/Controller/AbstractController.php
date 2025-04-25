@@ -15,10 +15,12 @@ use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\ContainerInterface;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
+use Hyperf\Logger\LoggerFactory;
 use Hyperf\Swagger\Annotation as SA;
 use Jot\HfRepository\RepositoryInterface;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\CryptTrait;
+use Psr\Log\LoggerAwareTrait;
 
 #[SA\SecurityScheme(
     securityScheme: 'shieldBearerAuth',
@@ -49,6 +51,7 @@ use League\OAuth2\Server\CryptTrait;
 class AbstractController
 {
     use CryptTrait;
+    use LoggerAwareTrait;
 
     protected string $repository;
 
@@ -61,11 +64,13 @@ class AbstractController
         protected RequestInterface $request,
         protected ResponseInterface $response,
         protected AuthorizationServer $server,
-        protected readonly ConfigInterface $configService
+        protected readonly ConfigInterface $configService,
+        LoggerFactory $loggerFactory
     ) {
         $this->config = $this->configService->get('hf_shield');
         $this->setEncryptionKey($this->config['encryption_key']);
         $this->repositoryInstance = $this->container->get($this->repository);
+        $this->setLogger($loggerFactory->get('shield', 'elastic'));
     }
 
     protected function repository(): RepositoryInterface

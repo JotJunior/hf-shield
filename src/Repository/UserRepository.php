@@ -20,6 +20,7 @@ use Jot\HfShield\Entity\UserEntity;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\UserEntityInterface;
 use League\OAuth2\Server\Repositories\UserRepositoryInterface;
+
 use function Hyperf\Support\make;
 use function Hyperf\Translation\__;
 
@@ -38,12 +39,11 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
      * @return null|UserEntityInterface returns a UserEntityInterface instance if the credentials are valid, otherwise null
      */
     public function getUserEntityByUserCredentials(
-        string                $username,
-        string                $password,
-        string                $grantType,
+        string $username,
+        string $password,
+        string $grantType,
         ClientEntityInterface $clientEntity
-    ): ?UserEntityInterface
-    {
+    ): ?UserEntityInterface {
         /** @var User $user */
         $user = $this->first(['email' => $username]);
         if (empty($user)) {
@@ -56,22 +56,6 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
         }
 
         return (new UserEntity())->setIdentifier($user->getId());
-    }
-
-    /**
-     * Validates if the given plain password matches the hashed password after applying the hash algorithm with the salt.
-     *
-     * @param string $hashedPassword the hashed password to validate against
-     * @param string $plainPassword the plain password input provided by the user
-     * @param null|string $passwordSalt the salt used in the password hashing process, or null if none
-     *
-     * @return bool returns true if the plain password matches the hashed password; otherwise, false
-     */
-    private function isPasswordValid(string $hashedPassword, string $plainPassword, ?string $passwordSalt): bool
-    {
-        $encryptionKey = $this->config['encryption_key'];
-        $computedHash = hash_hmac('sha256', $plainPassword . $passwordSalt, $encryptionKey);
-        return hash_equals($hashedPassword, $computedHash);
     }
 
     /**
@@ -203,6 +187,22 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
             ->insert($entity->toArray());
 
         return make(User::class, ['data' => $insertResult['data']]);
+    }
+
+    /**
+     * Validates if the given plain password matches the hashed password after applying the hash algorithm with the salt.
+     *
+     * @param string $hashedPassword the hashed password to validate against
+     * @param string $plainPassword the plain password input provided by the user
+     * @param null|string $passwordSalt the salt used in the password hashing process, or null if none
+     *
+     * @return bool returns true if the plain password matches the hashed password; otherwise, false
+     */
+    private function isPasswordValid(string $hashedPassword, string $plainPassword, ?string $passwordSalt): bool
+    {
+        $encryptionKey = $this->config['encryption_key'];
+        $computedHash = hash_hmac('sha256', $plainPassword . $passwordSalt, $encryptionKey);
+        return hash_equals($hashedPassword, $computedHash);
     }
 
     /**

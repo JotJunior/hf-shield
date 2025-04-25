@@ -18,5 +18,4 @@ class Tenant extends Entity
     protected ?string $id = null;
 
     protected ?string $name = null;
-
 }
