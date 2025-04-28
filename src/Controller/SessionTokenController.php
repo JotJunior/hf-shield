@@ -22,7 +22,6 @@ use Jot\HfShield\Repository\AccessTokenRepository;
 use League\OAuth2\Server\CryptTrait;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
-use function Hyperf\Translation\__;
 
 #[SA\HyperfServer('http')]
 #[SA\Schema(
@@ -113,61 +112,9 @@ class SessionTokenController extends AbstractController
         $token = json_decode($response->getBody()->getContents(), true);
         $cookie = $this->buildAccessTokenCookie($token['access_token'], $token['expires_in']);
 
-        $this->logger->info(__('hf-shield.log_messages.user_logged_in', ['username' => $request->input('username')]));
-
         return $response
-            ->withAddedHeader('Set-Cookie', (string)$cookie)
+            ->withAddedHeader('Set-Cookie', (string) $cookie)
             ->redirect($sessionConfig['redirect_uri']);
-    }
-
-    /**
-     * Validates the session configuration to ensure the required authentication settings are present.
-     *
-     * @param array $sessionConfig the session configuration array containing authentication settings
-     * @throws UnauthorizedSessionException if the 'client_id' is missing from the authentication settings
-     */
-    private function validateSessionConfig(array $sessionConfig): void
-    {
-        if (empty($sessionConfig['auth_settings']['client_id'])) {
-            throw new UnauthorizedSessionException();
-        }
-    }
-
-    /**
-     * Prepares and populates the request body with necessary authentication parameters.
-     *
-     * @param array $body the initial request body to be populated
-     * @param array $sessionConfig the session configuration array containing authentication settings
-     * @return array the modified request body with authentication details added
-     */
-    private function prepareRequestBody(array $body, array $sessionConfig): array
-    {
-        $authSettings = $sessionConfig['auth_settings'];
-        $body['client_id'] = $authSettings['client_id'];
-        $body['client_secret'] = $authSettings['client_secret'];
-        $body['scope'] = $authSettings['scopes'];
-        $body['grant_type'] = $authSettings['grant_type'];
-        return $body;
-    }
-
-    /**
-     * Creates and returns a cookie containing the access token with specified expiration and security attributes.
-     *
-     * @param string $accessToken the access token to be stored in the cookie
-     * @param int $expiresIn the lifespan of the cookie in seconds
-     * @return Cookie the constructed cookie instance with access token data
-     */
-    private function buildAccessTokenCookie(string $accessToken, int $expiresIn): Cookie
-    {
-        return new Cookie(
-            name: 'access_token',
-            value: $this->encrypt($accessToken),
-            expire: time() + $expiresIn,
-            path: '/',
-            secure: true,
-            httpOnly: true,
-            sameSite: 'Strict'
-        );
     }
 
     #[SA\Post(
@@ -201,7 +148,57 @@ class SessionTokenController extends AbstractController
         $response = $this->container->get(ResponseInterface::class);
         $cookie = $this->buildAccessTokenCookie('revoked', -1);
         return $response
-            ->withAddedHeader('Set-Cookie', (string)$cookie)
+            ->withAddedHeader('Set-Cookie', (string) $cookie)
             ->redirect($sessionConfig['redirect_login']);
+    }
+
+    /**
+     * Creates and returns a cookie containing the access token with specified expiration and security attributes.
+     *
+     * @param string $accessToken the access token to be stored in the cookie
+     * @param int $expiresIn the lifespan of the cookie in seconds
+     * @return Cookie the constructed cookie instance with access token data
+     */
+    protected function buildAccessTokenCookie(string $accessToken, int $expiresIn): Cookie
+    {
+        return new Cookie(
+            name: 'access_token',
+            value: $this->encrypt($accessToken),
+            expire: time() + $expiresIn,
+            path: '/',
+            secure: true,
+            httpOnly: true,
+            sameSite: 'Strict'
+        );
+    }
+
+    /**
+     * Validates the session configuration to ensure the required authentication settings are present.
+     *
+     * @param array $sessionConfig the session configuration array containing authentication settings
+     * @throws UnauthorizedSessionException if the 'client_id' is missing from the authentication settings
+     */
+    private function validateSessionConfig(array $sessionConfig): void
+    {
+        if (empty($sessionConfig['auth_settings']['client_id'])) {
+            throw new UnauthorizedSessionException();
+        }
+    }
+
+    /**
+     * Prepares and populates the request body with necessary authentication parameters.
+     *
+     * @param array $body the initial request body to be populated
+     * @param array $sessionConfig the session configuration array containing authentication settings
+     * @return array the modified request body with authentication details added
+     */
+    private function prepareRequestBody(array $body, array $sessionConfig): array
+    {
+        $authSettings = $sessionConfig['auth_settings'];
+        $body['client_id'] = $authSettings['client_id'];
+        $body['client_secret'] = $authSettings['client_secret'];
+        $body['scope'] = $authSettings['scopes'];
+        $body['grant_type'] = $authSettings['grant_type'];
+        return $body;
     }
 }

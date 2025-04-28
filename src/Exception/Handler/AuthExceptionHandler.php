@@ -19,28 +19,26 @@ use Jot\HfShield\Exception\UnauthorizedAccessException;
 use Jot\HfShield\Exception\UnauthorizedClientException;
 use Jot\HfShield\Exception\UnauthorizedSessionException;
 use Jot\HfShield\Exception\UnauthorizedUserException;
+use Jot\HfShield\LoggerContextCollector;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Log\LoggerAwareTrait;
 use Throwable;
 
 class AuthExceptionHandler extends ExceptionHandler
 {
-    use LoggerAwareTrait;
+    use LoggerContextCollector;
 
     public function __construct(
         private readonly ServerRequestInterface $request,
-        LoggerFactory                           $loggerFactory
-    )
-    {
+        LoggerFactory $loggerFactory
+    ) {
         $this->setLogger($loggerFactory->get('auth', 'elastic'));
     }
 
     public function handle(
-        Throwable         $throwable,
+        Throwable $throwable,
         ResponseInterface $response
-    ): ResponseInterface
-    {
+    ): ResponseInterface {
         if ($throwable instanceof MissingResourceScopeException
             || $throwable instanceof UnauthorizedAccessException
             || $throwable instanceof UnauthorizedSessionException
@@ -61,11 +59,14 @@ class AuthExceptionHandler extends ExceptionHandler
         return $response;
     }
 
-    private function logError(\Throwable $throwable): void
+    public function isValid(Throwable $throwable): bool
     {
+        return true;
+    }
 
-        $this->logger->error($throwable->getMessage(), $context);
-
+    private function logError(Throwable $throwable): void
+    {
+        $this->log($throwable->getMessage());
     }
 
     private function createJsonResponse(ResponseInterface $response, int $statusCode, array $data): ResponseInterface
@@ -74,10 +75,5 @@ class AuthExceptionHandler extends ExceptionHandler
             ->withHeader('Content-Type', 'application/json')
             ->withStatus($statusCode)
             ->withBody(new SwooleStream(json_encode($data, JSON_UNESCAPED_UNICODE)));
-    }
-
-    public function isValid(Throwable $throwable): bool
-    {
-        return true;
     }
 }

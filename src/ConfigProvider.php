@@ -32,8 +32,13 @@ use Monolog\Formatter\ElasticsearchFormatter;
 use Monolog\Handler\ElasticsearchHandler;
 use Monolog\Level;
 use stdClass;
+use Symfony\Component\Serializer\SerializerInterface;
+use Webauthn\AttestationStatement\AttestationStatementSupportManager;
+use Webauthn\AttestationStatement\NoneAttestationStatementSupport;
+use Webauthn\Denormalizer\WebauthnSerializerFactory;
 
 use function Hyperf\Support\env;
+use function Hyperf\Support\make;
 
 class ConfigProvider
 {
@@ -82,6 +87,16 @@ class ConfigProvider
                         type: '_doc',
                         encryptionKey: $container->get(ConfigInterface::class)->get('hf_shield.encryption_key'),
                     );
+                },
+                SerializerInterface::class => function () {
+                    $attestationStatementSupportManager = AttestationStatementSupportManager::create();
+                    $attestationStatementSupportManager->add(NoneAttestationStatementSupport::create());
+
+                    $factory = make(WebauthnSerializerFactory::class, [
+                        'attestationStatementSupportManager' => $attestationStatementSupportManager,
+                    ]);
+
+                    return $factory->create();
                 },
             ],
             'commands' => [

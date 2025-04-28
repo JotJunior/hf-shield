@@ -13,7 +13,7 @@ use Jot\HfElastic\Migration;
 use Jot\HfElastic\Migration\Mapping;
 
 return new class(ApplicationContext::getContainer()) extends Migration {
-    public const INDEX_NAME = 'users_challenges';
+    public const INDEX_NAME = 'user_challenges';
 
     public bool $addPrefix = true;
 
@@ -24,6 +24,7 @@ return new class(ApplicationContext::getContainer()) extends Migration {
         // basic user data
         $index->addField('keyword', 'id');
         $index->addField('keyword', 'challenge');
+        $index->addField('keyword', 'content');
         $index->addField('keyword', 'status');
 
         $user = new Migration\ElasticType\ObjectType('user');

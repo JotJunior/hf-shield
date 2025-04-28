@@ -29,7 +29,7 @@ class AccessTokenEntity implements AccessTokenEntityInterface
      *
      * @return Token the generated JWT
      */
-    private function convertToJWT(): Token
+    public function convertToJWT(): Token
     {
         $this->initJwtConfiguration();
 

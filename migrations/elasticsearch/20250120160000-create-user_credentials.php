@@ -13,7 +13,7 @@ use Jot\HfElastic\Migration;
 use Jot\HfElastic\Migration\Mapping;
 
 return new class(ApplicationContext::getContainer()) extends Migration {
-    public const INDEX_NAME = 'users_credentials';
+    public const INDEX_NAME = 'user_credentials';
 
     public bool $addPrefix = true;
 
@@ -24,10 +24,7 @@ return new class(ApplicationContext::getContainer()) extends Migration {
         // basic user data
         $index->addField('keyword', 'id');
         $index->addField('keyword', 'name')->normalizer('normalizer_ascii_lower')->searchable();
-        $index->addField('keyword', 'type');
-        $index->addField('keyword', 'content');
-        $index->addField('keyword', 'status');
-        $index->addField('date', 'expiration_date');
+        $index->addField('text', 'content');
 
         $user = new Migration\ElasticType\ObjectType('user');
         $user->addField('keyword', 'id');
@@ -35,7 +32,7 @@ return new class(ApplicationContext::getContainer()) extends Migration {
         $index->object($user);
 
         $index->addField('alias', 'user_id')->path('user.id');
-        $index->addField('alias', 'user_webauthn_credential_id')->path('id');
+        $index->addField('alias', 'public_key_credential_id')->path('id');
         $index->defaults();
 
         $index->settings([

@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Jot\HfShield\Middleware;
 
-use Exception;
 use Hyperf\HttpServer\Router\Dispatched;
 use Hyperf\HttpServer\Router\Handler;
 use Hyperf\Stringable\Str;
@@ -23,14 +22,13 @@ use Jot\HfShield\Exception\UnauthorizedUserException;
 use Jot\HfShield\LoggerContextCollector;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Log\LoggerAwareTrait;
-use Psr\Log\LoggerInterface;
 
 use function Hyperf\Translation\__;
 
 trait BearerTrait
 {
     use LoggerContextCollector;
+
     public const ATTR_ACCESS_TOKEN_ID = 'oauth_access_token_id';
 
     public const ATTR_CLIENT_ID = 'oauth_client_id';
@@ -109,12 +107,13 @@ trait BearerTrait
         try {
             $this->request = $this->server->validateAuthenticatedRequest($request);
         } catch (OAuthServerException $e) {
-            throw new UnauthorizedAccessException($this->collectMetadata());
+            echo $e->getMessage(), PHP_EOL;
+            throw new UnauthorizedAccessException($this->metadata());
         }
 
         $this->collectResourceScopes();
         if (empty($this->resourceScopes)) {
-            $this->logger->error('Missing resource scope', $this->collectMetadata());
+            $this->logger->error('Missing resource scope', $this->metadata());
             throw new MissingResourceScopeException();
         }
         $this->validateRequestAttributes();
@@ -129,10 +128,10 @@ trait BearerTrait
      *
      * @return array an associative array containing organized metadata
      */
-    protected function collectMetadata(): array
+    protected function metadata(): array
     {
         $this->oauthTokenId = $this->request->getAttribute(self::ATTR_ACCESS_TOKEN_ID);
-        $metadata = parent::collectMetadata();
+        $metadata = $this->collectMetadata();
         $metadata['message'] = $this->generateMessage($metadata);
 
         return $metadata;
@@ -165,21 +164,21 @@ trait BearerTrait
         $this->assertRequestAttribute(self::ATTR_ACCESS_TOKEN_ID, UnauthorizedAccessException::class);
 
         if (! $this->tokenHasRequiredScopes()) {
-            throw new UnauthorizedAccessException($this->collectMetadata());
+            throw new UnauthorizedAccessException($this->metadata());
         }
 
         $client = $this->repository->isClientValid(
             $this->request->getAttribute(self::ATTR_CLIENT_ID)
         );
         if (! $client) {
-            throw new UnauthorizedClientException($this->collectMetadata());
+            throw new UnauthorizedClientException($this->metadata());
         }
         $this->oauthClient = $client;
 
         $userId = $this->request->getAttribute(self::ATTR_USER_ID);
 
         if (! $this->repository->isUserValid($userId, $client['tenant']['id'], $this->resourceScopes)) {
-            throw new UnauthorizedUserException($this->collectMetadata());
+            throw new UnauthorizedUserException($this->metadata());
         }
         $this->oauthUser = $this->repository->getUserSessionData($userId);
 
@@ -196,7 +195,7 @@ trait BearerTrait
     protected function assertRequestAttribute(string $attributeName, string $exceptionClass): void
     {
         if (empty($this->request->getAttribute($attributeName))) {
-            throw new $exceptionClass($this->collectMetadata());
+            throw new $exceptionClass($this->metadata());
         }
     }
 
@@ -231,7 +230,7 @@ trait BearerTrait
 
     protected function logRequest(): void
     {
-        $metadata = $this->collectMetadata();
-        $this->logger->info(message: $metadata['message'], context: $metadata);
+        $metadata = $this->metadata();
+        $this->log($metadata['message']);
     }
 }
