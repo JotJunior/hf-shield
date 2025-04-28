@@ -23,7 +23,7 @@ use Jot\HfShield\Repository\AccessTokenRepository;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
-#[Controller(prefix: '/v2/web-auth/login')]
+#[Controller(prefix: '/web-auth/login')]
 class WebauthnLoginController extends SessionTokenController
 {
     use WebauthnLoginCollectCredentialsHandler;

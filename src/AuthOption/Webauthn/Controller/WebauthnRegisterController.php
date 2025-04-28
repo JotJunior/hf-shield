@@ -25,7 +25,7 @@ use Jot\HfShield\Repository\AccessTokenRepository;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
-#[Controller(prefix: '/v2/web-auth')]
+#[Controller(prefix: '/web-auth')]
 class WebauthnRegisterController extends AbstractController
 {
     use WebauthnRegisterCreateOptionsHandler;
