@@ -73,10 +73,9 @@ trait WebauthnRegisterCredentialsHandler
             ceremonyStepManager: (new CeremonyStepManagerFactory())->creationCeremony(),
         );
 
-        $userChallenge = $this->userChallengeRepository->first([
-            'user.id' => $userId,
-            '_sort' => 'created_at:desc',
-        ])->toArray();
+        $userChallenge = $this->userChallengeRepository
+            ->find(Base64UrlSafe::encodeUnpadded($publicKeyCredential->response->clientDataJSON->challenge))
+            ->toArray();
 
         $publicKeyCredentialOptions = unserialize($this->decrypt($userChallenge['content']));
 

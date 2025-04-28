@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @license  MIT
  */
 
-namespace Jot\HfShield\Controller;
+namespace Jot\HfShield\AuthOption\BearerToken\Controller;
 
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\DeleteMapping;
@@ -17,6 +17,7 @@ use Hyperf\HttpServer\Annotation\Middleware;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\RateLimit\Annotation\RateLimit;
 use Hyperf\Swagger\Annotation as SA;
+use Jot\HfShield\Controller\AbstractController;
 use Jot\HfShield\Exception\UnauthorizedAccessException;
 use Jot\HfShield\Middleware\BearerStrategy;
 use Jot\HfShield\Repository\AccessTokenRepository;
@@ -51,7 +52,7 @@ use Throwable;
     type: 'object'
 )]
 #[Controller(prefix: '/oauth')]
-class AccessTokenController extends AbstractController
+class BearerTokenController extends AbstractController
 {
     protected string $repository = AccessTokenRepository::class;
 

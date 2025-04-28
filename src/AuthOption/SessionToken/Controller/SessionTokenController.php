@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @license  MIT
  */
 
-namespace Jot\HfShield\Controller;
+namespace Jot\HfShield\AuthOption\SessionToken\Controller;
 
 use Hyperf\HttpMessage\Cookie\Cookie;
 use Hyperf\HttpServer\Annotation\Controller;
@@ -17,6 +17,7 @@ use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use Hyperf\RateLimit\Annotation\RateLimit;
 use Hyperf\Swagger\Annotation as SA;
+use Jot\HfShield\Controller\AbstractController;
 use Jot\HfShield\Exception\UnauthorizedSessionException;
 use Jot\HfShield\Repository\AccessTokenRepository;
 use League\OAuth2\Server\CryptTrait;
