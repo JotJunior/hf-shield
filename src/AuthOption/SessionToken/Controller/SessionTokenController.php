@@ -211,7 +211,7 @@ class SessionTokenController extends AbstractController
         return $body;
     }
 
-    #[RequestMapping(path: '/oauth/session[/[{id}]]', methods: ['OPTIONS'])]
+    #[RequestMapping(path: '/oauth/session', methods: ['OPTIONS'])]
     public function requestOptionsValue(): PsrResponseInterface
     {
         return $this->response
