@@ -211,12 +211,12 @@ class SessionTokenController extends AbstractController
         return $body;
     }
 
-    #[RequestMapping(path: '/v2/access/groups[/[{id}]]', methods: ['OPTIONS'])]
+    #[RequestMapping(path: '/oauth/session', methods: ['OPTIONS'])]
     public function requestOptions(): PsrResponseInterface
     {
         return $this->response
             ->json([
-                'methods' => ['GET', 'POST', 'PUT', 'DELETE', 'HEAD'],
+                'methods' => ['POST'],
                 'rate_limit' => 'Max 10 requests per second.',
             ]);
     }
