@@ -28,10 +28,14 @@ trait LoggerContextCollector
         $metadata = [];
         if (property_exists($this, 'request')) {
             $metadata['server_params'] = $this->request?->getServerParams();
-            $metadata['query'] = $this->request?->getServerParams();
+            $metadata['query'] = $this->request?->getQueryParams();
             $metadata['headers'] = $this->request?->getHeaders();
-            $metadata['body'] = $this->request?->getBody()?->getContents();
-            $metadata['body'] = empty($metadata['body']) ? null : json_decode($metadata['body'], true);
+            if(method_exists($this->request, 'getParsedBody')) {
+                $metadata['body'] = $this->request?->getParsedBody();
+            } elseif (method_exists($this->request, 'getBody')) {
+                $metadata['body'] = $this->request?->getBody()?->getContents();
+                $metadata['body'] = empty($metadata['body']) ? null : json_decode($metadata['body'], true);
+            }
             $metadata['scopes'] = $this->request?->getAttribute('oauth_scopes');
         }
         if (property_exists($this, 'oauthUser') && $this->oauthUser) {
