@@ -13,13 +13,13 @@ namespace Jot\HfShield\Exception;
 
 use function Hyperf\Translation\__;
 
-class UnauthorizedAccessException extends AbstractException
+class ForbiddenAccessException extends AbstractException
 {
     public function __construct(array $metadata = [])
     {
         $this->metadata = $metadata;
-        $this->message = __('hf-shield.unauthorized_access');
-        $this->code = 401;
+        $this->message = __('hf-shield.forbidden_access');
+        $this->code = 403;
 
         parent::__construct($this->message, $this->code);
     }

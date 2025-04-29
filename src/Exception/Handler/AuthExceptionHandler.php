@@ -14,7 +14,9 @@ namespace Jot\HfShield\Exception\Handler;
 use Hyperf\ExceptionHandler\ExceptionHandler;
 use Hyperf\HttpMessage\Stream\SwooleStream;
 use Hyperf\Logger\LoggerFactory;
+use Jot\HfShield\Exception\ForbiddenAccessException;
 use Jot\HfShield\Exception\MissingResourceScopeException;
+use Jot\HfShield\Exception\RecordNotFoundException;
 use Jot\HfShield\Exception\UnauthorizedAccessException;
 use Jot\HfShield\Exception\UnauthorizedClientException;
 use Jot\HfShield\Exception\UnauthorizedSessionException;
@@ -30,21 +32,18 @@ class AuthExceptionHandler extends ExceptionHandler
 
     public function __construct(
         private readonly ServerRequestInterface $request,
-        LoggerFactory $loggerFactory
-    ) {
+        LoggerFactory                           $loggerFactory
+    )
+    {
         $this->setLogger($loggerFactory->get('auth', 'elastic'));
     }
 
     public function handle(
-        Throwable $throwable,
+        Throwable         $throwable,
         ResponseInterface $response
-    ): ResponseInterface {
-        if ($throwable instanceof MissingResourceScopeException
-            || $throwable instanceof UnauthorizedAccessException
-            || $throwable instanceof UnauthorizedSessionException
-            || $throwable instanceof UnauthorizedUserException
-            || $throwable instanceof UnauthorizedClientException) {
-            $this->stopPropagation();
+    ): ResponseInterface
+    {
+        if (method_exists($throwable, 'getMetadata')) {
             $context = $throwable->getMetadata();
             $context['exception'] = [
                 'message' => $throwable->getMessage(),
@@ -52,16 +51,29 @@ class AuthExceptionHandler extends ExceptionHandler
                 'line' => $throwable->getLine(),
                 'trace' => $throwable->getTraceAsString(),
             ];
+            $throwable->setMetadata($context);
+        }
+
+        if ($throwable instanceof MissingResourceScopeException
+            || $throwable instanceof UnauthorizedAccessException
+            || $throwable instanceof UnauthorizedSessionException
+            || $throwable instanceof UnauthorizedUserException
+            || $throwable instanceof ForbiddenAccessException
+            || $throwable instanceof UnauthorizedClientException) {
+            $this->stopPropagation();
             $this->logError($throwable);
-            return $this->createJsonResponse($response, 401, ['message' => $throwable->getMessage()]);
+            return $this->createJsonResponse(
+                response: $response,
+                statusCode: $throwable->getCode(),
+                data: [
+                    'data' => null,
+                    'result' => 'error',
+                    'message' => $throwable->getMessage(),
+                ]
+            );
         }
 
         return $response;
-    }
-
-    public function isValid(Throwable $throwable): bool
-    {
-        return true;
     }
 
     private function logError(Throwable $throwable): void
@@ -75,5 +87,10 @@ class AuthExceptionHandler extends ExceptionHandler
             ->withHeader('Content-Type', 'application/json')
             ->withStatus($statusCode)
             ->withBody(new SwooleStream(json_encode($data, JSON_UNESCAPED_UNICODE)));
+    }
+
+    public function isValid(Throwable $throwable): bool
+    {
+        return true;
     }
 }
