@@ -198,7 +198,7 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
      *
      * @return bool returns true if the plain password matches the hashed password; otherwise, false
      */
-    private function isPasswordValid(string $hashedPassword, string $plainPassword, ?string $passwordSalt): bool
+    public function isPasswordValid(string $hashedPassword, string $plainPassword, ?string $passwordSalt): bool
     {
         $encryptionKey = $this->config['encryption_key'];
         $computedHash = hash_hmac('sha256', $plainPassword . $passwordSalt, $encryptionKey);
