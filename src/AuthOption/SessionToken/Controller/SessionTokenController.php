@@ -13,6 +13,7 @@ namespace Jot\HfShield\AuthOption\SessionToken\Controller;
 
 use Hyperf\HttpMessage\Cookie\Cookie;
 use Hyperf\HttpServer\Annotation\Controller;
+use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use Hyperf\RateLimit\Annotation\RateLimit;
@@ -209,4 +210,15 @@ class SessionTokenController extends AbstractController
         $body['grant_type'] = $authSettings['grant_type'];
         return $body;
     }
+
+    #[RequestMapping(path: '/v2/access/groups[/[{id}]]', methods: ['OPTIONS'])]
+    public function requestOptions(): PsrResponseInterface
+    {
+        return $this->response
+            ->json([
+                'methods' => ['GET', 'POST', 'PUT', 'DELETE', 'HEAD'],
+                'rate_limit' => 'Max 10 requests per second.',
+            ]);
+    }
+
 }

@@ -212,7 +212,7 @@ class JwtSignatureController extends AbstractController
         return $this->response->json([
             'data' => $entity->toArray(),
             'result' => 'success',
-            'error' => null,
+            'message' => null,
         ]);
     }
 
@@ -334,7 +334,7 @@ class JwtSignatureController extends AbstractController
         return $this->response->json([
             'data' => null,
             'result' => $this->repository->delete($id) ? 'success' : 'error',
-            'error' => null,
+            'message' => null,
         ]);
     }
 }

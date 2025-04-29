@@ -30,7 +30,7 @@ trait LoggerContextCollector
             $metadata['server_params'] = $this->request?->getServerParams();
             $metadata['query'] = $this->request?->getQueryParams();
             $metadata['headers'] = $this->request?->getHeaders();
-            if(method_exists($this->request, 'getParsedBody')) {
+            if (method_exists($this->request, 'getParsedBody')) {
                 $metadata['body'] = $this->request?->getParsedBody();
             } elseif (method_exists($this->request, 'getBody')) {
                 $metadata['body'] = $this->request?->getBody()?->getContents();

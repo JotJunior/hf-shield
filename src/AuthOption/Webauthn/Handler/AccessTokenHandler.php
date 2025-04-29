@@ -20,11 +20,11 @@ use Jot\HfShield\Entity\ClientEntity;
 use Jot\HfShield\Entity\ScopeEntity;
 use Jot\HfShield\Repository\AccessTokenRepository;
 use League\OAuth2\Server\CryptKey;
+
 use function Hyperf\Support\make;
 
 trait AccessTokenHandler
 {
-
     #[Inject]
     protected AccessTokenRepository $accessTokenRepository;
 
@@ -76,12 +76,12 @@ trait AccessTokenHandler
                 'client' => [
                     'id' => $clientEntity->getIdentifier(),
                 ],
-                'scopes' => array_map(fn(ScopeEntity $scope) => ['id' => $scope->getIdentifier()], $accessToken->getScopes()),
+                'scopes' => array_map(fn (ScopeEntity $scope) => ['id' => $scope->getIdentifier()], $accessToken->getScopes()),
                 'tenant' => [
-                    'id' => $clientEntity->getTenantId()
+                    'id' => $clientEntity->getTenantId(),
                 ],
                 'metadata' => $this->accessTokenRepository->collectMetadata(),
-            ]
+            ],
         ]);
         $this->accessTokenRepository->create($accessTokenEntity);
 

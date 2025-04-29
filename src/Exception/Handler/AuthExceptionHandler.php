@@ -16,7 +16,6 @@ use Hyperf\HttpMessage\Stream\SwooleStream;
 use Hyperf\Logger\LoggerFactory;
 use Jot\HfShield\Exception\ForbiddenAccessException;
 use Jot\HfShield\Exception\MissingResourceScopeException;
-use Jot\HfShield\Exception\RecordNotFoundException;
 use Jot\HfShield\Exception\UnauthorizedAccessException;
 use Jot\HfShield\Exception\UnauthorizedClientException;
 use Jot\HfShield\Exception\UnauthorizedSessionException;
@@ -32,17 +31,15 @@ class AuthExceptionHandler extends ExceptionHandler
 
     public function __construct(
         private readonly ServerRequestInterface $request,
-        LoggerFactory                           $loggerFactory
-    )
-    {
+        LoggerFactory $loggerFactory
+    ) {
         $this->setLogger($loggerFactory->get('auth', 'elastic'));
     }
 
     public function handle(
-        Throwable         $throwable,
+        Throwable $throwable,
         ResponseInterface $response
-    ): ResponseInterface
-    {
+    ): ResponseInterface {
         if (method_exists($throwable, 'getMetadata')) {
             $context = $throwable->getMetadata();
             $context['exception'] = [
@@ -76,6 +73,11 @@ class AuthExceptionHandler extends ExceptionHandler
         return $response;
     }
 
+    public function isValid(Throwable $throwable): bool
+    {
+        return true;
+    }
+
     private function logError(Throwable $throwable): void
     {
         $this->log($throwable->getMessage());
@@ -87,10 +89,5 @@ class AuthExceptionHandler extends ExceptionHandler
             ->withHeader('Content-Type', 'application/json')
             ->withStatus($statusCode)
             ->withBody(new SwooleStream(json_encode($data, JSON_UNESCAPED_UNICODE)));
-    }
-
-    public function isValid(Throwable $throwable): bool
-    {
-        return true;
     }
 }

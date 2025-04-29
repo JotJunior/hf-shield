@@ -15,7 +15,7 @@ use DateTimeInterface;
 use Hyperf\Swagger\Annotation as SA;
 use Jot\HfRepository\Entity;
 
-#[SA\Schema(schema: 'jot.shield.entity.refreshtoken.access_token')]
+#[SA\Schema(schema: 'jot.shield.entity.refresh_token.access_token')]
 class AccessToken extends Entity
 {
     #[SA\Property(

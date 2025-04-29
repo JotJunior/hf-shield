@@ -16,7 +16,7 @@ use Hyperf\Swagger\Annotation as SA;
 use Jot\HfRepository\Entity;
 use Jot\HfRepository\Entity\Traits\HasLogicRemovalTrait as HasLogicRemoval;
 use Jot\HfRepository\Entity\Traits\HasTimestampsTrait as HasTimestamps;
-use Jot\HfValidator\Annotation as Validator;
+use Jot\HfValidator\Annotation as V;
 
 #[SA\Schema(schema: 'jot.hf-shield.entity.jwt_signature.jwt_signature')]
 class JwtSignature extends Entity
@@ -71,7 +71,7 @@ class JwtSignature extends Entity
         type: 'string',
         example: ''
     )]
-    #[Validator\Required(onCreate: true, onUpdate: false)]
+    #[V\Required(onCreate: true, onUpdate: false)]
     protected ?string $name = null;
 
     #[SA\Property(
@@ -80,7 +80,7 @@ class JwtSignature extends Entity
         items: new SA\Items(ref: '#/components/schemas/jot.hf-shield.entity.jwt_signature.scope'),
         x: ['php_type' => '\App\Entity\JwtSignature\Scope[]']
     )]
-    #[Validator\Exists(index: 'scopes', field: 'id')]
+    #[V\Exists(index: 'scopes', field: 'id')]
     protected ?array $scopes = null;
 
     #[SA\Property(
@@ -89,8 +89,8 @@ class JwtSignature extends Entity
         enum: ['active', 'inactive'],
         example: ''
     )]
-    #[Validator\Required(onCreate: true, onUpdate: false)]
-    #[Validator\Enum(values: ['active', 'inactive'])]
+    #[V\Required(onCreate: true, onUpdate: false)]
+    #[V\Enum(values: ['active', 'inactive'])]
     protected ?string $status = null;
 
     #[SA\Property(
@@ -98,8 +98,8 @@ class JwtSignature extends Entity
         ref: '#/components/schemas/jot.hf-shield.entity.jwt_signature.tenant',
         x: ['php_type' => '\App\Entity\JwtSignature\Tenant']
     )]
-    #[Validator\Required(onCreate: true, onUpdate: false)]
-    #[Validator\Exists(index: 'tenants', field: 'id')]
+    #[V\Required(onCreate: true, onUpdate: false)]
+    #[V\Exists(index: 'tenants', field: 'id')]
     protected ?Tenant $tenant = null;
 
     #[SA\Property(
@@ -107,8 +107,8 @@ class JwtSignature extends Entity
         ref: '#/components/schemas/jot.hf-shield.entity.jwt_signature.client',
         x: ['php_type' => '\App\Entity\JwtSignature\Client']
     )]
-    #[Validator\Required(onCreate: true, onUpdate: false)]
-    #[Validator\Exists(index: 'clients', field: 'id')]
+    #[V\Required(onCreate: true, onUpdate: false)]
+    #[V\Exists(index: 'clients', field: 'id')]
     protected ?Client $client = null;
 
     #[SA\Property(
@@ -134,8 +134,8 @@ class JwtSignature extends Entity
         ref: '#/components/schemas/jot.hf-shield.entity.jwt_signature.user',
         x: ['php_type' => '\App\Entity\JwtSignature\User']
     )]
-    #[Validator\Required(onCreate: true, onUpdate: false)]
-    #[Validator\Exists(index: 'users', field: 'id')]
+    #[V\Required(onCreate: true, onUpdate: false)]
+    #[V\Exists(index: 'users', field: 'id')]
     protected ?User $user = null;
 
     #[SA\Property(

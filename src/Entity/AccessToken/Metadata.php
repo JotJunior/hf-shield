@@ -30,5 +30,4 @@ class Metadata extends Entity
         example: ''
     )]
     protected ?string $value = null;
-
 }

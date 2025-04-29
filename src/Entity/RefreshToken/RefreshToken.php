@@ -17,7 +17,7 @@ use Jot\HfRepository\Entity;
 use Jot\HfRepository\Entity\Traits\HasLogicRemovalTrait as HasLogicRemoval;
 use Jot\HfRepository\Entity\Traits\HasTimestampsTrait as HasTimestamps;
 
-#[SA\Schema(schema: 'jot.shield.entity.refreshtoken.refresh_token')]
+#[SA\Schema(schema: 'jot.shield.entity.refresh_token.refresh_token')]
 class RefreshToken extends Entity
 {
     use HasLogicRemoval;
@@ -25,7 +25,7 @@ class RefreshToken extends Entity
 
     #[SA\Property(
         property: 'access_token',
-        ref: '#/components/schemas/jot.shield.entity.refreshtoken.accesstoken',
+        ref: '#/components/schemas/jot.shield.entity.refresh_token.accesstoken',
         x: ['php_type' => '\Jot\HfShield\Entity\RefreshToken\AccessToken']
     )]
     protected ?AccessToken $accessToken = null;

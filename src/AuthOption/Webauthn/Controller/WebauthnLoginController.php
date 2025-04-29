@@ -68,11 +68,11 @@ class WebauthnLoginController extends SessionTokenController
         $cookie = $this->buildAccessTokenCookie($token, (new DateTime('+1 day'))->getTimestamp() - time());
 
         return $this->response
-            ->withAddedHeader('Set-Cookie', (string)$cookie)
+            ->withAddedHeader('Set-Cookie', (string) $cookie)
             ->json([
                 'status' => 200,
                 'message' => 'ok',
-                'redirect_uri' => $this->configService->get('hf_session.redirect_uri')
+                'redirect_uri' => $this->configService->get('hf_session.redirect_uri'),
             ]);
     }
 }
