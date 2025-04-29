@@ -15,12 +15,14 @@ use DateTime;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\PostMapping;
+use Hyperf\HttpServer\Annotation\RequestMapping;
 use Jot\HfShield\Annotation\Scope;
 use Jot\HfShield\AuthOption\SessionToken\Controller\SessionTokenController;
 use Jot\HfShield\AuthOption\Webauthn\Handler\WebauthnLoginCollectCredentialsHandler;
 use Jot\HfShield\AuthOption\Webauthn\Handler\WebauthnLoginValidateCredentialsHandler;
 use Jot\HfShield\Repository\AccessTokenRepository;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
 #[Controller(prefix: '/web-auth/login')]
@@ -75,4 +77,15 @@ class WebauthnLoginController extends SessionTokenController
                 'redirect_uri' => $this->configService->get('hf_session.redirect_uri'),
             ]);
     }
+
+    #[RequestMapping(path: '/web-auth/login/collect', methods: ['OPTIONS'])]
+    public function requestOptionsValue(): PsrResponseInterface
+    {
+        return $this->response
+            ->json([
+                'methods' => ['POST'],
+                'rate_limit' => 'Max 10 requests per second.',
+            ]);
+    }
+
 }
