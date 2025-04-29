@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * This file is part of the hf_shield module, a package build for Hyperf framework that is responsible for OAuth2 authentication and access control.
  *
@@ -8,6 +9,7 @@ declare(strict_types=1);
  * @link     https://github.com/JotJunior/hf-shield
  * @license  MIT
  */
+
 use Hyperf\Context\ApplicationContext;
 use Jot\HfElastic\Migration;
 use Jot\HfElastic\Migration\Mapping;
@@ -23,6 +25,11 @@ return new class(ApplicationContext::getContainer()) extends Migration {
 
         $index->addField('keyword', 'id');
         $index->addField('date_nanos', 'expiry_date_time');
+
+        $metadata = new Migration\ElasticType\NestedType('metadata');
+        $metadata->addField('keyword', 'key');
+        $metadata->addField('keyword', 'value');
+        $index->nested($metadata);
 
         $user = new Migration\ElasticType\ObjectType('user');
         $user->addField('keyword', 'id');

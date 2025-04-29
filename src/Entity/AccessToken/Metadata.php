@@ -14,27 +14,21 @@ namespace Jot\HfShield\Entity\AccessToken;
 use Hyperf\Swagger\Annotation as SA;
 use Jot\HfRepository\Entity;
 
-#[SA\Schema(schema: 'jot.shield.entity.access_token.client')]
-class Client extends Entity
+#[SA\Schema(schema: 'jot.shield.entity.access_token.metadata')]
+class Metadata extends Entity
 {
     #[SA\Property(
         property: 'id',
         type: 'string',
         example: ''
     )]
-    protected ?string $id = null;
+    protected ?string $key = null;
 
     #[SA\Property(
         property: 'name',
         type: 'string',
         example: ''
     )]
-    protected ?string $name = null;
+    protected ?string $value = null;
 
-    #[SA\Property(
-        property: 'redirect_uri',
-        type: 'string',
-        example: ''
-    )]
-    protected ?string $redirectUri = null;
 }

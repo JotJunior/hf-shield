@@ -87,6 +87,14 @@ class AccessToken extends Entity
     protected ?array $scopes = null;
 
     #[SA\Property(
+        property: 'metadata',
+        type: 'array',
+        items: new SA\Items(ref: '#/components/schemas/jot.shield.entity.access_token.metadata'),
+        x: ['php_type' => '\Jot\HfShield\Entity\AccessToken\Metadata[]']
+    )]
+    protected ?array $metadata = null;
+
+    #[SA\Property(
         property: 'updated_at',
         type: 'string',
         format: 'string',

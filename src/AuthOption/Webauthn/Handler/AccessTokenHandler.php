@@ -27,6 +27,7 @@ trait AccessTokenHandler
 
     #[Inject]
     protected AccessTokenRepository $accessTokenRepository;
+
     private function issueTokenString(string $userId)
     {
         $hfSession = $this->configService->get('hf_session');
@@ -78,7 +79,8 @@ trait AccessTokenHandler
                 'scopes' => array_map(fn(ScopeEntity $scope) => ['id' => $scope->getIdentifier()], $accessToken->getScopes()),
                 'tenant' => [
                     'id' => $clientEntity->getTenantId()
-                ]
+                ],
+                'metadata' => $this->accessTokenRepository->collectMetadata(),
             ]
         ]);
         $this->accessTokenRepository->create($accessTokenEntity);

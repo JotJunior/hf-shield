@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Jot\HfShield\Repository;
 
 use Hyperf\Cache\Annotation\Cacheable;
+use Hyperf\Di\Annotation\Inject;
 use Jot\HfRepository\Exception\EntityValidationWithErrorsException;
 use Jot\HfRepository\Exception\RepositoryCreateException;
 use Jot\HfShield\Dto\OAuth\User\UserSessionDto;
@@ -21,8 +22,8 @@ use Jot\HfShield\Entity\Tenant\Tenant;
 use League\OAuth2\Server\Entities\AccessTokenEntityInterface;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use ReflectionException;
-
 use function Hyperf\Support\make;
 
 class AccessTokenRepository extends AbstractRepository implements AccessTokenRepositoryInterface
@@ -30,6 +31,9 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
     protected string $entity = AccessToken::class;
 
     protected ?Tenant $tenant = null;
+
+    #[Inject]
+    protected ServerRequestInterface $request;
 
     /**
      * Persists a new access token entity into the storage.
@@ -41,6 +45,9 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
      */
     public function persistNewAccessToken(AccessTokenEntityInterface $accessTokenEntity): void
     {
+
+        $metadata = $this->collectMetadata();
+
         $entity = make($this->entity, ['data' => [
             'id' => $accessTokenEntity->getIdentifier(),
             'client' => [
@@ -51,13 +58,27 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
             'user' => [
                 'id' => $accessTokenEntity->getUserIdentifier(),
             ],
-            'scopes' => array_map(fn ($scope) => ['id' => $scope->getIdentifier()], $accessTokenEntity->getScopes()),
+            'scopes' => array_map(fn($scope) => ['id' => $scope->getIdentifier()], $accessTokenEntity->getScopes()),
             'tenant' => [
                 'id' => $accessTokenEntity->getClient()?->getTenantId(),
             ],
+            'metadata' => $metadata,
             'expiry_date_time' => $accessTokenEntity->getExpiryDateTime(),
         ]]);
         $this->create($entity);
+    }
+
+    public function collectMetadata(): array
+    {
+        $serverParams = $this->request->getServerParams();
+        $headers = $this->request->getHeaders();
+        return [
+            ['key' => 'path_info', 'value' => $serverParams['path_info'] ?? null],
+            ['key' => 'remote_addr', 'value' => $serverParams['remote_addr'] ?? null],
+            ['key' => 'remote_port', 'value' => $serverParams['remote_port'] ?? null],
+            ['key' => 'real_ip', 'value' => current($headers['x-real-ip'] ?? [])],
+            ['key' => 'user_agent', 'value' => current($headers['user-agent'] ?? [])],
+        ];
     }
 
     public function getTenant(): ?Tenant
@@ -135,6 +156,44 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
     }
 
     /**
+     * Adds scope conditions to a query based on tenant ID and scope(s).
+     *
+     * @param mixed $query the query object to which scope conditions will be added
+     * @param string $tenantId the ID of the tenant to be included in the query conditions
+     * @param array|string $scope The scope(s) used to filter the query. Can be a single scope or an array of scopes.
+     */
+    private function addScopeConditions($query, string $tenantId, array|string $scope): void
+    {
+        $isArrayScope = is_array($scope);
+
+        if ($isArrayScope) {
+            foreach ($scope as $item) {
+                $query->whereNested(
+                    'tenants',
+                    fn($query) => $query
+                        ->where('tenants.id', $tenantId)
+                        ->whereNested(
+                            'tenants.scopes',
+                            fn($query) => $query->orWhere('tenants.scopes.id', $item)
+                                ->orWhere('tenants.scopes.id', 'root:all:all')
+                        )
+                );
+            }
+        } else {
+            $query->whereNested(
+                'tenants',
+                fn($query) => $query
+                    ->where('tenants.id', $tenantId)
+                    ->whereNested(
+                        'tenants.scopes',
+                        fn($query) => $query->orWhere('tenants.scopes.id', $scope)
+                            ->orWhere('tenants.scopes.id', 'root:all:all')
+                    )
+            );
+        }
+    }
+
+    /**
      * Retrieves a list of tenants associated with a specific user.
      *
      * @param string $userId the unique identifier of the user
@@ -192,43 +251,5 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
                 ->andWhere('deleted', false)
                 ->execute()['data']
         );
-    }
-
-    /**
-     * Adds scope conditions to a query based on tenant ID and scope(s).
-     *
-     * @param mixed $query the query object to which scope conditions will be added
-     * @param string $tenantId the ID of the tenant to be included in the query conditions
-     * @param array|string $scope The scope(s) used to filter the query. Can be a single scope or an array of scopes.
-     */
-    private function addScopeConditions($query, string $tenantId, array|string $scope): void
-    {
-        $isArrayScope = is_array($scope);
-
-        if ($isArrayScope) {
-            foreach ($scope as $item) {
-                $query->whereNested(
-                    'tenants',
-                    fn ($query) => $query
-                        ->where('tenants.id', $tenantId)
-                        ->whereNested(
-                            'tenants.scopes',
-                            fn ($query) => $query->orWhere('tenants.scopes.id', $item)
-                                ->orWhere('tenants.scopes.id', 'root:all:all')
-                        )
-                );
-            }
-        } else {
-            $query->whereNested(
-                'tenants',
-                fn ($query) => $query
-                    ->where('tenants.id', $tenantId)
-                    ->whereNested(
-                        'tenants.scopes',
-                        fn ($query) => $query->orWhere('tenants.scopes.id', $scope)
-                            ->orWhere('tenants.scopes.id', 'root:all:all')
-                    )
-            );
-        }
     }
 }

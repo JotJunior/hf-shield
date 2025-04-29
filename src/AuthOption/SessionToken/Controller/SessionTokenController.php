@@ -19,6 +19,7 @@ use Hyperf\RateLimit\Annotation\RateLimit;
 use Hyperf\Swagger\Annotation as SA;
 use Jot\HfShield\Controller\AbstractController;
 use Jot\HfShield\Exception\UnauthorizedSessionException;
+use Jot\HfShield\LoggerContextCollector;
 use Jot\HfShield\Repository\AccessTokenRepository;
 use League\OAuth2\Server\CryptTrait;
 use League\OAuth2\Server\Exception\OAuthServerException;
@@ -53,6 +54,7 @@ use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 class SessionTokenController extends AbstractController
 {
     use CryptTrait;
+    use LoggerContextCollector;
 
     private const AUTH_ERROR_RESPONSE_SCHEMA = '#/components/schemas/jot.hf-shield.auth-error.response';
 
@@ -113,6 +115,8 @@ class SessionTokenController extends AbstractController
         $token = json_decode($response->getBody()->getContents(), true);
         $cookie = $this->buildAccessTokenCookie($token['access_token'], $token['expires_in']);
 
+        $this->log('hf_shield.logged_in');
+
         return $response
             ->withAddedHeader('Set-Cookie', (string) $cookie)
             ->redirect($sessionConfig['redirect_uri']);
@@ -148,6 +152,9 @@ class SessionTokenController extends AbstractController
         $sessionConfig = $this->configService->get('hf_session');
         $response = $this->container->get(ResponseInterface::class);
         $cookie = $this->buildAccessTokenCookie('revoked', -1);
+
+        $this->log('hf_shield.logged_out');
+
         return $response
             ->withAddedHeader('Set-Cookie', (string) $cookie)
             ->redirect($sessionConfig['redirect_login']);

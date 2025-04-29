@@ -14,7 +14,7 @@ namespace Jot\HfShield\Entity\AccessToken;
 use Hyperf\Swagger\Annotation as SA;
 use Jot\HfRepository\Entity;
 
-#[SA\Schema(schema: 'jot.shield.entity.accesstoken.user')]
+#[SA\Schema(schema: 'jot.shield.entity.access_token.user')]
 class User extends Entity
 {
     #[SA\Property(
