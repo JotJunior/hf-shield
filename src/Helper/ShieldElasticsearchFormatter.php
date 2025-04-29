@@ -39,6 +39,12 @@ class ShieldElasticsearchFormatter extends ElasticsearchFormatter
             $record['context']['access']
         );
 
+        foreach ($record['context']['headers'] as $key => &$header) {
+            if (str_starts_with(strtolower($header[0]), 'bearer')) {
+                $header[0] = 'Bearer ******';
+            }
+        }
+
         $shouldEncrypt = false;
         $original = $record;
         $record = $this->anonymizeData($record, $shouldEncrypt);
@@ -53,7 +59,7 @@ class ShieldElasticsearchFormatter extends ElasticsearchFormatter
     {
         foreach ($data as $key => $value) {
             if ($this->isBase64Image($value)) {
-                $data[$key] = $this->truncateString((string) $value);
+                $data[$key] = $this->truncateString((string)$value);
             }
 
             if (is_array($value)) {
@@ -80,17 +86,30 @@ class ShieldElasticsearchFormatter extends ElasticsearchFormatter
 
             if ($this->isPhoneField($key)) {
                 $shouldEncrypt = true;
-                $data[$key] = $this->maskPhone((string) $value);
+                $data[$key] = $this->maskPhone((string)$value);
                 continue;
             }
 
             if ($this->isEmailField($key)) {
                 $shouldEncrypt = true;
-                $data[$key] = $this->maskEmail((string) $value);
+                $data[$key] = $this->maskEmail((string)$value);
                 continue;
             }
         }
         return $data;
+    }
+
+    private function isBase64Image(mixed $value): bool
+    {
+        return ! empty($value) && is_string($value) && str_contains('data:image', $value);
+    }
+
+    private function truncateString(mixed $value): string
+    {
+        if (is_string($value) && strlen($value) > 100) {
+            return substr($value, 0, 20) . '...';
+        }
+        return $value;
     }
 
     private function shouldSerializeField(mixed $key): bool
@@ -118,13 +137,13 @@ class ShieldElasticsearchFormatter extends ElasticsearchFormatter
 
     private function maskFederalDocument(mixed $value): mixed
     {
-        $value = preg_replace('/\D/', '', (string) $value);
+        $value = preg_replace('/\D/', '', (string)$value);
         $pattern = '/^(\d{3})(\d{3})(\d{3})(\d{2})$/';
-        if (strlen($value) === 11 && preg_match($pattern, (string) $value, $matches)) {
+        if (strlen($value) === 11 && preg_match($pattern, (string)$value, $matches)) {
             return sprintf('%s.***.***-%s', $matches[1], $matches[4]);
         }
         $pattern = '/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/';
-        if (strlen($value) === 14 && preg_match($pattern, (string) $value, $matches)) {
+        if (strlen($value) === 14 && preg_match($pattern, (string)$value, $matches)) {
             return sprintf('**.%s.***/%s-%s', $matches[2], $matches[3], $matches[5]);
         }
         return $value;
@@ -181,18 +200,5 @@ class ShieldElasticsearchFormatter extends ElasticsearchFormatter
         }
         // Preserva a primeira e a última letra e utiliza 5 asteriscos fixos no meio.
         return substr($local, 0, 1) . '*****' . substr($local, -1) . '@' . $domain;
-    }
-
-    private function isBase64Image(mixed $value): bool
-    {
-        return ! empty($value) && is_string($value) && str_contains('data:image', $value);
-    }
-
-    private function truncateString(mixed $value): string
-    {
-        if (is_string($value) && strlen($value) > 100) {
-            return substr($value, 0, 20) . '...';
-        }
-        return $value;
     }
 }
