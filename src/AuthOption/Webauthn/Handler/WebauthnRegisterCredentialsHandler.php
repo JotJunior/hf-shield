@@ -74,7 +74,7 @@ trait WebauthnRegisterCredentialsHandler
     private function updateUserTags(array $user): void
     {
         $user = $this->userRepository->find($user['id']);
-        $userData = $user->toArray();
+        $userData = $user->hide(['password', 'password_salt'])->toArray();
         $userData['tags'][] = 'webauthn_enabled';
         $userData['tags'] = array_values(array_unique($userData['tags']));
 
