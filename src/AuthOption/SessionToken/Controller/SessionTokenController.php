@@ -98,7 +98,7 @@ class SessionTokenController extends AbstractController
         ]
     )]
     #[RateLimit(create: 1, capacity: 2)]
-    public function issueToken(RequestInterface $request): PsrResponseInterface
+    public function issueSessionToken(RequestInterface $request): PsrResponseInterface
     {
         $sessionConfig = $this->configService->get('hf_session');
         $this->validateSessionConfig($sessionConfig);
@@ -148,7 +148,7 @@ class SessionTokenController extends AbstractController
         ]
     )]
     #[RateLimit(create: 1, capacity: 2)]
-    public function logout(RequestInterface $request): PsrResponseInterface
+    public function sessionLogout(RequestInterface $request): PsrResponseInterface
     {
         $sessionConfig = $this->configService->get('hf_session');
         $response = $this->container->get(ResponseInterface::class);
