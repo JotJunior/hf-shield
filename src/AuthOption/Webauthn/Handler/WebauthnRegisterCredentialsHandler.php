@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Jot\HfShield\AuthOption\Webauthn\Handler;
 
+use Hyperf\Cache\Listener\DeleteListenerEvent;
 use Hyperf\Di\Annotation\Inject;
 use Jot\HfShield\AuthOption\Webauthn\Exception\InvalidPublicKeyCredentialException;
 use Jot\HfShield\Entity\User\User;
@@ -20,6 +21,7 @@ use Jot\HfShield\Repository\UserCredentialRepository;
 use Jot\HfShield\Repository\UserRepository;
 use League\OAuth2\Server\CryptTrait;
 use ParagonIE\ConstantTime\Base64UrlSafe;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Webauthn\AuthenticatorAttestationResponse;
 use Webauthn\AuthenticatorAttestationResponseValidator;
 use Webauthn\CeremonyStep\CeremonyStepManagerFactory;
@@ -39,6 +41,9 @@ trait WebauthnRegisterCredentialsHandler
 
     #[Inject]
     protected UserRepository $userRepository;
+
+    #[Inject]
+    protected EventDispatcherInterface $dispatcher;
 
     private function loadPublicKeyCredential(string $publicKeyCredential): PublicKeyCredential
     {
@@ -77,12 +82,18 @@ trait WebauthnRegisterCredentialsHandler
         $userData = $user->hide(['password', 'password_salt'])->toArray();
         $userData['tags'][] = 'webauthn_enabled';
         $userData['tags'] = array_values(
-            array_filter($userData['tags'], function ($tag) {
-                return $tag !== 'require_2fa';
-            })
+            array_unique(
+                array_filter($userData['tags'], function ($tag) {
+                    return $tag !== 'require_2fa';
+                })
+            )
         );
         $entity = make(User::class, ['data' => $userData]);
         $this->userRepository->update($entity);
+
+        $this->dispatcher->dispatch(new DeleteListenerEvent('profile:entity', [$user['id']]));
+        $this->dispatcher->dispatch(new DeleteListenerEvent('session:entity', [$user['id']]));
+
     }
 
     private function checkAttestation(PublicKeyCredential $publicKeyCredential, string $userId): PublicKeyCredentialSource
