@@ -13,9 +13,11 @@ namespace Jot\HfShield\AuthOption\Webauthn\Handler;
 
 use Hyperf\Di\Annotation\Inject;
 use Jot\HfShield\AuthOption\Webauthn\Exception\InvalidPublicKeyCredentialException;
+use Jot\HfShield\Entity\User\User;
 use Jot\HfShield\Entity\UserCredential\UserCredential;
 use Jot\HfShield\Repository\UserChallengeRepository;
 use Jot\HfShield\Repository\UserCredentialRepository;
+use Jot\HfShield\Repository\UserRepository;
 use League\OAuth2\Server\CryptTrait;
 use ParagonIE\ConstantTime\Base64UrlSafe;
 use Webauthn\AuthenticatorAttestationResponse;
@@ -23,7 +25,6 @@ use Webauthn\AuthenticatorAttestationResponseValidator;
 use Webauthn\CeremonyStep\CeremonyStepManagerFactory;
 use Webauthn\PublicKeyCredential;
 use Webauthn\PublicKeyCredentialSource;
-
 use function Hyperf\Support\make;
 
 trait WebauthnRegisterCredentialsHandler
@@ -35,6 +36,9 @@ trait WebauthnRegisterCredentialsHandler
 
     #[Inject]
     protected UserCredentialRepository $userCredentialRepository;
+
+    #[Inject]
+    protected UserRepository $userRepository;
 
     private function loadPublicKeyCredential(string $publicKeyCredential): PublicKeyCredential
     {
@@ -65,6 +69,17 @@ trait WebauthnRegisterCredentialsHandler
         ]);
 
         $this->userCredentialRepository->create($userCredentialEntity);
+    }
+
+    private function updateUserTags(array $user): void
+    {
+        $user = $this->userRepository->find($user['id']);
+        $userData = $user->toArray();
+        $userData['tags'][] = 'webauthn_enabled';
+        $userData['tags'] = array_values(array_unique($userData['tags']));
+
+        $entity = make(User::class, ['data' => $userData]);
+        $this->userRepository->update($entity);
     }
 
     private function checkAttestation(PublicKeyCredential $publicKeyCredential, string $userId): PublicKeyCredentialSource

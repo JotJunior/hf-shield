@@ -74,6 +74,7 @@ class WebauthnRegisterController extends AbstractController
         $userId = $this->request->getAttribute('oauth_user_id');
         $publicKeyCredentialSource = $this->checkAttestation($publicKeyCredential, $userId);
         $this->storeCredentials($publicKeyCredentialSource, $user);
+        $this->updateUserTags($user);
 
         return $this->response->json([
             'status' => self::HTTP_STATUS_OK,
