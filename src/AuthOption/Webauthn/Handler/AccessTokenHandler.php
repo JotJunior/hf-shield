@@ -71,7 +71,7 @@ trait AccessTokenHandler
             'data' => [
                 'id' => $accessToken->getIdentifier(),
                 'user' => [
-                    'id' => $accessToken->getIdentifier(),
+                    'id' => $accessToken->getUserIdentifier(),
                 ],
                 'client' => [
                     'id' => $clientEntity->getIdentifier(),
