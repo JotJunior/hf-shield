@@ -31,6 +31,7 @@ return new class(ApplicationContext::getContainer()) extends Migration {
         $index->addField('keyword', 'picture');
         $index->addField('keyword', 'password_salt');
         $index->addField('keyword', 'password');
+        $index->addField('keyword', 'tags');
         $index->addField('keyword', 'status');
         $index->addField('text', 'custom_settings');
 

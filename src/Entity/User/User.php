@@ -61,6 +61,13 @@ class User extends Entity
     protected ?string $email = null;
 
     #[SA\Property(
+        property: 'tags',
+        type: 'array',
+        example: ''
+    )]
+    protected null|array|string $tags = null;
+
+    #[SA\Property(
         property: 'federal_document',
         type: 'string',
         example: ''
