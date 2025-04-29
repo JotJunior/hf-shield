@@ -76,8 +76,11 @@ trait WebauthnRegisterCredentialsHandler
         $user = $this->userRepository->find($user['id']);
         $userData = $user->hide(['password', 'password_salt'])->toArray();
         $userData['tags'][] = 'webauthn_enabled';
-        $userData['tags'] = array_values(array_unique($userData['tags']));
-
+        $userData['tags'] = array_values(
+            array_filter($userData['tags'], function ($tag) {
+                return $tag !== 'require_2fa';
+            })
+        );
         $entity = make(User::class, ['data' => $userData]);
         $this->userRepository->update($entity);
     }

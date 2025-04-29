@@ -225,7 +225,7 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
      * @param EntityInterface $user the user entity containing the password and related properties
      * @param string $encryptionKey the encryption key used for generating the password hash
      */
-    private function hashUserPassword(EntityInterface $user, string $encryptionKey): void
+    protected function hashUserPassword(EntityInterface $user, string $encryptionKey): void
     {
         $user->createHash(
             property: 'password',
