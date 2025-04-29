@@ -91,8 +91,9 @@ trait WebauthnRegisterCredentialsHandler
         $entity = make(User::class, ['data' => $userData]);
         $this->userRepository->update($entity);
 
-        $this->dispatcher->dispatch(new DeleteListenerEvent('profile:entity', [$user['id']]));
-        $this->dispatcher->dispatch(new DeleteListenerEvent('session:entity', [$user['id']]));
+        $this->dispatcher->dispatch(new DeleteListenerEvent('profile:entity', [$userData['id']]));
+        $this->dispatcher->dispatch(new DeleteListenerEvent('session:entity', [$userData['id']]));
+        $this->dispatcher->dispatch(new DeleteListenerEvent('user:entity', [$userData['id']]));
 
     }
 
