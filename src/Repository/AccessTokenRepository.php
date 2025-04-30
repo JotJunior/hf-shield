@@ -179,7 +179,6 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
      * @param string $id the unique identifier of the user
      * @return array an associative array containing the user's session data
      */
-    #[Cacheable(prefix: 'user:session')]
     public function getUserSessionData(string $id): array
     {
         $user = $this->queryBuilder

@@ -17,3 +17,5 @@ vendor/
 sonar-scan.sh
 .scannerwork
 sonar-project.properties
+t.txt
+t.json
