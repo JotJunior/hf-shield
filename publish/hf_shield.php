@@ -80,12 +80,18 @@ return [
     'revoke_user_old_tokens' => env('OAUTH_REVOKE_USER_OLD_TOKENS', true),
 
     /*
-     * Webauthn configuration
+     * The list of basic scopes that the user will have access to.
      */
-    'rp_name' => env('WEBAUTHN_RP_NAME', 'Jot Application'),
-    'rp_id' => env('WEBAUTHN_RP_ID', null), // Default to the hostname of the origin
-    'rp_icon' => env('WEBAUTHN_RP_ICON', null),
-    'origin' => env('WEBAUTHN_ORIGIN', 'https://example.com'),
+    'basic_scopes' => [
+        'oauth:user:view',
+        'oauth:user:session',
+        'oauth:user:update_settings',
+        'gk_settings:basic_option:view',
+        'gk_settings:basic_option:list',
+        'gk_profile:token:list',
+        'gk_profile:user:update',
+        'gk_profile:user:view',
+    ],
 
     /*
      * S3 bucket configuration

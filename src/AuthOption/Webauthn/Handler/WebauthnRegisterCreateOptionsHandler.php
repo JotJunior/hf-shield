@@ -64,7 +64,7 @@ trait WebauthnRegisterCreateOptionsHandler
             $excludedPublicKeyDescriptors[] = PublicKeyCredentialDescriptor::create('public-key', Base64UrlSafe::decode($credential['id']));
         }
 
-        $algorithms = $this->configService->get('webauthn.creation_profile.public_key_credential_parameters');
+        $algorithms = $this->configService->get('hf_webauthn.creation_profile.public_key_credential_parameters');
         $publicKeyCredentialParametersList = array_map(fn ($algo) => PublicKeyCredentialParameters::create('public-key', $algo), $algorithms);
 
         return PublicKeyCredentialCreationOptions::create(

@@ -33,6 +33,8 @@ class UserSessionDto extends Entity
 
     protected ?string $status = null;
 
+    protected null|array|string $tags = null;
+
     protected mixed $customSettings = null;
 
     #[SA\Property(
