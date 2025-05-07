@@ -62,7 +62,6 @@ class ConfigProvider
             'listeners' => [
                 AllowedScopesListener::class,
                 BootValidatorsListener::class,
-                RequiredConfigListener::class,
             ],
             'dependencies' => [
                 HttpServer::class => SwaggerHttpServer::class,
