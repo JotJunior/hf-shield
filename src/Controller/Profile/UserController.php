@@ -17,16 +17,24 @@ use Hyperf\HttpServer\Annotation\GetMapping;
 use Hyperf\HttpServer\Annotation\Middleware;
 use Hyperf\HttpServer\Annotation\PutMapping;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use Hyperf\HttpServer\Contract\RequestInterface;
+use Hyperf\HttpServer\Contract\ResponseInterface;
 use Hyperf\RateLimit\Annotation\RateLimit;
 use Jot\HfShield\Annotation\Scope;
-use Jot\HfShield\Controller\AbstractController;
 use Jot\HfShield\Middleware\SessionStrategy;
 use Jot\HfShield\Service\ProfileService;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 
 #[Controller(prefix: '/user')]
-class UserController extends AbstractController
+class UserController
 {
+
+    #[Inject]
+    protected ResponseInterface $response;
+
+    #[Inject]
+    protected RequestInterface $request;
+
     #[Inject]
     protected ProfileService $service;
 

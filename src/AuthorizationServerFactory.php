@@ -106,7 +106,7 @@ class AuthorizationServerFactory
             make(AccessTokenRepository::class),
             make(ScopeRepository::class),
             $this->makeCryptKey(),
-            $this->config->get('hf_shield.encryption_key')
+            $this->config->get('hf_shield.encryption_key', '')
         );
     }
 
@@ -151,7 +151,7 @@ class AuthorizationServerFactory
      */
     protected function makeCryptKey(): CryptKey
     {
-        $privateKey = $this->config->get('hf_shield.private_key');
+        $privateKey = $this->config->get('hf_shield.private_key', '');
         if (is_file(BASE_PATH . $privateKey)) {
             $privateKey = file_get_contents(BASE_PATH . $privateKey);
         }

@@ -85,7 +85,7 @@ class ConfigProvider
                     return new ShieldElasticsearchFormatter(
                         index: sprintf('%s-hf-shield-logs', $indexPrefix),
                         type: '_doc',
-                        encryptionKey: $container->get(ConfigInterface::class)->get('hf_shield.encryption_key'),
+                        encryptionKey: $container->get(ConfigInterface::class)->get('hf_shield.encryption_key', ''),
                     );
                 },
                 SerializerInterface::class => function () {

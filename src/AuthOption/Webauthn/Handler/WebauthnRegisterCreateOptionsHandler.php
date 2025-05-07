@@ -41,7 +41,7 @@ trait WebauthnRegisterCreateOptionsHandler
     private function createPublicKeyCredentialOptions(array $user): PublicKeyCredentialCreationOptions
     {
         $rpEntity = PublicKeyCredentialRpEntity::create(
-            name: $this->configService->get('hf_shield.app_name'),
+            name: $this->configService->get('hf_shield.app_name', ''),
             id: $this->request->getUri()->getHost()
         );
 

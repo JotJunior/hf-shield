@@ -38,7 +38,7 @@ class SessionStrategy implements MiddlewareInterface
         LoggerFactory $loggerFactory,
         protected array $resourceScopes = []
     ) {
-        $this->setEncryptionKey($this->container->get(ConfigInterface::class)->get('hf_shield.encryption_key'));
+        $this->setEncryptionKey($this->container->get(ConfigInterface::class)->get('hf_shield.encryption_key', ''));
         $this->setLogger($loggerFactory->get('session', 'elastic'));
     }
 
