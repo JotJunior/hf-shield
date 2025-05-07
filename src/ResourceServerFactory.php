@@ -44,7 +44,7 @@ class ResourceServerFactory
 
     protected function makeCryptKey(): CryptKey
     {
-        $publicKey = $this->config->get('hf_shield.public_key', '');
+        $publicKey = $this->config->get('hf_shield.public_key');
         if (is_file(BASE_PATH . $publicKey)) {
             $key = file_get_contents(BASE_PATH . $publicKey);
         } else {

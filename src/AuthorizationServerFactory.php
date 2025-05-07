@@ -106,7 +106,7 @@ class AuthorizationServerFactory
             make(AccessTokenRepository::class),
             make(ScopeRepository::class),
             $this->makeCryptKey(),
-            $this->config->get('hf_shield.encryption_key', '')
+            $this->config->get('hf_shield.encryption_key')
         );
     }
 
