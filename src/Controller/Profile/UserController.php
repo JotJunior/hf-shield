@@ -18,10 +18,8 @@ use Hyperf\HttpServer\Annotation\Middleware;
 use Hyperf\HttpServer\Annotation\PutMapping;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\RateLimit\Annotation\RateLimit;
-use Jot\HfRepository\Exception\RecordNotFoundException;
 use Jot\HfShield\Annotation\Scope;
 use Jot\HfShield\Controller\AbstractController;
-use Jot\HfShield\Exception\ForbiddenAccessException;
 use Jot\HfShield\Middleware\SessionStrategy;
 use Jot\HfShield\Service\ProfileService;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
@@ -46,24 +44,6 @@ class UserController extends AbstractController
     }
 
     #[RateLimit(create: 1, capacity: 2)]
-    #[Scope(allow: 'oauth:user:view')]
-    #[Middleware(middleware: SessionStrategy::class)]
-    #[GetMapping(path: '{id}')]
-    public function getUserProfileData(string $id): PsrResponseInterface
-    {
-        if ($id !== $this->request->getAttribute('oauth_user_id')) {
-            throw new ForbiddenAccessException();
-        }
-        $data = $this->service->getProfileData($id);
-
-        if (empty($data)) {
-            throw new RecordNotFoundException();
-        }
-
-        return $this->response->json($data);
-    }
-
-    #[RateLimit(create: 1, capacity: 2)]
     #[Middleware(middleware: SessionStrategy::class)]
     #[Scope(allow: 'oauth:user:session')]
     #[PutMapping(path: 'password')]
@@ -80,7 +60,7 @@ class UserController extends AbstractController
     #[RateLimit(create: 1, capacity: 2)]
     #[Middleware(middleware: SessionStrategy::class)]
     #[Scope(allow: 'oauth:user:update_settings')]
-    #[PutMapping(path: 'me')]
+    #[PutMapping(path: 'settings')]
     public function updateUserProfileSettings(): PsrResponseInterface
     {
         return $this->response->json(
@@ -94,7 +74,7 @@ class UserController extends AbstractController
     #[RateLimit(create: 1, capacity: 2)]
     #[Scope(allow: 'oauth:user:update')]
     #[Middleware(middleware: SessionStrategy::class)]
-    #[PutMapping(path: '{id}')]
+    #[PutMapping(path: 'profile')]
     public function updateProfileUser(string $id): PsrResponseInterface
     {
         $result = $this->service->updateProfile($id, $this->request->all());
@@ -104,7 +84,7 @@ class UserController extends AbstractController
     #[RateLimit(create: 1, capacity: 2)]
     #[Scope(allow: 'oauth:user:view')]
     #[Middleware(middleware: SessionStrategy::class)]
-    #[RequestMapping(path: '{id}', methods: ['HEAD'])]
+    #[RequestMapping(path: 'me', methods: ['HEAD'])]
     public function verifyProfileUser(string $id): PsrResponseInterface
     {
         $exists = $this->service->exists($id);
