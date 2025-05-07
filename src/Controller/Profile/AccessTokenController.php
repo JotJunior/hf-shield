@@ -31,7 +31,7 @@ class AccessTokenController extends AbstractController
     #[RateLimit(create: 1, capacity: 10)]
     #[Scope(allow: 'user:token:list')]
     #[Middleware(middleware: SessionStrategy::class)]
-    #[RequestMapping(path: 'tokens[/[{id}]]', methods: ['GET'])]
+    #[RequestMapping(path: 'tokens', methods: ['GET'])]
     public function getUserTokenList(): PsrResponseInterface
     {
         $userId = $this->request->getAttribute('oauth_user_id');
@@ -45,7 +45,7 @@ class AccessTokenController extends AbstractController
             ->json($result);
     }
 
-    #[RequestMapping(path: 'tokens[/[{id}]]', methods: ['OPTIONS'])]
+    #[RequestMapping(path: 'tokens', methods: ['OPTIONS'])]
     public function requestOptions(): PsrResponseInterface
     {
         return $this->response

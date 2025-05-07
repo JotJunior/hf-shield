@@ -91,7 +91,7 @@ class UserController extends AbstractController
         return $this->response->withStatus($exists ? 204 : 404)->raw('');
     }
 
-    #[RequestMapping(path: '[{id}]', methods: ['OPTIONS'])]
+    #[RequestMapping(path: '[(me|session|password|settings)]', methods: ['OPTIONS'])]
     public function requestProfileOptions(): PsrResponseInterface
     {
         return $this->response
