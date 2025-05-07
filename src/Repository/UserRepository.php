@@ -206,20 +206,6 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
     }
 
     /**
-     * Validates the given user entity and ensures it meets the required criteria.
-     * If validation fails, an exception containing validation errors will be thrown.
-     *
-     * @param EntityInterface $user the user entity to be validated
-     * @throws EntityValidationWithErrorsException
-     */
-    private function validateUser(EntityInterface $user): void
-    {
-        if (! $user->validate()) {
-            throw new EntityValidationWithErrorsException($user->getErrors());
-        }
-    }
-
-    /**
      * Hashes the user's password using the provided encryption key and their password salt.
      *
      * @param EntityInterface $user the user entity containing the password and related properties
@@ -232,5 +218,19 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
             salt: $user->getPasswordSalt(),
             encryptionKey: $encryptionKey
         );
+    }
+
+    /**
+     * Validates the given user entity and ensures it meets the required criteria.
+     * If validation fails, an exception containing validation errors will be thrown.
+     *
+     * @param EntityInterface $user the user entity to be validated
+     * @throws EntityValidationWithErrorsException
+     */
+    private function validateUser(EntityInterface $user): void
+    {
+        if (! $user->validate()) {
+            throw new EntityValidationWithErrorsException($user->getErrors());
+        }
     }
 }

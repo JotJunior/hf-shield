@@ -18,7 +18,6 @@ use Hyperf\HttpServer\Annotation\PostMapping;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Jot\HfShield\Annotation\Scope;
 use Jot\HfShield\AuthOption\SessionToken\Controller\SessionTokenController;
-use Jot\HfShield\AuthOption\Webauthn\Exception\InvalidPublicKeyCredentialException;
 use Jot\HfShield\AuthOption\Webauthn\Handler\WebauthnLoginCollectCredentialsHandler;
 use Jot\HfShield\AuthOption\Webauthn\Handler\WebauthnLoginValidateCredentialsHandler;
 use Jot\HfShield\Exception\UnauthorizedUserException;
@@ -26,6 +25,7 @@ use Jot\HfShield\Repository\AccessTokenRepository;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use Symfony\Component\Serializer\SerializerInterface;
+use Throwable;
 
 #[Controller(prefix: '/web-auth/login')]
 class WebauthnLoginController extends SessionTokenController
@@ -67,7 +67,7 @@ class WebauthnLoginController extends SessionTokenController
 
         try {
             $this->validateAssertion($publicKeyCredential);
-        } catch (InvalidPublicKeyCredentialException $e) {
+        } catch (Throwable $e) {
             throw new UnauthorizedUserException();
         }
 
@@ -76,7 +76,7 @@ class WebauthnLoginController extends SessionTokenController
         $cookie = $this->buildAccessTokenCookie($token, (new DateTime('+1 day'))->getTimestamp() - time());
 
         return $this->response
-            ->withAddedHeader('Set-Cookie', (string)$cookie)
+            ->withAddedHeader('Set-Cookie', (string) $cookie)
             ->json([
                 'status' => 200,
                 'message' => 'ok',
@@ -93,5 +93,4 @@ class WebauthnLoginController extends SessionTokenController
                 'rate_limit' => 'Max 10 requests per second.',
             ]);
     }
-
 }

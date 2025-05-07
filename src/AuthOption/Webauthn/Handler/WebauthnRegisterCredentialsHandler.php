@@ -27,6 +27,7 @@ use Webauthn\AuthenticatorAttestationResponseValidator;
 use Webauthn\CeremonyStep\CeremonyStepManagerFactory;
 use Webauthn\PublicKeyCredential;
 use Webauthn\PublicKeyCredentialSource;
+
 use function Hyperf\Support\make;
 
 trait WebauthnRegisterCredentialsHandler
@@ -94,7 +95,6 @@ trait WebauthnRegisterCredentialsHandler
         $this->dispatcher->dispatch(new DeleteListenerEvent('profile:entity', [$userData['id']]));
         $this->dispatcher->dispatch(new DeleteListenerEvent('session:entity', [$userData['id']]));
         $this->dispatcher->dispatch(new DeleteListenerEvent('user:entity', [$userData['id']]));
-
     }
 
     private function checkAttestation(PublicKeyCredential $publicKeyCredential, string $userId): PublicKeyCredentialSource

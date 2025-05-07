@@ -161,6 +161,16 @@ class SessionTokenController extends AbstractController
             ->redirect($sessionConfig['redirect_login']);
     }
 
+    #[RequestMapping(path: '/oauth/session', methods: ['OPTIONS'])]
+    public function requestOptionsValue(): PsrResponseInterface
+    {
+        return $this->response
+            ->json([
+                'methods' => ['POST'],
+                'rate_limit' => 'Max 10 requests per second.',
+            ]);
+    }
+
     /**
      * Creates and returns a cookie containing the access token with specified expiration and security attributes.
      *
@@ -210,15 +220,4 @@ class SessionTokenController extends AbstractController
         $body['grant_type'] = $authSettings['grant_type'];
         return $body;
     }
-
-    #[RequestMapping(path: '/oauth/session', methods: ['OPTIONS'])]
-    public function requestOptionsValue(): PsrResponseInterface
-    {
-        return $this->response
-            ->json([
-                'methods' => ['POST'],
-                'rate_limit' => 'Max 10 requests per second.',
-            ]);
-    }
-
 }

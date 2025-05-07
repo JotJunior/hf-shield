@@ -29,11 +29,6 @@ return [
     'api_description' => env('API_DESCRIPTION', ''),
 
     /*
-     * The middleware strategy for request validation (bearer|session|signed_jwt|public)
-     */
-    'middleware_strategy' => env('OAUTH_MIDDLEWARE_STRATEGY', 'bearer'),
-
-    /*
      * The module name included on top of scope structure:  module:resource:action
      */
     'module_name' => env('OAUTH_SCOPE_MODULE_NAME', 'api'),
