@@ -26,16 +26,29 @@ use Jot\HfShield\Middleware\SessionStrategy;
 use Jot\HfShield\Service\ProfileService;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 
-#[Controller(prefix: '/profile')]
+#[Controller(prefix: '/user')]
 class UserController extends AbstractController
 {
     #[Inject]
     protected ProfileService $service;
 
     #[RateLimit(create: 1, capacity: 2)]
+    #[Middleware(middleware: SessionStrategy::class)]
+    #[Scope(allow: 'oauth:user:session')]
+    #[GetMapping(path: 'session')]
+    public function getUserSessionData(): PsrResponseInterface
+    {
+        return $this->response->json(
+            $this->service->getSessionData(
+                $this->request->getAttribute('oauth_user_id')
+            )
+        );
+    }
+
+    #[RateLimit(create: 1, capacity: 2)]
     #[Scope(allow: 'oauth:user:view')]
     #[Middleware(middleware: SessionStrategy::class)]
-    #[GetMapping(path: 'user/{id}')]
+    #[GetMapping(path: '{id}')]
     public function getUserProfileData(string $id): PsrResponseInterface
     {
         if ($id !== $this->request->getAttribute('oauth_user_id')) {
@@ -52,21 +65,8 @@ class UserController extends AbstractController
 
     #[RateLimit(create: 1, capacity: 2)]
     #[Middleware(middleware: SessionStrategy::class)]
-    #[GetMapping(path: 'user/me')]
     #[Scope(allow: 'oauth:user:session')]
-    public function getUserSessionData(): PsrResponseInterface
-    {
-        return $this->response->json(
-            $this->service->getSessionData(
-                $this->request->getAttribute('oauth_user_id')
-            )
-        );
-    }
-
-    #[RateLimit(create: 1, capacity: 2)]
-    #[Middleware(middleware: SessionStrategy::class)]
-    #[PutMapping(path: 'user/password')]
-    #[Scope(allow: 'oauth:user:session')]
+    #[PutMapping(path: 'password')]
     public function updateUserProfilePassword(): PsrResponseInterface
     {
         return $this->response->json(
@@ -79,8 +79,8 @@ class UserController extends AbstractController
 
     #[RateLimit(create: 1, capacity: 2)]
     #[Middleware(middleware: SessionStrategy::class)]
-    #[PutMapping(path: 'user/me')]
     #[Scope(allow: 'oauth:user:update_settings')]
+    #[PutMapping(path: 'me')]
     public function updateUserProfileSettings(): PsrResponseInterface
     {
         return $this->response->json(
@@ -94,7 +94,7 @@ class UserController extends AbstractController
     #[RateLimit(create: 1, capacity: 2)]
     #[Scope(allow: 'oauth:user:update')]
     #[Middleware(middleware: SessionStrategy::class)]
-    #[PutMapping(path: 'user/{id}')]
+    #[PutMapping(path: '{id}')]
     public function updateProfileUser(string $id): PsrResponseInterface
     {
         $result = $this->service->updateProfile($id, $this->request->all());
@@ -104,14 +104,14 @@ class UserController extends AbstractController
     #[RateLimit(create: 1, capacity: 2)]
     #[Scope(allow: 'oauth:user:view')]
     #[Middleware(middleware: SessionStrategy::class)]
-    #[RequestMapping(path: 'user/{id}', methods: ['HEAD'])]
+    #[RequestMapping(path: '{id}', methods: ['HEAD'])]
     public function verifyProfileUser(string $id): PsrResponseInterface
     {
         $exists = $this->service->exists($id);
         return $this->response->withStatus($exists ? 204 : 404)->raw('');
     }
 
-    #[RequestMapping(path: 'user[/[{id}]]', methods: ['OPTIONS'])]
+    #[RequestMapping(path: '[{id}]', methods: ['OPTIONS'])]
     public function requestProfileOptions(): PsrResponseInterface
     {
         return $this->response
