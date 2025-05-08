@@ -63,7 +63,7 @@ class SessionStrategy implements MiddlewareInterface
         return $handler->handle(
             $this->request
                 ->withAttribute('oauth_session_user', $this->oauthUser)
-                ->withQueryParams(['_tenant_id' => $this->oauthUser['tenant_id'], '_user_id' => $this->oauthUser['id']])
+                ->withQueryParams(['_tenant_id' => $this->oauthUser['tenant']['id'], '_user_id' => $this->oauthUser['id']])
         );
     }
 }
