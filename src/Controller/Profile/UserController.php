@@ -28,7 +28,6 @@ use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 #[Controller(prefix: '/user')]
 class UserController
 {
-
     #[Inject]
     protected ResponseInterface $response;
 
