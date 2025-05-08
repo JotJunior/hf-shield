@@ -14,7 +14,7 @@ namespace Jot\HfShield\Entity\JwtSignature;
 use Hyperf\Swagger\Annotation as SA;
 use Jot\HfRepository\Entity;
 
-#[SA\Schema(schema: 'jot.hf-shield.entity.jwt_signature.tenant')]
+#[SA\Schema(schema: 'jot.shield.entity.jwt_signature.tenant')]
 class Tenant extends Entity
 {
     #[SA\Property(

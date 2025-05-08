@@ -42,14 +42,14 @@ class ClientController extends AbstractController
         ],
         requestBody: new SA\RequestBody(
             required: true,
-            content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.entity.client.client')
+            content: new SA\JsonContent(ref: '#/components/schemas/jot.shield.entity.client.client')
         ),
         tags: ['Client'],
         responses: [
             new SA\Response(
                 response: 201,
                 description: 'Client created',
-                content: new SA\JsonContent(ref: '#/components/schemas/jot.hf-shield.entity.client.client')
+                content: new SA\JsonContent(ref: '#/components/schemas/jot.shield.entity.client.client')
             ),
             new SA\Response(
                 response: 400,
@@ -125,7 +125,7 @@ class ClientController extends AbstractController
                         new SA\Property(
                             property: 'data',
                             type: 'array',
-                            items: new SA\Items(ref: '#/components/schemas/jot.hf-shield.entity.client.client')
+                            items: new SA\Items(ref: '#/components/schemas/jot.shield.entity.client.client')
                         ),
                         new SA\Property(
                             property: 'result',

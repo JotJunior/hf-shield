@@ -14,7 +14,7 @@ namespace Jot\HfShield\Entity\Client;
 use Hyperf\Swagger\Annotation as SA;
 use Jot\HfRepository\Entity;
 
-#[SA\Schema(schema: 'jot.hf-shield.entity.client.scope')]
+#[SA\Schema(schema: 'jot.shield.entity.client.scope')]
 class Scope extends Entity
 {
     #[SA\Property(

@@ -14,7 +14,7 @@ namespace Jot\HfShield\Entity\Client;
 use Hyperf\Swagger\Annotation as SA;
 use Jot\HfRepository\Entity;
 
-#[SA\Schema(schema: 'jot.hf-shield.entity.client.tenant')]
+#[SA\Schema(schema: 'jot.shield.entity.client.tenant')]
 class Tenant extends Entity
 {
     #[SA\Property(

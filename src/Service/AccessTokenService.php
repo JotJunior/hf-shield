@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Jot\HfShield\Service;
 
-use App\Repository\AccessTokenRepository;
+use Jot\HfShield\Repository\AccessTokenRepository;
 use Hyperf\Di\Annotation\Inject;
 use Jot\HfShield\Entity\AccessToken\AccessToken as Entity;
 

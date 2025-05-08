@@ -17,7 +17,7 @@ use Jot\HfRepository\Entity;
 use Jot\HfRepository\Entity\Traits\HasLogicRemovalTrait as HasLogicRemoval;
 use Jot\HfRepository\Entity\Traits\HasTimestampsTrait as HasTimestamps;
 
-#[SA\Schema(schema: 'jot.hf-shield.entity.authcode.auth_code')]
+#[SA\Schema(schema: 'jot.shield.entity.authcode.auth_code')]
 class AuthCode extends Entity
 {
     use HasLogicRemoval;
@@ -25,7 +25,7 @@ class AuthCode extends Entity
 
     #[SA\Property(
         property: 'access_token',
-        ref: '#/components/schemas/jot.hf-shield.entity.authcode.accesstoken',
+        ref: '#/components/schemas/jot.shield.entity.authcode.accesstoken',
         x: ['php_type' => '\Jot\HfShield\Entity\AuthCode\AccessToken']
     )]
     protected ?AccessToken $accessToken = null;

@@ -18,7 +18,7 @@ use Jot\HfRepository\Entity\Traits\HasLogicRemovalTrait as HasLogicRemoval;
 use Jot\HfRepository\Entity\Traits\HasTimestampsTrait as HasTimestamps;
 use Jot\HfValidator\Annotation as V;
 
-#[SA\Schema(schema: 'jot.hf-shield.entity.jwt_signature.jwt_signature')]
+#[SA\Schema(schema: 'jot.shield.entity.jwt_signature.jwt_signature')]
 class JwtSignature extends Entity
 {
     use HasLogicRemoval;
@@ -77,8 +77,8 @@ class JwtSignature extends Entity
     #[SA\Property(
         property: 'scopes',
         type: 'array',
-        items: new SA\Items(ref: '#/components/schemas/jot.hf-shield.entity.jwt_signature.scope'),
-        x: ['php_type' => '\App\Entity\JwtSignature\Scope[]']
+        items: new SA\Items(ref: '#/components/schemas/jot.shield.entity.jwt_signature.scope'),
+        x: ['php_type' => '\Jot\HfShield\Entity\JwtSignature\Scope[]']
     )]
     #[V\Exists(index: 'scopes', field: 'id')]
     protected ?array $scopes = null;
@@ -95,8 +95,8 @@ class JwtSignature extends Entity
 
     #[SA\Property(
         property: 'tenant',
-        ref: '#/components/schemas/jot.hf-shield.entity.jwt_signature.tenant',
-        x: ['php_type' => '\App\Entity\JwtSignature\Tenant']
+        ref: '#/components/schemas/jot.shield.entity.jwt_signature.tenant',
+        x: ['php_type' => '\Jot\HfShield\Entity\JwtSignature\Tenant']
     )]
     #[V\Required(onCreate: true, onUpdate: false)]
     #[V\Exists(index: 'tenants', field: 'id')]
@@ -104,8 +104,8 @@ class JwtSignature extends Entity
 
     #[SA\Property(
         property: 'client',
-        ref: '#/components/schemas/jot.hf-shield.entity.jwt_signature.client',
-        x: ['php_type' => '\App\Entity\JwtSignature\Client']
+        ref: '#/components/schemas/jot.shield.entity.jwt_signature.client',
+        x: ['php_type' => '\Jot\HfShield\Entity\JwtSignature\Client']
     )]
     #[V\Required(onCreate: true, onUpdate: false)]
     #[V\Exists(index: 'clients', field: 'id')]
@@ -131,8 +131,8 @@ class JwtSignature extends Entity
 
     #[SA\Property(
         property: 'user',
-        ref: '#/components/schemas/jot.hf-shield.entity.jwt_signature.user',
-        x: ['php_type' => '\App\Entity\JwtSignature\User']
+        ref: '#/components/schemas/jot.shield.entity.jwt_signature.user',
+        x: ['php_type' => '\Jot\HfShield\Entity\JwtSignature\User']
     )]
     #[V\Required(onCreate: true, onUpdate: false)]
     #[V\Exists(index: 'users', field: 'id')]
