@@ -15,16 +15,24 @@ use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\Middleware;
 use Hyperf\HttpServer\Annotation\RequestMapping;
+use Hyperf\HttpServer\Contract\RequestInterface;
+use Hyperf\HttpServer\Contract\ResponseInterface;
 use Hyperf\RateLimit\Annotation\RateLimit;
 use Jot\HfShield\Annotation\Scope;
-use Jot\HfShield\Controller\AbstractController;
 use Jot\HfShield\Middleware\SessionStrategy;
 use Jot\HfShield\Service\AccessTokenService;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 
 #[Controller(prefix: '/user')]
-class AccessTokenController extends AbstractController
+class AccessTokenController
 {
+
+    #[Inject]
+    protected ResponseInterface $response;
+
+    #[Inject]
+    protected RequestInterface $request;
+
     #[Inject]
     protected AccessTokenService $service;
 
