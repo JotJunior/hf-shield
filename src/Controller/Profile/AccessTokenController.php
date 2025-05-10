@@ -26,7 +26,6 @@ use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 #[Controller(prefix: '/user')]
 class AccessTokenController
 {
-
     #[Inject]
     protected ResponseInterface $response;
 

@@ -39,7 +39,7 @@ class UserController
 
     #[RateLimit(create: 1, capacity: 2)]
     #[Middleware(middleware: SessionStrategy::class)]
-    #[Scope(allow: 'oauth:user:session')]
+    #[Scope(allow: 'user:profile:session')]
     #[GetMapping(path: 'session')]
     public function getUserSessionData(): PsrResponseInterface
     {
@@ -52,7 +52,20 @@ class UserController
 
     #[RateLimit(create: 1, capacity: 2)]
     #[Middleware(middleware: SessionStrategy::class)]
-    #[Scope(allow: 'oauth:user:session')]
+    #[Scope(allow: 'user:profile:profile')]
+    #[GetMapping(path: 'me')]
+    public function getUserProfileData(): PsrResponseInterface
+    {
+        return $this->response->json(
+            $this->service->getProfileData(
+                $this->request->getAttribute('oauth_user_id')
+            )
+        );
+    }
+
+    #[RateLimit(create: 1, capacity: 2)]
+    #[Middleware(middleware: SessionStrategy::class)]
+    #[Scope(allow: 'user:profile:session')]
     #[PutMapping(path: 'password')]
     public function updateUserProfilePassword(): PsrResponseInterface
     {
@@ -66,7 +79,7 @@ class UserController
 
     #[RateLimit(create: 1, capacity: 2)]
     #[Middleware(middleware: SessionStrategy::class)]
-    #[Scope(allow: 'oauth:user:update_settings')]
+    #[Scope(allow: 'user:profile:update_settings')]
     #[PutMapping(path: 'settings')]
     public function updateUserProfileSettings(): PsrResponseInterface
     {
@@ -79,7 +92,7 @@ class UserController
     }
 
     #[RateLimit(create: 1, capacity: 2)]
-    #[Scope(allow: 'oauth:user:update')]
+    #[Scope(allow: 'user:profile:update')]
     #[Middleware(middleware: SessionStrategy::class)]
     #[PutMapping(path: 'profile')]
     public function updateProfileUser(string $id): PsrResponseInterface
@@ -89,7 +102,7 @@ class UserController
     }
 
     #[RateLimit(create: 1, capacity: 2)]
-    #[Scope(allow: 'oauth:user:view')]
+    #[Scope(allow: 'user:profile:view')]
     #[Middleware(middleware: SessionStrategy::class)]
     #[RequestMapping(path: 'me', methods: ['HEAD'])]
     public function verifyProfileUser(string $id): PsrResponseInterface

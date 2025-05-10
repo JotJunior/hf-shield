@@ -31,14 +31,13 @@ class SessionStrategy implements MiddlewareInterface
     use LoggerAwareTrait;
 
     public function __construct(
-        protected ContainerInterface     $container,
-        protected ResourceServer         $server,
-        protected AccessTokenRepository  $repository,
+        protected ContainerInterface $container,
+        protected ResourceServer $server,
+        protected AccessTokenRepository $repository,
         protected ServerRequestInterface $request,
-        LoggerFactory                    $loggerFactory,
-        protected array                  $resourceScopes = []
-    )
-    {
+        LoggerFactory $loggerFactory,
+        protected array $resourceScopes = []
+    ) {
         $this->setEncryptionKey($this->container->get(ConfigInterface::class)->get('hf_shield.encryption_key', ''));
         $this->setLogger($loggerFactory->get('session', 'elastic'));
     }
