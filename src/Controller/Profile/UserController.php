@@ -94,7 +94,7 @@ class UserController
     #[RateLimit(create: 1, capacity: 2)]
     #[Scope(allow: 'user:profile:update')]
     #[Middleware(middleware: SessionStrategy::class)]
-    #[PutMapping(path: 'profile')]
+    #[PutMapping(path: 'me')]
     public function updateProfileUser(string $id): PsrResponseInterface
     {
         $result = $this->service->updateProfile($id, $this->request->all());
