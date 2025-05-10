@@ -17,10 +17,10 @@ use Jot\HfRepository\Exception\EntityValidationWithErrorsException;
 use Jot\HfRepository\Exception\RepositoryUpdateException;
 use Jot\HfShield\Entity\User\User;
 use Jot\HfShield\Entity\UserEntity;
+use Jot\HfShield\Exception\EmptyPasswordException;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\UserEntityInterface;
 use League\OAuth2\Server\Repositories\UserRepositoryInterface;
-
 use function Hyperf\Support\make;
 use function Hyperf\Translation\__;
 
@@ -39,11 +39,12 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
      * @return null|UserEntityInterface returns a UserEntityInterface instance if the credentials are valid, otherwise null
      */
     public function getUserEntityByUserCredentials(
-        string $username,
-        string $password,
-        string $grantType,
+        string                $username,
+        string                $password,
+        string                $grantType,
         ClientEntityInterface $clientEntity
-    ): ?UserEntityInterface {
+    ): ?UserEntityInterface
+    {
         /** @var User $user */
         $user = $this->first(['email' => $username]);
         if (empty($user)) {
@@ -56,6 +57,22 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
         }
 
         return (new UserEntity())->setIdentifier($user->getId());
+    }
+
+    /**
+     * Validates if the given plain password matches the hashed password after applying the hash algorithm with the salt.
+     *
+     * @param string $hashedPassword the hashed password to validate against
+     * @param string $plainPassword the plain password input provided by the user
+     * @param null|string $passwordSalt the salt used in the password hashing process, or null if none
+     *
+     * @return bool returns true if the plain password matches the hashed password; otherwise, false
+     */
+    public function isPasswordValid(string $hashedPassword, string $plainPassword, ?string $passwordSalt): bool
+    {
+        $encryptionKey = $this->config['encryption_key'];
+        $computedHash = hash_hmac('sha256', $plainPassword . $passwordSalt, $encryptionKey);
+        return hash_equals($hashedPassword, $computedHash);
     }
 
     /**
@@ -168,6 +185,21 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
     }
 
     /**
+     * Hashes the user's password using the provided encryption key and their password salt.
+     *
+     * @param EntityInterface $user the user entity containing the password and related properties
+     * @param string $encryptionKey the encryption key used for generating the password hash
+     */
+    protected function hashUserPassword(EntityInterface $user, string $encryptionKey): void
+    {
+        $user->createHash(
+            property: 'password',
+            salt: $user->getPasswordSalt(),
+            encryptionKey: $encryptionKey
+        );
+    }
+
+    /**
      * Creates a new user entity by validating and processing it, and then inserts it into the database.
      *
      * @param EntityInterface $entity the entity instance to be created
@@ -190,37 +222,6 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
     }
 
     /**
-     * Validates if the given plain password matches the hashed password after applying the hash algorithm with the salt.
-     *
-     * @param string $hashedPassword the hashed password to validate against
-     * @param string $plainPassword the plain password input provided by the user
-     * @param null|string $passwordSalt the salt used in the password hashing process, or null if none
-     *
-     * @return bool returns true if the plain password matches the hashed password; otherwise, false
-     */
-    public function isPasswordValid(string $hashedPassword, string $plainPassword, ?string $passwordSalt): bool
-    {
-        $encryptionKey = $this->config['encryption_key'];
-        $computedHash = hash_hmac('sha256', $plainPassword . $passwordSalt, $encryptionKey);
-        return hash_equals($hashedPassword, $computedHash);
-    }
-
-    /**
-     * Hashes the user's password using the provided encryption key and their password salt.
-     *
-     * @param EntityInterface $user the user entity containing the password and related properties
-     * @param string $encryptionKey the encryption key used for generating the password hash
-     */
-    protected function hashUserPassword(EntityInterface $user, string $encryptionKey): void
-    {
-        $user->createHash(
-            property: 'password',
-            salt: $user->getPasswordSalt(),
-            encryptionKey: $encryptionKey
-        );
-    }
-
-    /**
      * Validates the given user entity and ensures it meets the required criteria.
      * If validation fails, an exception containing validation errors will be thrown.
      *
@@ -233,4 +234,63 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
             throw new EntityValidationWithErrorsException($user->getErrors());
         }
     }
+
+
+    /**
+     * Updates the profile of the given entity and returns the updated entity.
+     * @param EntityInterface $entity The entity whose profile needs to be updated.
+     * @return EntityInterface The updated entity instance.
+     * @throws RepositoryUpdateException If the update operation fails.
+     * @throws EntityValidationWithErrorsException
+     * @throws RepositoryUpdateException
+     */
+    public function updateProfile(EntityInterface $entity): EntityInterface
+    {
+        $entity->setEntityState(Entity::STATE_UPDATE);
+        $this->validateEntity($entity);
+
+        $result = $this->queryBuilder
+            ->from($this->index)
+            ->update($entity->getId(), $entity->toArray());
+
+        if (! in_array($result['result'], ['updated', 'noop'])) {
+            $message = __('hf-repository.failed_update_entity');
+            throw new RepositoryUpdateException($result['error'] ?? $message);
+        }
+
+        return $this->entityFactory->create($this->entity, $result['data']);
+    }
+
+    /**
+     * Updates the password of the given entity and returns the updated entity instance.
+     * If the entity has a password, it will be hashed using the configured encryption key.
+     * @param EntityInterface $entity The entity whose password needs to be updated.
+     * @return EntityInterface The updated entity instance.
+     * @throws RepositoryUpdateException If the update operation fails.
+     * @throws EntityValidationWithErrorsException If validation of the entity fails.
+     */
+    public function updatePassword(EntityInterface $entity): EntityInterface
+    {
+        $this->validateEntity($entity);
+
+        if (! $entity->getPassword()) {
+            throw new EmptyPasswordException();
+        }
+
+        $encryptionKey = $this->config['encryption_key'];
+        $this->hashUserPassword($entity, $encryptionKey);
+
+        $result = $this->queryBuilder
+            ->from($this->index)
+            ->update($entity->getId(), $entity->toArray());
+
+        if (! in_array($result['result'], ['updated', 'noop'])) {
+            $message = __('hf-repository.failed_update_entity');
+            throw new RepositoryUpdateException($result['error'] ?? $message);
+        }
+
+        return $this->entityFactory->create($this->entity, $result['data']);
+    }
+
+
 }
