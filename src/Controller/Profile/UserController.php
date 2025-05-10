@@ -21,6 +21,8 @@ use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use Hyperf\RateLimit\Annotation\RateLimit;
 use Jot\HfShield\Annotation\Scope;
+use Jot\HfShield\Exception\ForbiddenAccessException;
+use Jot\HfShield\Exception\UnauthorizedSessionException;
 use Jot\HfShield\Middleware\SessionStrategy;
 use Jot\HfShield\Service\ProfileService;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
@@ -97,6 +99,10 @@ class UserController
     #[PutMapping(path: 'me')]
     public function updateProfileUser(string $id): PsrResponseInterface
     {
+        if($id !== 'me') {
+            throw new ForbiddenAccessException();
+        }
+        $id = $this->request->getAttribute('oauth_user_id');
         $result = $this->service->updateProfile($id, $this->request->all());
         return $this->response->json($result);
     }
