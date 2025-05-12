@@ -81,10 +81,10 @@ return [
         'undefined_user' => 'usuário desconhecido',
     ],
     'log_messages' => [
-        'user_create_new' => 'criou um novo :resource chamado \':name\'.',
+        'user_create_new' => 'criou um novo registro de :resource chamado \':name\'.',
         'user_list_resources' => 'visualizou uma lista de :resources.',
         'system_list_resources' => 'O sistema carregou uma lista de :resources.',
-        'system_view_user' => 'O sistema carregou as informações do :user.',
+        'system_view_user' => 'O sistema carregou as informações de :user.',
         'user_action_resource' => ':action o recurso :resource.',
         'user_action_resource_name' => ':action o recurso :resource \':name\'.',
         'user_logged_in' => ':username logou com sucesso.',
