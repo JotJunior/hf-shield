@@ -158,8 +158,7 @@ class ConfigProvider
                                         'type' => 'text',
                                     ],
                                     'context' => [
-                                        'type' => 'object',
-                                        'dynamic' => true,
+                                        'type' => 'text'
                                     ],
                                     'extra' => [
                                         'type' => 'object',
