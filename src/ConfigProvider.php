@@ -245,10 +245,28 @@ class ConfigProvider
                     'destination' => BASE_PATH . '/config/autoload/hf_shield.php',
                 ],
                 [
-                    'id' => 'config',
+                    'id' => 'session',
                     'description' => 'The config for hf_session.',
                     'source' => __DIR__ . '/../publish/hf_session.php',
                     'destination' => BASE_PATH . '/config/autoload/hf_session.php',
+                ],
+                [
+                    'id' => 's3_bucket',
+                    'description' => 'The config for s3_bucket.',
+                    'source' => __DIR__ . '/../publish/hf_s3_bucket.php',
+                    'destination' => BASE_PATH . '/config/autoload/hf_s3_bucket.php',
+                ],
+                [
+                    'id' => 'webauthn',
+                    'description' => 'The config for webauthn.',
+                    'source' => __DIR__ . '/../publish/hf_webauthn.php',
+                    'destination' => BASE_PATH . '/config/autoload/hf_webauthn.php',
+                ],
+                [
+                    'id' => 'openai',
+                    'description' => 'The config for openai.',
+                    'source' => __DIR__ . '/../publish/hf_openai.php',
+                    'destination' => BASE_PATH . '/config/autoload/hf_openai.php',
                 ],
                 [
                     'id' => 'migrations',
