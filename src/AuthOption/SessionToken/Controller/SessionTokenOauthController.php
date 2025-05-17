@@ -18,7 +18,7 @@ use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use Hyperf\RateLimit\Annotation\RateLimit;
 use Hyperf\Swagger\Annotation as SA;
-use Jot\HfShield\Controller\AbstractController;
+use Jot\HfShield\Controller\AbstractOauthController;
 use Jot\HfShield\Exception\UnauthorizedSessionException;
 use Jot\HfShield\LoggerContextCollector;
 use Jot\HfShield\Repository\AccessTokenRepository;
@@ -52,7 +52,7 @@ use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
     type: 'object'
 )]
 #[Controller(prefix: '/oauth')]
-class SessionTokenController extends AbstractController
+class SessionTokenOauthController extends AbstractOauthController
 {
     use CryptTrait;
     use LoggerContextCollector;

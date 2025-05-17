@@ -19,14 +19,14 @@ use Hyperf\HttpServer\Annotation\PostMapping;
 use Jot\HfShield\Annotation\Scope;
 use Jot\HfShield\AuthOption\Webauthn\Handler\WebauthnRegisterCreateOptionsHandler;
 use Jot\HfShield\AuthOption\Webauthn\Handler\WebauthnRegisterCredentialsHandler;
-use Jot\HfShield\Controller\AbstractController;
+use Jot\HfShield\Controller\AbstractOauthController;
 use Jot\HfShield\Middleware\SessionStrategy;
 use Jot\HfShield\Repository\AccessTokenRepository;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
 #[Controller(prefix: '/web-auth')]
-class WebauthnRegisterController extends AbstractController
+class WebauthnRegisterOauthController extends AbstractOauthController
 {
     use WebauthnRegisterCreateOptionsHandler;
     use WebauthnRegisterCredentialsHandler;

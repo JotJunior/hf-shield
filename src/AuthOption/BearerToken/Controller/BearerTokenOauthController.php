@@ -17,7 +17,7 @@ use Hyperf\HttpServer\Annotation\Middleware;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\RateLimit\Annotation\RateLimit;
 use Hyperf\Swagger\Annotation as SA;
-use Jot\HfShield\Controller\AbstractController;
+use Jot\HfShield\Controller\AbstractOauthController;
 use Jot\HfShield\Exception\UnauthorizedAccessException;
 use Jot\HfShield\Middleware\BearerStrategy;
 use Jot\HfShield\Repository\AccessTokenRepository;
@@ -52,7 +52,7 @@ use Throwable;
     type: 'object'
 )]
 #[Controller(prefix: '/oauth')]
-class BearerTokenController extends AbstractController
+class BearerTokenOauthController extends AbstractOauthController
 {
     protected string $repository = AccessTokenRepository::class;
 

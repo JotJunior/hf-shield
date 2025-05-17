@@ -17,7 +17,7 @@ use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\PostMapping;
 use Hyperf\HttpServer\Annotation\RequestMapping;
 use Jot\HfShield\Annotation\Scope;
-use Jot\HfShield\AuthOption\SessionToken\Controller\SessionTokenController;
+use Jot\HfShield\AuthOption\SessionToken\Controller\SessionTokenOauthController;
 use Jot\HfShield\AuthOption\Webauthn\Handler\WebauthnLoginCollectCredentialsHandler;
 use Jot\HfShield\AuthOption\Webauthn\Handler\WebauthnLoginValidateCredentialsHandler;
 use Jot\HfShield\Exception\UnauthorizedUserException;
@@ -28,7 +28,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Throwable;
 
 #[Controller(prefix: '/web-auth/login')]
-class WebauthnLoginController extends SessionTokenController
+class WebauthnLoginController extends SessionTokenOauthController
 {
     use WebauthnLoginCollectCredentialsHandler;
     use WebauthnLoginValidateCredentialsHandler;

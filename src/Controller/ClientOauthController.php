@@ -29,7 +29,7 @@ use function Hyperf\Support\make;
     description: 'Endpoints related to clients management'
 )]
 #[Controller(prefix: '/oauth')]
-class ClientController extends AbstractController
+class ClientOauthController extends AbstractOauthController
 {
     protected string $repository = ClientRepository::class;
 
