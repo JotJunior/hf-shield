@@ -158,7 +158,7 @@ class ConfigProvider
                                         'type' => 'text',
                                     ],
                                     'context' => [
-                                        'type' => 'text'
+                                        'type' => 'text',
                                     ],
                                     'extra' => [
                                         'type' => 'object',

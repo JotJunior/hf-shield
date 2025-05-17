@@ -61,7 +61,7 @@ class ShieldElasticsearchFormatter extends ElasticsearchFormatter
     {
         foreach ($data as $key => $value) {
             if ($this->isBase64Image($value)) {
-                $data[$key] = $this->truncateString((string)$value);
+                $data[$key] = $this->truncateString((string) $value);
             }
 
             if (is_array($value)) {
@@ -88,13 +88,13 @@ class ShieldElasticsearchFormatter extends ElasticsearchFormatter
 
             if ($this->isPhoneField($key)) {
                 $shouldEncrypt = true;
-                $data[$key] = $this->maskPhone((string)$value);
+                $data[$key] = $this->maskPhone((string) $value);
                 continue;
             }
 
             if ($this->isEmailField($key)) {
                 $shouldEncrypt = true;
-                $data[$key] = $this->maskEmail((string)$value);
+                $data[$key] = $this->maskEmail((string) $value);
                 continue;
             }
         }
@@ -139,13 +139,13 @@ class ShieldElasticsearchFormatter extends ElasticsearchFormatter
 
     private function maskFederalDocument(mixed $value): mixed
     {
-        $value = preg_replace('/\D/', '', (string)$value);
+        $value = preg_replace('/\D/', '', (string) $value);
         $pattern = '/^(\d{3})(\d{3})(\d{3})(\d{2})$/';
-        if (strlen($value) === 11 && preg_match($pattern, (string)$value, $matches)) {
+        if (strlen($value) === 11 && preg_match($pattern, (string) $value, $matches)) {
             return sprintf('%s.***.***-%s', $matches[1], $matches[4]);
         }
         $pattern = '/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/';
-        if (strlen($value) === 14 && preg_match($pattern, (string)$value, $matches)) {
+        if (strlen($value) === 14 && preg_match($pattern, (string) $value, $matches)) {
             return sprintf('**.%s.***/%s-%s', $matches[2], $matches[3], $matches[5]);
         }
         return $value;

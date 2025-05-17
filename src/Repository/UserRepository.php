@@ -21,6 +21,7 @@ use Jot\HfShield\Exception\EmptyPasswordException;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\UserEntityInterface;
 use League\OAuth2\Server\Repositories\UserRepositoryInterface;
+
 use function Hyperf\Support\make;
 use function Hyperf\Translation\__;
 
@@ -39,12 +40,11 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
      * @return null|UserEntityInterface returns a UserEntityInterface instance if the credentials are valid, otherwise null
      */
     public function getUserEntityByUserCredentials(
-        string                $username,
-        string                $password,
-        string                $grantType,
+        string $username,
+        string $password,
+        string $grantType,
         ClientEntityInterface $clientEntity
-    ): ?UserEntityInterface
-    {
+    ): ?UserEntityInterface {
         /** @var User $user */
         $user = $this->first(['email' => $username]);
         if (empty($user)) {
@@ -185,21 +185,6 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
     }
 
     /**
-     * Hashes the user's password using the provided encryption key and their password salt.
-     *
-     * @param EntityInterface $user the user entity containing the password and related properties
-     * @param string $encryptionKey the encryption key used for generating the password hash
-     */
-    protected function hashUserPassword(EntityInterface $user, string $encryptionKey): void
-    {
-        $user->createHash(
-            property: 'password',
-            salt: $user->getPasswordSalt(),
-            encryptionKey: $encryptionKey
-        );
-    }
-
-    /**
      * Creates a new user entity by validating and processing it, and then inserts it into the database.
      *
      * @param EntityInterface $entity the entity instance to be created
@@ -222,25 +207,10 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
     }
 
     /**
-     * Validates the given user entity and ensures it meets the required criteria.
-     * If validation fails, an exception containing validation errors will be thrown.
-     *
-     * @param EntityInterface $user the user entity to be validated
-     * @throws EntityValidationWithErrorsException
-     */
-    private function validateUser(EntityInterface $user): void
-    {
-        if (! $user->validate()) {
-            throw new EntityValidationWithErrorsException($user->getErrors());
-        }
-    }
-
-
-    /**
      * Updates the profile of the given entity and returns the updated entity.
-     * @param EntityInterface $entity The entity whose profile needs to be updated.
-     * @return EntityInterface The updated entity instance.
-     * @throws RepositoryUpdateException If the update operation fails.
+     * @param EntityInterface $entity the entity whose profile needs to be updated
+     * @return EntityInterface the updated entity instance
+     * @throws RepositoryUpdateException if the update operation fails
      * @throws EntityValidationWithErrorsException
      * @throws RepositoryUpdateException
      */
@@ -264,10 +234,10 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
     /**
      * Updates the password of the given entity and returns the updated entity instance.
      * If the entity has a password, it will be hashed using the configured encryption key.
-     * @param EntityInterface $entity The entity whose password needs to be updated.
-     * @return EntityInterface The updated entity instance.
-     * @throws RepositoryUpdateException If the update operation fails.
-     * @throws EntityValidationWithErrorsException If validation of the entity fails.
+     * @param EntityInterface $entity the entity whose password needs to be updated
+     * @return EntityInterface the updated entity instance
+     * @throws RepositoryUpdateException if the update operation fails
+     * @throws EntityValidationWithErrorsException if validation of the entity fails
      */
     public function updatePassword(EntityInterface $entity): EntityInterface
     {
@@ -292,5 +262,32 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
         return $this->entityFactory->create($this->entity, $result['data']);
     }
 
+    /**
+     * Hashes the user's password using the provided encryption key and their password salt.
+     *
+     * @param EntityInterface $user the user entity containing the password and related properties
+     * @param string $encryptionKey the encryption key used for generating the password hash
+     */
+    protected function hashUserPassword(EntityInterface $user, string $encryptionKey): void
+    {
+        $user->createHash(
+            property: 'password',
+            salt: $user->getPasswordSalt(),
+            encryptionKey: $encryptionKey
+        );
+    }
 
+    /**
+     * Validates the given user entity and ensures it meets the required criteria.
+     * If validation fails, an exception containing validation errors will be thrown.
+     *
+     * @param EntityInterface $user the user entity to be validated
+     * @throws EntityValidationWithErrorsException
+     */
+    private function validateUser(EntityInterface $user): void
+    {
+        if (! $user->validate()) {
+            throw new EntityValidationWithErrorsException($user->getErrors());
+        }
+    }
 }
