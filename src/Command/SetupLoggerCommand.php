@@ -54,7 +54,7 @@ class SetupLoggerCommand extends AbstractCommand
         $alias2 = sprintf('%s_logs', $elasticConfig['prefix']);
         $elasticConfig['data_stream']['body']['template']['aliases'][$alias2] = new stdClass();
         $elasticConfig['data_stream']['body']['index_patterns'] = [sprintf('%s-hf-shield-logs*', $elasticConfig['prefix'])];
-
+        $elasticConfig['data_stream']['name'] = sprintf('%s-hf-shield-log-template', $elasticConfig['prefix']);
         try {
             $this->client->indices()->putIndexTemplate($elasticConfig['data_stream']);
         } catch (Throwable $th) {
