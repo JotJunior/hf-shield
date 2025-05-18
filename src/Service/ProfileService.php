@@ -86,15 +86,15 @@ class ProfileService
     {
         $errors = [];
         if (empty($data['password'])) {
-            $errors['password'] = [__('gk-admin.empty_password')];
+            $errors['password'] = [__('hf-shield.empty_password')];
         }
         if (empty($data['current_password'])) {
-            $errors['current_password'] = [__('gk-admin.empty_current_password')];
+            $errors['current_password'] = [__('hf-shield.empty_current_password')];
         }
 
         $user = $this->repository->find($id)->toArray();
         if (! $this->repository->isPasswordValid($user['password'], $data['current_password'], $user['password_salt'])) {
-            $errors['current_password'] = [__('gk-admin.invalid_password')];
+            $errors['current_password'] = [__('hf-shield.invalid_password')];
         }
 
         if ($errors) {

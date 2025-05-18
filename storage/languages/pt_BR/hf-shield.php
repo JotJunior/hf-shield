@@ -9,7 +9,6 @@ declare(strict_types=1);
  * @license  MIT
  */
 return [
-    // Command messages
     'client_created_successfully' => 'Cliente criado com sucesso.',
     'save_secret_warning' => 'Salve este segredo em um local seguro. Você não poderá recuperá-lo novamente.',
     'user_created_successfully' => 'Usuário criado com sucesso.',
@@ -26,9 +25,7 @@ return [
     'passwords_must_match' => 'As senhas devem coincidir.',
     'key_success' => 'Pares de chaves criados com sucesso',
     'key_exists' => 'As chaves já existem, sobrescrever? [s/n]',
-    'document_type' => 'Tipo de documento (cpf|rg|passport|ie|other)',
-
-    // Form labels and prompts
+    'document_type' => 'Tipo de documento (cpf|rg|passport|ie|other]',
     'name' => 'Nome',
     'email' => 'E-mail',
     'phone' => 'Telefone',
@@ -41,13 +38,11 @@ return [
     'tenant_id' => 'ID do Inquilino',
     'username' => 'Nome de usuário',
     'description' => 'Descrição',
-    'add_scope_prompt' => 'Adicionar escopo :scope? (s/n/t)',
+    'add_scope_prompt' => 'Adicionar escopo :scope? (s/n/t]',
     'pick_a_number' => 'Escolha um número',
-    'client_list_prompt' => 'ID do Cliente: (*) [ENTER para pular ou digite "-" para obter a lista de clientes]',
-    'tenant_list_prompt' => 'ID do Inquilino: (*) [Digite "-" para obter a lista de inquilinos]',
+    'client_list_prompt' => 'ID do Cliente: (*] [ENTER para pular ou digite "-" para obter a lista de clientes]',
+    'tenant_list_prompt' => 'ID do Inquilino: (*] [Digite "-" para obter a lista de inquilinos]',
     'data_stream' => 'Criar modelo de fluxo de dados',
-
-    // Commands descriptions
     'action_description' => 'Ação do comando',
     'create_key_pairs_description' => 'Criar pares de chaves de criptografia para token OAuth',
     'force' => 'Forçar substituição de arquivo',
@@ -57,20 +52,15 @@ return [
     'oauth_tenant_description' => 'Criar um Inquilino OAuth',
     'oauth_user_description' => 'Criar um Usuário OAuth',
     'setup_logger_description' => 'Configurar o registrador do HfShield',
-
-    // Exception messages
     'unauthorized_access' => 'Acesso não autorizado',
     'unauthorized_client' => 'Cliente não autorizado',
     'unauthorized_user' => 'Usuário não autorizado',
     'unauthorized_session' => 'Acesso não autorizado. Por favor, verifique sua configuração de sessão.',
     'missing_resource_scope' => 'Nenhum escopo de autorização foi registrado para este recurso. Por favor, verifique sua configuração.',
-
-    // logger setup
     'no_data_stream_configured' => 'Nenhum fluxo de dados configurado. Por favor, verifique sua configuração.',
     'logger_setup_successfully' => 'Registrador configurado com sucesso.',
-
-    // Messages
-    'session_actions' => [
+    'session_actions' => 
+    [
         'list' => 'listou',
         'view' => 'visualizou',
         'create' => 'criou',
@@ -80,7 +70,8 @@ return [
         'read' => 'leu',
         'undefined_user' => 'usuário desconhecido',
     ],
-    'log_messages' => [
+    'log_messages' => 
+    [
         'user_create_new' => 'criou um novo registro de :resource chamado \':name\'.',
         'user_list_resources' => 'visualizou uma lista de :resources.',
         'system_list_resources' => 'O sistema carregou uma lista de :resources.',
@@ -89,4 +80,11 @@ return [
         'user_action_resource_name' => ':action o recurso :resource \':name\'.',
         'user_logged_in' => ':username logou com sucesso.',
     ],
+    'empty_current_password' => 'A senha atual está vazia.',
+    'empty_password' => 'A senha esta vazia.',
+    'failed_update_entity' => 'A atualização da entidade falhou.',
+    'forbidden_access' => 'Acesso proibido.',
+    'invalid_password' => 'Senha inválida.',
+    'invalid_public_key_credential' => 'Credenciais de chave publica inválidas.',
+    'password_must_not_be_empty' => 'A senha não deve estar vazia.',
 ];

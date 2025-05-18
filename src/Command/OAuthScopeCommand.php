@@ -117,8 +117,8 @@ class OAuthScopeCommand extends HyperfCommand
                     'data' => [
                         'id' => $finalScope,
                         'name' => $description,
-                        'domain' => __(sprintf('gk-admin.scopes.%s', $parts[0])),
-                        'resource' => empty($parts[1]) ? null : __(sprintf('gk-admin.scopes.%s', $parts[1])),
+                        'domain' => __(sprintf('hf-shield.scopes.%s', $parts[0])),
+                        'resource' => empty($parts[1]) ? null : __(sprintf('hf-shield.scopes.%s', $parts[1])),
                         'action' => empty($parts[2]) ? null : $parts[2],
                     ],
                 ]));

@@ -9,7 +9,6 @@ declare(strict_types=1);
  * @license  MIT
  */
 return [
-    // Command messages
     'client_created_successfully' => 'Client created successfully.',
     'save_secret_warning' => 'Save this secret in a safe place. You will not be able to retrieve it again.',
     'user_created_successfully' => 'User created successfully.',
@@ -27,8 +26,6 @@ return [
     'key_success' => 'Key pairs created successfully',
     'key_exists' => 'Keys already exist, overwrite? [y/n]',
     'document_type' => 'Document Type',
-
-    // Form labels and prompts
     'name' => 'Name',
     'email' => 'E-mail',
     'phone' => 'Phone',
@@ -41,13 +38,11 @@ return [
     'tenant_id' => 'Tenant ID',
     'username' => 'Username',
     'description' => 'Description',
-    'add_scope_prompt' => 'Add scope :scope? (y/n/a)',
+    'add_scope_prompt' => 'Add scope :scope? (y/n/a]',
     'pick_a_number' => 'Pick a number',
-    'client_list_prompt' => 'Client ID: (*) [ENTER to skip or type "-" for get the client list]',
-    'tenant_list_prompt' => 'Tenant ID: (*) [Type "-" for get the tenant list]',
+    'client_list_prompt' => 'Client ID: (*] [ENTER to skip or type "-" for get the client list]',
+    'tenant_list_prompt' => 'Tenant ID: (*] [Type "-" for get the tenant list]',
     'data_stream' => 'Create data stream template',
-
-    // Commands descriptions
     'action_description' => 'Command action',
     'create_key_pairs_description' => 'Create an OAuth token encryption key pairs',
     'force' => 'Force file replacement',
@@ -57,20 +52,15 @@ return [
     'oauth_tenant_description' => 'Create an OAuth Tenant',
     'oauth_user_description' => 'Create an OAuth User',
     'setup_logger_description' => 'Setup HfShield logger',
-
-    // Exception messages
     'unauthorized_access' => 'Unauthorized access',
     'unauthorized_client' => 'Unauthorized Client',
     'unauthorized_user' => 'Unauthorized User',
     'unauthorized_session' => 'Unauthorized access. Please check your session configuration.',
     'missing_resource_scope' => 'No authorization scopes have been registered for this resource. Please verify your configuration.',
-
-    // logger setup
     'no_data_stream_configured' => 'No data stream configured. Please verify your configuration.',
     'logger_setup_successfully' => 'Logger setup successfully.',
-
-    // Messages
-    'session_actions' => [
+    'session_actions' => 
+    [
         'list' => 'listed',
         'view' => 'viewed',
         'create' => 'created',
@@ -78,14 +68,23 @@ return [
         'delete' => 'deleted',
         'verify' => 'verified',
         'read' => 'read',
+        'undefined_user' => 'undefined user',
     ],
-    'log_messages' => [
+    'log_messages' => 
+    [
         'user_create_new' => 'created a new :resource called \':name\'.',
         'user_list_resources' => 'viewed a list of :resources.',
         'system_list_resources' => 'The system load a list of :resources.',
-        'system_view_user' => 'The sustem load :user\`s information.',
+        'system_view_user' => 'The system load :user\'s information.',
         'user_action_resource' => ':action the :resource.',
         'user_action_resource_name' => ':action the :resource \':name\'.',
         'user_logged_in' => ':username logged in successfully.',
     ],
+    'empty_current_password' => 'Empty current password.',
+    'empty_password' => 'Empty password.',
+    'failed_update_entity' => 'Failed to update entity.',
+    'forbidden_access' => 'Forbidden access.',
+    'invalid_password' => 'Invalid password.',
+    'invalid_public_key_credential' => 'Invalid public key credential.',
+    'password_must_not_be_empty' => 'Password must not be empty.',
 ];

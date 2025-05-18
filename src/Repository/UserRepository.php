@@ -146,7 +146,7 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
             ->update($entity->getId(), $entity->toArray());
 
         if (! in_array($result['result'], ['updated', 'noop'])) {
-            $message = __('hf-repository.failed_update_entity');
+            $message = __('hf-shield.failed_update_entity');
             throw new RepositoryUpdateException($result['error'] ?? $message);
         }
 
@@ -224,7 +224,7 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
             ->update($entity->getId(), $entity->toArray());
 
         if (! in_array($result['result'], ['updated', 'noop'])) {
-            $message = __('hf-repository.failed_update_entity');
+            $message = __('hf-shield.failed_update_entity');
             throw new RepositoryUpdateException($result['error'] ?? $message);
         }
 
@@ -255,7 +255,7 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
             ->update($entity->getId(), $entity->toArray());
 
         if (! in_array($result['result'], ['updated', 'noop'])) {
-            $message = __('hf-repository.failed_update_entity');
+            $message = __('hf-shield.failed_update_entity');
             throw new RepositoryUpdateException($result['error'] ?? $message);
         }
 
