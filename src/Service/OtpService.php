@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Jot\HfShield\Service;
 
 use DateTime;
+use Hyperf\Cache\Annotation\Cacheable;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Di\Annotation\Inject;
 use Jot\HfRepository\Entity\EntityInterface;
@@ -29,6 +30,8 @@ class OtpService
 {
     use CryptTrait;
 
+    public const OTP_EXPIRATION_TIME = 300;
+
     #[Inject]
     protected UserRepository $userRepository;
 
@@ -43,6 +46,7 @@ class OtpService
         $this->setEncryptionKey($this->config->get('hf_shield.encryption_key', ''));
     }
 
+    #[Cacheable(prefix: 'otp:create', ttl: self::OTP_EXPIRATION_TIME)]
     public function create(array $data): array
     {
         $user = $this->getUserFromFederalDocument($data['federal_document'], $data['_tenant_id'] ?? null);
@@ -104,7 +108,7 @@ class OtpService
             throw new InvalidOtpCodeException('hf-shield.invalid_otp_code');
         }
 
-        if ((new \DateTime('now'))->diff($otp->created_at)->i > 5) {
+        if ((new \DateTime('now'))->diff($otp->created_at)->i * 60 > self::OTP_EXPIRATION_TIME) {
             throw new InvalidOtpCodeException('hf-shield.expired_otp_code');
         }
 
@@ -122,6 +126,7 @@ class OtpService
 
     private function isValidCode(string $code, EntityInterface $otp): bool
     {
-        return $otp->status === 'active' && $this->decrypt($otp->code) === $code;
+        $decrypted = explode('|', $this->decrypt($otp->code));
+        return $otp->status === 'active' && $decrypted[1] === $code;
     }
 }

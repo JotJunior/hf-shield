@@ -36,7 +36,7 @@ class PasswordController
     #[Inject]
     protected OtpService $otpService;
 
-    #[RateLimit(create: 1, capacity: 2)]
+    #[RateLimit(create: 1, capacity: 1)]
     #[PostMapping(path: 'recover-password')]
     public function startRecoverPasswordFlow(): PsrResponseInterface
     {
@@ -45,7 +45,7 @@ class PasswordController
         );
     }
 
-    #[RateLimit(create: 1, capacity: 2)]
+    #[RateLimit(create: 1, capacity: 1)]
     #[PostMapping(path: 'recover-password/{otpId}')]
     public function validateOtpCode($otpId): PsrResponseInterface
     {
