@@ -26,7 +26,6 @@ use Jot\HfShield\Repository\UserCodeRepository;
 use Jot\HfShield\Repository\UserRepository;
 use League\OAuth2\Server\CryptTrait;
 use Psr\EventDispatcher\EventDispatcherInterface;
-
 use function Hyperf\Support\make;
 use function Hyperf\Translation\__;
 
@@ -35,6 +34,8 @@ class OtpService
     use CryptTrait;
 
     public const OTP_EXPIRATION_TIME = 300;
+    public const OTP_STATUS_COMPLETE = 'complete';
+    public const OTP_STATUS_VALIDATED = 'validated';
 
     #[Inject]
     protected UserRepository $userRepository;
@@ -65,56 +66,6 @@ class OtpService
         ];
     }
 
-    public function validateCode(array $data): array
-    {
-        $otp = $this->userCodeRepository->find($data['otp_id']);
-
-        if (empty($otp) || ! $this->isValidCode($data['code'], $otp)) {
-            throw new InvalidOtpCodeException(__('hf-shield.invalid_otp_code'));
-        }
-
-        $this->userCodeRepository->update(
-            make(UserCode::class, ['data' => ['id' => $otp->id, 'status' => 'validated']])
-        );
-
-        return [
-            'data' => $data['otp_id'],
-            'result' => 'success',
-            'message' => __('hf-shield.otp_code_validated'),
-        ];
-    }
-
-    /**
-     * @throws EntityValidationWithErrorsException
-     * @throws RepositoryUpdateException
-     */
-    public function changePassword(array $data): array
-    {
-        $otp = $this->userCodeRepository->find($data['otp_id']);
-
-        if (empty($otp) || ! $otp->status !== 'validated') {
-            throw new InvalidOtpCodeException(__('hf-shield.invalid_otp_code'));
-        }
-
-        $user = $this->userRepository->find($otp->user->getId());
-
-        if (empty($user)) {
-            throw new InvalidOtpCodeException(__('hf-shield.invalid_otp_code'));
-        }
-
-        $user->hydrate([
-            'password' => $data['password'],
-        ]);
-
-        $this->userRepository->updatePassword($user);
-
-        return [
-            'data' => $data['otp_id'],
-            'result' => 'success',
-            'message' => __('hf-shield.password_changed_successfully'),
-        ];
-    }
-
     private function getUserFromFederalDocument(string $federalDocument, ?string $tenantId): ?EntityInterface
     {
         return $this->userRepository->first([
@@ -126,7 +77,7 @@ class OtpService
 
     private function generateCode(EntityInterface $user): string
     {
-        $randomNumber = (string) rand(1, 999999);
+        $randomNumber = (string)rand(1, 999999);
         $newCode = str_pad($randomNumber, 6, '0', STR_PAD_LEFT);
 
         $userCode = make(name: UserCode::class, parameters: [
@@ -154,6 +105,23 @@ class OtpService
         return $code->getId();
     }
 
+    public function validateCode(array $data): array
+    {
+        $otp = $this->userCodeRepository->find($data['otp_id']);
+
+        if (empty($otp) || ! $this->isValidCode($data['code'], $otp)) {
+            throw new InvalidOtpCodeException(__('hf-shield.invalid_otp_code'));
+        }
+
+        $this->changeOtpStatus($otp, self::OTP_STATUS_VALIDATED);
+
+        return [
+            'data' => $data['otp_id'],
+            'result' => 'success',
+            'message' => __('hf-shield.otp_code_validated'),
+        ];
+    }
+
     private function isValidCode(string $code, EntityInterface $otp, string $requiredStatus = 'active'): bool
     {
         $decrypted = explode('|', $this->decrypt($otp->code));
@@ -165,5 +133,46 @@ class OtpService
         }
 
         return $otp->status === $requiredStatus && $decrypted[1] === $code;
+    }
+
+    private function changeOtpStatus(EntityInterface $otp, string $status): void
+    {
+        $this->userCodeRepository->update(
+            make(UserCode::class, ['data' => ['id' => $otp->id, 'status' => $status]])
+        );
+    }
+
+    /**
+     * @throws EntityValidationWithErrorsException
+     * @throws RepositoryUpdateException
+     */
+    public function changePassword(array $data): array
+    {
+        $otp = $this->userCodeRepository->find($data['otp_id']);
+
+        if (empty($otp) || $otp->status !== 'validated') {
+            throw new InvalidOtpCodeException(__('hf-shield.invalid_otp_code'));
+        }
+
+        $user = $this->userRepository->find($otp->user->id);
+
+        if (empty($user)) {
+            throw new UnauthorizedUserException();
+        }
+
+        $user->hydrate([
+            'password' => $data['password'],
+        ]);
+
+        $this->userRepository->updatePassword($user);
+
+        $this->changeOtpStatus($otp, self::OTP_STATUS_COMPLETE);
+
+
+        return [
+            'data' => $data['otp_id'],
+            'result' => 'success',
+            'message' => __('hf-shield.password_changed_successfully'),
+        ];
     }
 }
