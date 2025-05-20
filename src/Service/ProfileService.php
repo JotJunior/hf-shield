@@ -15,32 +15,27 @@ use Hyperf\Cache\Annotation\Cacheable;
 use Hyperf\Cache\Listener\DeleteListenerEvent;
 use Hyperf\Di\Annotation\Inject;
 use Jot\HfRepository\Exception\EntityValidationWithErrorsException;
+use Jot\HfRepository\Service\AbstractService;
 use Jot\HfShield\Dto\Profile\User\UserPasswordDto;
 use Jot\HfShield\Dto\Profile\User\UserSessionDto;
 use Jot\HfShield\Entity\User\User as Entity;
 use Jot\HfShield\Helper\Base64ImageHandler;
 use Jot\HfShield\Repository\UserRepository;
-use Psr\EventDispatcher\EventDispatcherInterface;
-
 use function Hyperf\Support\make;
 use function Hyperf\Translation\__;
 
-class ProfileService
+class ProfileService extends AbstractService
 {
     public const CACHE_PREFIX_PROFILE = 'profile:entity';
 
     public const CACHE_PREFIX_USER = 'user:entity';
 
-    #[Inject]
-    protected UserRepository $repository;
+    protected string $repositoryClass = UserRepository::class;
+
+    protected string $entityClass = Entity::class;
 
     #[Inject]
     protected Base64ImageHandler $imageHandler;
-
-    #[Inject]
-    protected EventDispatcherInterface $dispatcher;
-
-    protected Entity $entity;
 
     #[Cacheable(prefix: self::CACHE_PREFIX_PROFILE, ttl: 600, listener: self::CACHE_PREFIX_PROFILE)]
     public function getProfileData(string $id): array
@@ -72,7 +67,7 @@ class ProfileService
             ->hide(['password', 'password_salt'])
             ->toArray();
         $userData['custom_settings'] = $settings;
-        $entity = make(Entity::class, ['data' => $userData]);
+        $entity = make($this->entityClass, ['data' => $userData]);
 
         $result = $this->repository->update($entity)->toArray();
 
@@ -136,7 +131,7 @@ class ProfileService
             $data['federal_document'],
         );
 
-        $entity = make(Entity::class, ['data' => ['id' => $id, ...$data]]);
+        $entity = make($this->entityClass, ['data' => ['id' => $id, ...$data]]);
         $result = $this->repository->updateProfile($entity);
 
         $this->dispatcher->dispatch(new DeleteListenerEvent(self::CACHE_PREFIX_USER, [$id]));
@@ -149,8 +144,4 @@ class ProfileService
         ];
     }
 
-    public function exists(string $id): bool
-    {
-        return $this->repository->exists($id);
-    }
 }

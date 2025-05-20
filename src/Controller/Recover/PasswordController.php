@@ -13,16 +13,10 @@ namespace Jot\HfShield\Controller\Recover;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\GetMapping;
-use Hyperf\HttpServer\Annotation\Middleware;
 use Hyperf\HttpServer\Annotation\PostMapping;
-use Hyperf\HttpServer\Annotation\PutMapping;
-use Hyperf\HttpServer\Annotation\RequestMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use Hyperf\RateLimit\Annotation\RateLimit;
-use Jot\HfShield\Annotation\Scope;
-use Jot\HfShield\Middleware\SessionStrategy;
 use Jot\HfShield\Service\OtpService;
 use Jot\HfShield\Service\ProfileService;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
@@ -49,16 +43,5 @@ class PasswordController
         return $this->response->json(
             $this->otpService->create($this->request->all())
         );
-    }
-
-
-    #[RequestMapping(path: '[(me|session|password|settings)]', methods: ['OPTIONS'])]
-    public function requestProfileOptions(): PsrResponseInterface
-    {
-        return $this->response
-            ->json([
-                'methods' => ['GET', 'POST', 'PUT', 'HEAD'],
-                'rate_limit' => 'Max 2 requests per second.',
-            ]);
     }
 }

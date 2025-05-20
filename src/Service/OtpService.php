@@ -39,7 +39,7 @@ class OtpService
 
     public function create(array $data): array
     {
-        $user = $this->getUserFromFederalDocument($data['federal_document'], $data['_tenant_id']);
+        $user = $this->getUserFromFederalDocument($data['federal_document'], $data['_tenant_id'] ?? null);
         if (empty($user)) {
             throw new UnauthorizedUserException();
         }
@@ -51,7 +51,7 @@ class OtpService
         ];
     }
 
-    private function getUserFromFederalDocument(string $federalDocument, string $tenantId): EntityInterface
+    private function getUserFromFederalDocument(string $federalDocument, ?string $tenantId): ?EntityInterface
     {
         return $this->userRepository->first([
             // 'tenant_id' => $tenantId,

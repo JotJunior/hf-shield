@@ -17,8 +17,6 @@ use Jot\HfShield\Repository\AccessTokenRepository;
 
 class AccessTokenService
 {
-    public const CACHE_PREFIX = 'access_token:entity';
-
     #[Inject]
     protected AccessTokenRepository $repository;
 

@@ -8,8 +8,7 @@ declare(strict_types=1);
  * @link     https://github.com/JotJunior/hf-shield
  * @license  MIT
  */
-
-/**
+/*
  * This script scans PHP files for __() function calls and extracts translation keys.
  * Usage: php scan.php /path/to/scan
  */
@@ -45,11 +44,11 @@ function extractTranslationKeys(string $filePath): array
 {
     $content = file_get_contents($filePath);
     $keys = [];
-    
+
     // Regular expression to match __() function calls
     // This pattern accounts for both single and double quotes, and for the function having a second parameter
-    $pattern = '/\b__\(\s*([\'"])(.*?)\1(?:\s*,\s*.*?)?\s*\)/'; 
-    
+    $pattern = '/\b__\(\s*([\'"])(.*?)\1(?:\s*,\s*.*?)?\s*\)/';
+
     if (preg_match_all($pattern, $content, $matches)) {
         foreach ($matches[2] as $key) {
             // Validate the key format
@@ -60,7 +59,7 @@ function extractTranslationKeys(string $filePath): array
             }
         }
     }
-    
+
     return $keys;
 }
 
@@ -71,26 +70,26 @@ function validateTranslationKey(string $key): bool
     if (! preg_match('/^[a-zA-Z0-9_-]+\.[a-zA-Z0-9_\.-]+$/', $key)) {
         return false;
     }
-    
+
     // Extract file name from the key
     $parts = explode('.', $key, 2);
     $file = $parts[0];
-    
+
     // Check if the translation file exists
     $langDirs = array_filter(glob(__DIR__ . '/*'), 'is_dir');
     $fileExists = false;
-    
+
     foreach ($langDirs as $langDir) {
         if (file_exists($langDir . '/' . $file . '.php')) {
             $fileExists = true;
             break;
         }
     }
-    
+
     if (! $fileExists) {
         echo "Warning: Translation file '{$file}.php' does not exist for key: {$key}\n";
     }
-    
+
     return true;
 }
 
@@ -98,7 +97,7 @@ function validateTranslationKey(string $key): bool
 function organizeKeysByFile(array $keys): array
 {
     $organized = [];
-    
+
     foreach ($keys as $key) {
         $parts = explode('.', $key, 2);
         if (count($parts) === 2) {
@@ -110,7 +109,7 @@ function organizeKeysByFile(array $keys): array
             $organized[$file][$actualKey] = null;
         }
     }
-    
+
     return $organized;
 }
 
@@ -120,14 +119,14 @@ echo "Scanning directory: {$scanDir}\n";
 $phpFiles = getPhpFiles($scanDir);
 $allKeys = [];
 
-echo "Found " . count($phpFiles) . " PHP files to scan.\n";
+echo 'Found ' . count($phpFiles) . " PHP files to scan.\n";
 
 // Extract translation keys from each file
 foreach ($phpFiles as $file) {
     $keys = extractTranslationKeys($file);
     if (! empty($keys)) {
         $relativePath = str_replace($scanDir . '/', '', $file);
-        echo "Found " . count($keys) . " translation keys in {$relativePath}\n";
+        echo 'Found ' . count($keys) . " translation keys in {$relativePath}\n";
         $allKeys = array_merge($allKeys, $keys);
     }
 }
@@ -144,7 +143,7 @@ foreach ($organizedKeys as $file => $keys) {
     $outputFile = $outputDir . '/' . $file . '-keys.json';
     $jsonContent = json_encode($keys, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
     file_put_contents($outputFile, $jsonContent);
-    echo "Saved " . count($keys) . " keys for '{$file}' to {$file}-keys.json\n";
+    echo 'Saved ' . count($keys) . " keys for '{$file}' to {$file}-keys.json\n";
 }
 
-echo "Scan completed. Found " . count($uniqueKeys) . " unique translation keys across " . count($organizedKeys) . " files.\n";
+echo 'Scan completed. Found ' . count($uniqueKeys) . ' unique translation keys across ' . count($organizedKeys) . " files.\n";

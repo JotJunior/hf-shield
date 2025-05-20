@@ -102,30 +102,30 @@ foreach ($langDirs as $langDir) {
 // Group files by their basename (e.g., 'hf-shield.php' -> 'hf-shield')
 $fileGroups = groupFilesByBasename($allFiles);
 
-echo "Found " . count($fileGroups) . " translation file groups.\n";
+echo 'Found ' . count($fileGroups) . " translation file groups.\n";
 
 // Process each group of files separately
 foreach ($fileGroups as $basename => $files) {
     echo "\nProcessing '{$basename}' translation files...\n";
-    
+
     // Extract all unique keys from this group of language files
     $allKeys = [];
     $fileContents = [];
-    
+
     foreach ($files as $file) {
         $content = require $file;
         $fileContents[$file] = $content;
-        
+
         $keys = getAllKeys($content);
         $allKeys = array_merge($allKeys, $keys);
     }
-    
+
     // Check if there's a JSON keys file for this basename
     $jsonKeysFile = $baseDir . '/' . $basename . '-keys.json';
     if (file_exists($jsonKeysFile)) {
         echo "Reading keys from {$basename}-keys.json...\n";
         $jsonKeys = json_decode(file_get_contents($jsonKeysFile), true);
-        
+
         if ($jsonKeys) {
             // Add the JSON keys to our list
             foreach ($jsonKeys as $key => $value) {
@@ -133,25 +133,25 @@ foreach ($fileGroups as $basename => $files) {
             }
         }
     }
-    
+
     $allKeys = array_unique($allKeys);
     sort($allKeys);
-    
-    echo "Found " . count($allKeys) . " unique keys for '{$basename}'.\n";
-    
+
+    echo 'Found ' . count($allKeys) . " unique keys for '{$basename}'.\n";
+
     // Update each language file in this group to include all keys
     $updated = 0;
-    
+
     foreach ($files as $file) {
         $content = $fileContents[$file];
         $modified = false;
-        
+
         foreach ($allKeys as $key) {
             // Check if the key exists in the current file
             $keyExists = false;
             $keyParts = explode('.', $key);
             $currentArray = $content;
-            
+
             foreach ($keyParts as $i => $part) {
                 if ($i === count($keyParts) - 1) {
                     $keyExists = isset($currentArray[$part]);
@@ -163,31 +163,31 @@ foreach ($fileGroups as $basename => $files) {
                     $currentArray = $currentArray[$part];
                 }
             }
-            
+
             // If the key doesn't exist, add it with null value
             if (! $keyExists) {
                 setNestedValue($content, $key, null);
                 $modified = true;
             }
         }
-        
+
         // Save the updated content back to the file if modified
         if ($modified) {
             $relativePath = str_replace($baseDir . '/', '', $file);
             echo "Updating file: {$relativePath}\n";
-            
+
             $head = "<?php\n\ndeclare(strict_types=1);\n/**\n * This file is part of the hf_shield module, a package build for Hyperf framework that is responsible for OAuth2 authentication and access control.\n *\n * @author   Joao Zanon <jot@jot.com.br>\n * @link     https://github.com/JotJunior/hf-shield\n * @license  MIT\n */\n";
             $code = 'return ' . var_export($content, true) . ";\n";
-            
+
             // Format the output to be more readable
             $code = str_replace(['array (', ')', '  '], ['[', ']', '    '], $code);
-            $code = preg_replace("/=> \[\n\s+\]/", '=> []', $code);
-            
+            $code = preg_replace("/=> \\[\n\\s+\\]/", '=> []', $code);
+
             file_put_contents($file, $head . $code);
             ++$updated;
         }
     }
-    
+
     echo "Updated {$updated} files in the '{$basename}' group.\n";
 }
 
