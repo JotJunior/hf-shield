@@ -16,6 +16,8 @@ use Hyperf\Cache\Annotation\Cacheable;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Di\Annotation\Inject;
 use Jot\HfRepository\Entity\EntityInterface;
+use Jot\HfRepository\Exception\EntityValidationWithErrorsException;
+use Jot\HfRepository\Exception\RepositoryUpdateException;
 use Jot\HfShield\Entity\UserCode\UserCode;
 use Jot\HfShield\Event\OtpEvent;
 use Jot\HfShield\Exception\InvalidOtpCodeException;
@@ -24,6 +26,7 @@ use Jot\HfShield\Repository\UserCodeRepository;
 use Jot\HfShield\Repository\UserRepository;
 use League\OAuth2\Server\CryptTrait;
 use Psr\EventDispatcher\EventDispatcherInterface;
+
 use function Hyperf\Support\make;
 use function Hyperf\Translation\__;
 
@@ -62,6 +65,56 @@ class OtpService
         ];
     }
 
+    public function validateCode(array $data): array
+    {
+        $otp = $this->userCodeRepository->find($data['otp_id']);
+
+        if (empty($otp) || ! $this->isValidCode($data['code'], $otp)) {
+            throw new InvalidOtpCodeException(__('hf-shield.invalid_otp_code'));
+        }
+
+        $this->userCodeRepository->update(
+            make(UserCode::class, ['data' => ['id' => $otp->id, 'status' => 'validated']])
+        );
+
+        return [
+            'data' => $data['otp_id'],
+            'result' => 'success',
+            'message' => __('hf-shield.otp_code_validated'),
+        ];
+    }
+
+    /**
+     * @throws EntityValidationWithErrorsException
+     * @throws RepositoryUpdateException
+     */
+    public function changePassword(array $data): array
+    {
+        $otp = $this->userCodeRepository->find($data['otp_id']);
+
+        if (empty($otp) || ! $otp->status !== 'validated') {
+            throw new InvalidOtpCodeException(__('hf-shield.invalid_otp_code'));
+        }
+
+        $user = $this->userRepository->find($otp->user->getId());
+
+        if (empty($user)) {
+            throw new InvalidOtpCodeException(__('hf-shield.invalid_otp_code'));
+        }
+
+        $user->hydrate([
+            'password' => $data['password'],
+        ]);
+
+        $this->userRepository->updatePassword($user);
+
+        return [
+            'data' => $data['otp_id'],
+            'result' => 'success',
+            'message' => __('hf-shield.password_changed_successfully'),
+        ];
+    }
+
     private function getUserFromFederalDocument(string $federalDocument, ?string $tenantId): ?EntityInterface
     {
         return $this->userRepository->first([
@@ -73,7 +126,7 @@ class OtpService
 
     private function generateCode(EntityInterface $user): string
     {
-        $randomNumber = (string)rand(1, 999999);
+        $randomNumber = (string) rand(1, 999999);
         $newCode = str_pad($randomNumber, 6, '0', STR_PAD_LEFT);
 
         $userCode = make(name: UserCode::class, parameters: [
@@ -101,36 +154,16 @@ class OtpService
         return $code->getId();
     }
 
-    public function validateCode(array $data): array
-    {
-        $otp = $this->userCodeRepository->find($data['otp_id']);
-
-        if (empty($otp) || ! $this->isValidCode($data['code'], $otp)) {
-            throw new InvalidOtpCodeException(__('hf-shield.invalid_otp_code'));
-        }
-
-        $this->userCodeRepository->update(
-            make(UserCode::class, ['data' => ['status' => 'validated']])
-        );
-
-        return [
-            'data' => $data['otp_id'],
-            'result' => 'success',
-            'message' => null,
-        ];
-
-    }
-
-    private function isValidCode(string $code, EntityInterface $otp): bool
+    private function isValidCode(string $code, EntityInterface $otp, string $requiredStatus = 'active'): bool
     {
         $decrypted = explode('|', $this->decrypt($otp->code));
 
-        $now = new \DateTime('now');
-        $exp = new \DateTime($decrypted[0]);
+        $now = new DateTime('now');
+        $exp = new DateTime($decrypted[0]);
         if ($now > $exp) {
             throw new InvalidOtpCodeException(__('hf-shield.expired_otp_code'));
         }
 
-        return $otp->status === 'active' && $decrypted[1] === $code;
+        return $otp->status === $requiredStatus && $decrypted[1] === $code;
     }
 }

@@ -53,4 +53,13 @@ class PasswordController
             $this->otpService->validateCode([...$this->request->all(), 'otp_id' => $otpId])
         );
     }
+
+    #[RateLimit(create: 1, capacity: 1)]
+    #[PostMapping(path: 'change-password/{otpId}')]
+    public function changePassword($otpId): PsrResponseInterface
+    {
+        return $this->response->json(
+            $this->otpService->changePassword([...$this->request->all(), 'otp_id' => $otpId])
+        );
+    }
 }

@@ -21,6 +21,7 @@ use Jot\HfShield\Dto\Profile\User\UserSessionDto;
 use Jot\HfShield\Entity\User\User as Entity;
 use Jot\HfShield\Helper\Base64ImageHandler;
 use Jot\HfShield\Repository\UserRepository;
+
 use function Hyperf\Support\make;
 use function Hyperf\Translation\__;
 
@@ -143,5 +144,4 @@ class ProfileService extends AbstractService
             'message' => null,
         ];
     }
-
 }
