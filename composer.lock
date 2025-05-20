@@ -4030,16 +4030,16 @@
         },
         {
             "name": "jot/hf-repository",
-            "version": "v0.15.29",
+            "version": "v0.15.30",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JotJunior/hf-repository.git",
-                "reference": "92bad3ad3c29262b73668aff7b3cb39959a7419e"
+                "reference": "66294898fb0e6fcc8b29eff7257bf267d08d1da3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JotJunior/hf-repository/zipball/92bad3ad3c29262b73668aff7b3cb39959a7419e",
-                "reference": "92bad3ad3c29262b73668aff7b3cb39959a7419e",
+                "url": "https://api.github.com/repos/JotJunior/hf-repository/zipball/66294898fb0e6fcc8b29eff7257bf267d08d1da3",
+                "reference": "66294898fb0e6fcc8b29eff7257bf267d08d1da3",
                 "shasum": ""
             },
             "require": {
@@ -4092,9 +4092,9 @@
             ],
             "support": {
                 "issues": "https://github.com/JotJunior/hf-repository/issues",
-                "source": "https://github.com/JotJunior/hf-repository/tree/v0.15.29"
+                "source": "https://github.com/JotJunior/hf-repository/tree/v0.15.30"
             },
-            "time": "2025-05-20T11:33:12+00:00"
+            "time": "2025-05-20T11:44:33+00:00"
         },
         {
             "name": "jot/hf-utils",

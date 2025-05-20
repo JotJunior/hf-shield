@@ -15,6 +15,7 @@ use Hyperf\ExceptionHandler\ExceptionHandler;
 use Hyperf\HttpMessage\Stream\SwooleStream;
 use Hyperf\Logger\LoggerFactory;
 use Jot\HfShield\Exception\ForbiddenAccessException;
+use Jot\HfShield\Exception\InvalidOtpCodeException;
 use Jot\HfShield\Exception\MissingResourceScopeException;
 use Jot\HfShield\Exception\UnauthorizedAccessException;
 use Jot\HfShield\Exception\UnauthorizedClientException;
@@ -52,10 +53,11 @@ class AuthExceptionHandler extends ExceptionHandler
         }
 
         if ($throwable instanceof MissingResourceScopeException
+            || $throwable instanceof ForbiddenAccessException
+            || $throwable instanceof InvalidOtpCodeException
             || $throwable instanceof UnauthorizedAccessException
             || $throwable instanceof UnauthorizedSessionException
             || $throwable instanceof UnauthorizedUserException
-            || $throwable instanceof ForbiddenAccessException
             || $throwable instanceof UnauthorizedClientException) {
             $this->stopPropagation();
             $this->logError($throwable);

@@ -20,7 +20,7 @@ class WhatsappService
         private readonly ConfigInterface $config
     )
     {
-        $credentials = $this->config->get('twilio.credentials');
+        $credentials = $this->config->get('twilio', []);
         $this->credentials = $credentials;
         $this->sender = new Client($credentials['sid'], $credentials['token']);
     }
@@ -37,9 +37,10 @@ class WhatsappService
                     'messagingServiceSid' => empty($parameters['messaging_service']) ? $this->credentials['messaging_service'] : $parameters['messaging_service'],
                 ]
             );
-            $this->logger->info(sprintf('OTP sent to %s', $to), $result->toArray());
+            $this->logger?->info(sprintf('OTP sent to %s', $to), $result->toArray());
         } catch (TwilioException $th) {
-            $this->logger->error($th->getMessage());
+            echo $th->getMessage();
+            $this->logger?->error($th->getMessage());
         }
     }
 

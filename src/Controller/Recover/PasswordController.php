@@ -38,10 +38,19 @@ class PasswordController
 
     #[RateLimit(create: 1, capacity: 2)]
     #[PostMapping(path: 'recover-password')]
-    public function getUserSessionData(): PsrResponseInterface
+    public function startRecoverPasswordFlow(): PsrResponseInterface
     {
         return $this->response->json(
             $this->otpService->create($this->request->all())
+        );
+    }
+
+    #[RateLimit(create: 1, capacity: 2)]
+    #[PostMapping(path: 'recover-password/{otpId}')]
+    public function validateOtpCode($otpId): PsrResponseInterface
+    {
+        return $this->response->json(
+            $this->otpService->validateCode([...$this->request->all(), 'otp_id' => $otpId])
         );
     }
 }

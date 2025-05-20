@@ -17,12 +17,12 @@ use Hyperf\Di\Annotation\Inject;
 use Jot\HfRepository\Entity\EntityInterface;
 use Jot\HfShield\Entity\UserCode\UserCode;
 use Jot\HfShield\Event\OtpEvent;
+use Jot\HfShield\Exception\InvalidOtpCodeException;
 use Jot\HfShield\Exception\UnauthorizedUserException;
 use Jot\HfShield\Repository\UserCodeRepository;
 use Jot\HfShield\Repository\UserRepository;
 use League\OAuth2\Server\CryptTrait;
 use Psr\EventDispatcher\EventDispatcherInterface;
-
 use function Hyperf\Support\make;
 
 class OtpService
@@ -68,7 +68,7 @@ class OtpService
 
     private function generateCode(EntityInterface $user): string
     {
-        $randomNumber = (string) rand(1, 999999);
+        $randomNumber = (string)rand(1, 999999);
         $newCode = str_pad($randomNumber, 6, '0', STR_PAD_LEFT);
 
         $userCode = make(name: UserCode::class, parameters: [
@@ -94,5 +94,34 @@ class OtpService
         $this->dispatcher->dispatch(new OtpEvent(code: $newCode, recipient: $user->phone));
 
         return $code->getId();
+    }
+
+    public function validateCode(array $data): array
+    {
+        $otp = $this->userCodeRepository->find($data['otp_id']);
+
+        if (empty($otp) || ! $this->isValidCode($data['code'], $otp)) {
+            throw new InvalidOtpCodeException('hf-shield.invalid_otp_code');
+        }
+
+        if ((new \DateTime('now'))->diff($otp->created_at)->i > 5) {
+            throw new InvalidOtpCodeException('hf-shield.expired_otp_code');
+        }
+
+        $this->userCodeRepository->update(
+            make(UserCode::class, ['data' => ['status' => 'validated']])
+        );
+
+        return [
+            'data' => $data['otp_id'],
+            'result' => 'success',
+            'message' => null,
+        ];
+
+    }
+
+    private function isValidCode(string $code, EntityInterface $otp): bool
+    {
+        return $otp->status === 'active' && $this->decrypt($otp->code) === $code;
     }
 }
