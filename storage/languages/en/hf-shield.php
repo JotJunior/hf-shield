@@ -59,7 +59,8 @@ return [
     'missing_resource_scope' => 'No authorization scopes have been registered for this resource. Please verify your configuration.',
     'no_data_stream_configured' => 'No data stream configured. Please verify your configuration.',
     'logger_setup_successfully' => 'Logger setup successfully.',
-    'session_actions' => [
+    'session_actions' => 
+    [
         'list' => 'listed',
         'view' => 'viewed',
         'create' => 'created',
@@ -69,7 +70,8 @@ return [
         'read' => 'read',
         'undefined_user' => 'undefined user',
     ],
-    'log_messages' => [
+    'log_messages' => 
+    [
         'user_create_new' => 'created a new :resource called \':name\'.',
         'user_list_resources' => 'viewed a list of :resources.',
         'system_list_resources' => 'The system load a list of :resources.',
@@ -87,4 +89,6 @@ return [
     'password_must_not_be_empty' => 'Password must not be empty.',
     'expired_otp_code' => 'Expired OTP code.',
     'invalid_otp_code' => 'Invalid OTP code.',
+    'otp_code_validated' => 'OTP code validated.',
+    'password_changed_successfully' => 'Password changed successfully.',
 ];
