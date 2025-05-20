@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Jot\HfShield\Service;
 
 use DateTime;
+use Hyperf\Contract\ConfigInterface;
 use Hyperf\Di\Annotation\Inject;
 use Jot\HfRepository\Entity\EntityInterface;
 use Jot\HfShield\Entity\UserCode\UserCode;
@@ -36,6 +37,11 @@ class OtpService
 
     #[Inject]
     protected EventDispatcherInterface $dispatcher;
+
+    public function __construct(private readonly ConfigInterface $config)
+    {
+        $this->setEncryptionKey($this->config->get('hf_shield.encryption_key', ''));
+    }
 
     public function create(array $data): array
     {
