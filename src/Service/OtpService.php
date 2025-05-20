@@ -108,10 +108,6 @@ class OtpService
             throw new InvalidOtpCodeException('hf-shield.invalid_otp_code');
         }
 
-        if ((new \DateTime('now'))->diff($otp->created_at)->i * 60 > self::OTP_EXPIRATION_TIME) {
-            throw new InvalidOtpCodeException('hf-shield.expired_otp_code');
-        }
-
         $this->userCodeRepository->update(
             make(UserCode::class, ['data' => ['status' => 'validated']])
         );
@@ -127,6 +123,13 @@ class OtpService
     private function isValidCode(string $code, EntityInterface $otp): bool
     {
         $decrypted = explode('|', $this->decrypt($otp->code));
+
+        $now = new \DateTime('now');
+        $exp = new \DateTime($decrypted[0]);
+        if ($now > $exp) {
+            throw new InvalidOtpCodeException('hf-shield.expired_otp_code');
+        }
+
         return $otp->status === 'active' && $decrypted[1] === $code;
     }
 }

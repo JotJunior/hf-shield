@@ -16,6 +16,7 @@ use Hyperf\Swagger\Annotation as SA;
 use Jot\HfRepository\Entity;
 use Jot\HfRepository\Entity\Traits\HasLogicRemovalTrait as HasLogicRemoval;
 use Jot\HfRepository\Entity\Traits\HasTimestampsTrait as HasTimestamps;
+use Jot\HfValidator\Annotation as VA;
 
 #[SA\Schema(schema: 'jot.shield.entity.user_code.user_code')]
 class UserCode extends Entity
@@ -45,6 +46,7 @@ class UserCode extends Entity
         type: 'string',
         example: ''
     )]
+    #[VA\Enum(values: ['active', 'validated', 'complete'])]
     protected ?string $status = null;
 
     #[SA\Property(
