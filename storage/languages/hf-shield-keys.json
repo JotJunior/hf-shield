@@ -12,6 +12,7 @@
     "email": null,
     "empty_current_password": null,
     "empty_password": null,
+    "expired_otp_code": null,
     "failed_update_entity": null,
     "federal_document": null,
     "field_already_used": null,

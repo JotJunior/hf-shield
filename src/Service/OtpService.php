@@ -25,6 +25,7 @@ use Jot\HfShield\Repository\UserRepository;
 use League\OAuth2\Server\CryptTrait;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use function Hyperf\Support\make;
+use function Hyperf\Translation\__;
 
 class OtpService
 {
@@ -105,7 +106,7 @@ class OtpService
         $otp = $this->userCodeRepository->find($data['otp_id']);
 
         if (empty($otp) || ! $this->isValidCode($data['code'], $otp)) {
-            throw new InvalidOtpCodeException('hf-shield.invalid_otp_code');
+            throw new InvalidOtpCodeException(__('hf-shield.invalid_otp_code'));
         }
 
         $this->userCodeRepository->update(
@@ -127,7 +128,7 @@ class OtpService
         $now = new \DateTime('now');
         $exp = new \DateTime($decrypted[0]);
         if ($now > $exp) {
-            throw new InvalidOtpCodeException('hf-shield.expired_otp_code');
+            throw new InvalidOtpCodeException(__('hf-shield.expired_otp_code'));
         }
 
         return $otp->status === 'active' && $decrypted[1] === $code;

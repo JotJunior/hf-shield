@@ -59,7 +59,8 @@ return [
     'missing_resource_scope' => 'No se han registrado alcances de autorización para este recurso. Por favor, verifique su configuración.',
     'no_data_stream_configured' => 'Ningún flujo de datos configurado. Por favor, verifique su configuración.',
     'logger_setup_successfully' => 'Registrador configurado exitosamente.',
-    'session_actions' => [
+    'session_actions' => 
+    [
         'list' => 'listado',
         'view' => 'visualizado',
         'create' => 'creado',
@@ -69,7 +70,8 @@ return [
         'read' => 'leído',
         'undefined_user' => 'usuario desconocido',
     ],
-    'log_messages' => [
+    'log_messages' => 
+    [
         'user_create_new' => 'creó un nuevo :resource llamado \':name\'.',
         'user_list_resources' => 'visualizó una lista de :resources.',
         'system_list_resources' => 'El sistema cargó una lista de :resources.',
@@ -85,4 +87,6 @@ return [
     'invalid_password' => 'La contraseña es incorrecta.',
     'invalid_public_key_credential' => 'Credenciales de clave pública inválidas.',
     'password_must_not_be_empty' => 'La contraseña no puede estar vacía.',
+    'expired_otp_code' => 'El código OTP expiró.',
+    'invalid_otp_code' => 'El código OTP es inválido.',
 ];

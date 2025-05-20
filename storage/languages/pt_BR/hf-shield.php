@@ -59,7 +59,8 @@ return [
     'missing_resource_scope' => 'Nenhum escopo de autorização foi registrado para este recurso. Por favor, verifique sua configuração.',
     'no_data_stream_configured' => 'Nenhum fluxo de dados configurado. Por favor, verifique sua configuração.',
     'logger_setup_successfully' => 'Registrador configurado com sucesso.',
-    'session_actions' => [
+    'session_actions' => 
+    [
         'list' => 'listou',
         'view' => 'visualizou',
         'create' => 'criou',
@@ -69,7 +70,8 @@ return [
         'read' => 'leu',
         'undefined_user' => 'usuário desconhecido',
     ],
-    'log_messages' => [
+    'log_messages' => 
+    [
         'user_create_new' => 'criou um novo registro de :resource chamado \':name\'.',
         'user_list_resources' => 'visualizou uma lista de :resources.',
         'system_list_resources' => 'O sistema carregou uma lista de :resources.',
@@ -85,4 +87,6 @@ return [
     'invalid_password' => 'Senha inválida.',
     'invalid_public_key_credential' => 'Credenciais de chave publica inválidas.',
     'password_must_not_be_empty' => 'A senha não deve estar vazia.',
+    'expired_otp_code' => 'O código de verificação expirou.',
+    'invalid_otp_code' => 'Código de verificação inválido.',
 ];
