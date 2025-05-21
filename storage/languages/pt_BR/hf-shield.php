@@ -91,4 +91,5 @@ return [
     'invalid_otp_code' => 'Código de verificação inválido.',
     'otp_code_validated' => 'Código de verificação validado com sucesso.',
     'password_changed_successfully' => 'Senha alterada com sucesso.',
+    'check_your_phone' => 'Verifique o código de verificação no telefone de final :phone.',
 ];

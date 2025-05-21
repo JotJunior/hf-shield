@@ -91,4 +91,5 @@ return [
     'invalid_otp_code' => 'Invalid OTP code.',
     'otp_code_validated' => 'OTP code validated.',
     'password_changed_successfully' => 'Password changed successfully.',
+    'check_your_phone' => 'Check your phone with last numbers :phone.',
 ];

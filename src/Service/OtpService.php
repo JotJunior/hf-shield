@@ -59,10 +59,12 @@ class OtpService
             throw new UnauthorizedUserException();
         }
 
+        $maskedPhone = substr($user->phone, -4);
+
         return [
             'data' => $this->generateCode($user),
             'result' => 'success',
-            'message' => null,
+            'message' => __('hf-shield.check_your_phone', ['phone' => $maskedPhone]),
         ];
     }
 
