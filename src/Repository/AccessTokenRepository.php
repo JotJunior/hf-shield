@@ -198,6 +198,7 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
      * @param string $clientId the unique identifier of the client
      * @return null|array client data if the client is valid and active, null otherwise
      */
+    #[Cacheable(prefix: 'oauth:client', ttl: 84600)]
     public function isClientValid(string $clientId): ?array
     {
         return current(
