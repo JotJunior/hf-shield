@@ -11,16 +11,19 @@ declare(strict_types=1);
 
 namespace Jot\HfShield\Repository;
 
+use Hyperf\Di\Annotation\Inject;
 use Jot\HfRepository\Entity;
 use Jot\HfRepository\Entity\EntityInterface;
 use Jot\HfRepository\Exception\EntityValidationWithErrorsException;
 use Jot\HfRepository\Exception\RepositoryUpdateException;
 use Jot\HfShield\Entity\User\User;
 use Jot\HfShield\Entity\UserEntity;
+use Jot\HfShield\Event\WelcomeEvent;
 use Jot\HfShield\Exception\EmptyPasswordException;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Entities\UserEntityInterface;
 use League\OAuth2\Server\Repositories\UserRepositoryInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 use function Hyperf\Support\make;
 use function Hyperf\Translation\__;
@@ -28,6 +31,9 @@ use function Hyperf\Translation\__;
 class UserRepository extends AbstractRepository implements UserRepositoryInterface
 {
     protected string $entity = User::class;
+
+    #[Inject]
+    protected EventDispatcherInterface $dispatcher;
 
     /**
      * Retrieves a user entity based on the provided user credentials.
@@ -194,6 +200,8 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
      */
     public function create(EntityInterface $entity): EntityInterface
     {
+        $decryptedPassword = $entity->getPassword();
+
         $this->validateUser($entity);
         $encryptionKey = $this->config['encryption_key'];
         $entity->addSalt();
@@ -202,6 +210,13 @@ class UserRepository extends AbstractRepository implements UserRepositoryInterfa
         $insertResult = $this->queryBuilder
             ->into($this->index)
             ->insert($entity->toArray());
+
+        $this->dispatcher->dispatch(new WelcomeEvent(
+            name: $entity->name,
+            username: $entity->email,
+            password: $decryptedPassword,
+            recipient: $entity->phone
+        ));
 
         return make(User::class, ['data' => $insertResult['data']]);
     }
