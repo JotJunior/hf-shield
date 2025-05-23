@@ -19,7 +19,7 @@ use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use Hyperf\RateLimit\Annotation\RateLimit;
 use Jot\HfShield\Annotation\Scope;
-use Jot\HfShield\Middleware\SessionStrategy;
+use Jot\HfShield\Middleware\BearerStrategy;
 use Jot\HfShield\Service\AccessTokenService;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 
@@ -37,7 +37,7 @@ class AccessTokenController
 
     #[RateLimit(create: 1, capacity: 10)]
     #[Scope(allow: 'user:token:list')]
-    #[Middleware(middleware: SessionStrategy::class)]
+    #[Middleware(middleware: BearerStrategy::class)]
     #[RequestMapping(path: 'tokens', methods: ['GET'])]
     public function getUserTokenList(): PsrResponseInterface
     {

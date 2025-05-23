@@ -231,6 +231,41 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
             ->execute();
     }
 
+    private function syncUserScopeList(string $userId, string $tenantId): void
+    {
+        $user = current($this->queryBuilder
+            ->select()
+            ->from('users')
+            ->where('id', $userId)
+            ->andWhere('deleted', false)
+            ->andWhere('status', 'active')
+            ->execute()['data']);
+
+        foreach ($user['tenants'] as &$tenant) {
+            $scopes = [];
+            $rootScopes = current(array_filter($tenant['scopes'], function ($scope) {
+                return $scope['id'] === 'root:all:all';
+            }));
+            foreach ($tenant['groups'] as $group) {
+                $group = $this->queryBuilder
+                    ->select(['scopes'])
+                    ->from('groups')
+                    ->where('id', $group['id'])
+                    ->andWhere('deleted', false)
+                    ->andWhere('status', 'active')
+                    ->execute()['data'];
+                $scopes = array_merge($scopes, $group[0]['scopes']);
+            }
+            $scopes = array_unique($scopes, SORT_REGULAR);
+            if ($rootScopes) {
+                $scopes[] = $rootScopes;
+            }
+            $tenant['scopes'] = $scopes;
+        }
+
+        $this->queryBuilder->update($userId, $user);
+    }
+
     /**
      * Adds scope conditions to a query based on tenant ID and scope(s).
      * @param mixed $query the query object to which scope conditions will be added
@@ -266,34 +301,5 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
                     )
             );
         }
-    }
-
-    private function syncUserScopeList(string $userId, string $tenantId): void
-    {
-        $user = current($this->queryBuilder
-            ->select()
-            ->from('users')
-            ->where('id', $userId)
-            ->andWhere('deleted', false)
-            ->andWhere('status', 'active')
-            ->execute()['data']);
-
-        foreach ($user['tenants'] as &$tenant) {
-            $scopes = [];
-            foreach ($tenant['groups'] as $group) {
-                $group = $this->queryBuilder
-                    ->select(['scopes'])
-                    ->from('groups')
-                    ->where('id', $group['id'])
-                    ->andWhere('deleted', false)
-                    ->andWhere('status', 'active')
-                    ->execute()['data'];
-                $scopes = array_merge($scopes, $group[0]['scopes']);
-            }
-            $scopes = array_unique($scopes, SORT_REGULAR);
-            $tenant['scopes'] = $scopes;
-        }
-
-        $this->queryBuilder->update($userId, $user);
     }
 }
