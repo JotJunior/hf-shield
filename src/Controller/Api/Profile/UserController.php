@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @license  MIT
  */
 
-namespace Jot\HfShield\Controller\Profile;
+namespace Jot\HfShield\Controller\Session\Api;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
@@ -21,11 +21,11 @@ use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use Hyperf\RateLimit\Annotation\RateLimit;
 use Jot\HfShield\Annotation\Scope;
-use Jot\HfShield\Middleware\SessionStrategy;
+use Jot\HfShield\Middleware\BearerStrategy;
 use Jot\HfShield\Service\ProfileService;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 
-#[Controller(prefix: '/user')]
+#[Controller(prefix: '/api/user')]
 class UserController
 {
     #[Inject]
@@ -38,7 +38,7 @@ class UserController
     protected ProfileService $service;
 
     #[RateLimit(create: 1, capacity: 2)]
-    #[Middleware(middleware: SessionStrategy::class)]
+    #[Middleware(middleware: BearerStrategy::class)]
     #[Scope(allow: 'user:profile:session')]
     #[GetMapping(path: 'session')]
     public function getUserSessionData(): PsrResponseInterface
@@ -51,7 +51,7 @@ class UserController
     }
 
     #[RateLimit(create: 1, capacity: 2)]
-    #[Middleware(middleware: SessionStrategy::class)]
+    #[Middleware(middleware: BearerStrategy::class)]
     #[Scope(allow: 'user:profile:profile')]
     #[GetMapping(path: 'me')]
     public function getUserProfileData(): PsrResponseInterface
@@ -64,7 +64,7 @@ class UserController
     }
 
     #[RateLimit(create: 1, capacity: 2)]
-    #[Middleware(middleware: SessionStrategy::class)]
+    #[Middleware(middleware: BearerStrategy::class)]
     #[Scope(allow: 'user:profile:session')]
     #[PutMapping(path: 'password')]
     public function updateUserProfilePassword(): PsrResponseInterface
@@ -78,7 +78,7 @@ class UserController
     }
 
     #[RateLimit(create: 1, capacity: 2)]
-    #[Middleware(middleware: SessionStrategy::class)]
+    #[Middleware(middleware: BearerStrategy::class)]
     #[Scope(allow: 'user:profile:update_settings')]
     #[PutMapping(path: 'settings')]
     public function updateUserProfileSettings(): PsrResponseInterface
@@ -93,7 +93,7 @@ class UserController
 
     #[RateLimit(create: 1, capacity: 2)]
     #[Scope(allow: 'user:profile:update')]
-    #[Middleware(middleware: SessionStrategy::class)]
+    #[Middleware(middleware: BearerStrategy::class)]
     #[PutMapping(path: 'me')]
     public function updateProfileUser(): PsrResponseInterface
     {
@@ -104,7 +104,7 @@ class UserController
 
     #[RateLimit(create: 1, capacity: 2)]
     #[Scope(allow: 'user:profile:view')]
-    #[Middleware(middleware: SessionStrategy::class)]
+    #[Middleware(middleware: BearerStrategy::class)]
     #[RequestMapping(path: 'me', methods: ['HEAD'])]
     public function verifyProfileUser(string $id): PsrResponseInterface
     {
