@@ -65,6 +65,10 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
             'expiry_date_time' => $accessTokenEntity->getExpiryDateTime(),
         ]]);
         $this->create($entity);
+        $this->syncUserScopeList(
+            userId: $accessTokenEntity->getUserIdentifier(),
+            tenantId: $accessTokenEntity->getClient()?->getTenantId()
+        );
     }
 
     /**
@@ -262,5 +266,34 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
                     )
             );
         }
+    }
+
+    private function syncUserScopeList(string $userId, string $tenantId): void
+    {
+        $user = current($this->queryBuilder
+            ->select()
+            ->from('users')
+            ->where('id', $userId)
+            ->andWhere('deleted', false)
+            ->andWhere('status', 'active')
+            ->execute()['data']);
+
+        foreach ($user['tenants'] as &$tenant) {
+            $scopes = [];
+            foreach ($tenant['groups'] as $group) {
+                $group = $this->queryBuilder
+                    ->select(['scopes'])
+                    ->from('groups')
+                    ->where('id', $group['id'])
+                    ->andWhere('deleted', false)
+                    ->andWhere('status', 'active')
+                    ->execute()['data'];
+                $scopes = array_merge($scopes, $group[0]['scopes']);
+            }
+            $scopes = array_unique($scopes, SORT_REGULAR);
+            $tenant['scopes'] = $scopes;
+        }
+
+        $this->queryBuilder->update($userId, $user);
     }
 }
