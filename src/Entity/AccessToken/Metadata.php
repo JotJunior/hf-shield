@@ -18,16 +18,16 @@ use Jot\HfRepository\Entity;
 class Metadata extends Entity
 {
     #[SA\Property(
-        property: 'id',
+        property: 'key',
         type: 'string',
         example: ''
     )]
     protected ?string $key = null;
 
     #[SA\Property(
-        property: 'name',
+        property: 'value',
         type: 'string',
         example: ''
     )]
-    protected ?string $value = null;
+    protected mixed $value = null;
 }
