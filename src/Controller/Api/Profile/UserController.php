@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @license  MIT
  */
 
-namespace Jot\HfShield\Controller\Session\Api;
+namespace Jot\HfShield\Controller\Api\Profile;
 
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
