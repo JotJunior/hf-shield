@@ -17,6 +17,8 @@ use Jot\HfRepository\Entity;
 #[SA\Schema(schema: 'jot.shield.entity.user.tenant')]
 class Tenant extends Entity
 {
+    public const SEARCHABLE = [];
+
     #[SA\Property(
         property: 'id',
         type: 'string',
@@ -34,7 +36,7 @@ class Tenant extends Entity
     #[SA\Property(
         property: 'scopes',
         type: 'array',
-        items: new SA\Items(ref: '#/components/schemas/jot.shield.entity.user.scope'),
+        items: new SA\Items(ref: '#/components/schemas/app.entity.user.scope'),
         x: ['php_type' => '\Jot\HfShield\Entity\User\Scope[]']
     )]
     protected ?array $scopes = null;
@@ -42,8 +44,16 @@ class Tenant extends Entity
     #[SA\Property(
         property: 'groups',
         type: 'array',
-        items: new SA\Items(ref: '#/components/schemas/jot.shield.entity.user.group'),
+        items: new SA\Items(ref: '#/components/schemas/app.entity.user.group'),
         x: ['php_type' => '\Jot\HfShield\Entity\User\Group[]']
     )]
     protected ?array $groups = null;
+
+    #[SA\Property(
+        property: 'customers',
+        type: 'array',
+        items: new SA\Items(ref: '#/components/schemas/app.entity.user.customer'),
+        x: ['php_type' => '\Jot\HfShield\Entity\User\Customer[]']
+    )]
+    protected ?array $customers = null;
 }

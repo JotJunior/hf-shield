@@ -14,8 +14,8 @@ namespace Jot\HfShield\Entity\User;
 use Hyperf\Swagger\Annotation as SA;
 use Jot\HfRepository\Entity;
 
-#[SA\Schema(schema: 'jot.shield.entity.user.group')]
-class Group extends Entity
+#[SA\Schema(schema: 'jot.shield.entity.user.customer')]
+class Customer extends Entity
 {
     public const SEARCHABLE = [];
 
@@ -27,9 +27,16 @@ class Group extends Entity
     protected ?string $id = null;
 
     #[SA\Property(
-        property: 'name',
+        property: 'trade_name',
         type: 'string',
         example: ''
     )]
-    protected ?string $name = null;
+    protected ?string $tradeName = null;
+
+    #[SA\Property(
+        property: 'legal_name',
+        type: 'string',
+        example: ''
+    )]
+    protected ?string $legalName = null;
 }

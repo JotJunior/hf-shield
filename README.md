@@ -1115,7 +1115,7 @@ The entity files also receive Swagger attributes to compose the example data for
 
 declare(strict_types=1);
 
-namespace App\Entity\MyUser;
+namespace Jot\HfShield\Entity\MyUser;
 
 use DateTimeInterface;
 use Jot\HfRepository\Entity;
@@ -1147,9 +1147,9 @@ class MyUser extends Entity
     #[SA\Property(
         property: 'address',
         ref: '#/components/schemas/app.entity.my_user.address',
-        x: ['php_type' => '\App\Entity\MyUser\Address']
+        x: ['php_type' => '\Jot\HfShield\Entity\MyUser\Address']
     )]
-    protected null|\App\Entity\MyUser\Address $address = null;
+    protected null|\Jot\HfShield\Entity\MyUser\Address $address = null;
 
     #[SA\Property(
         property: 'age',
@@ -1169,7 +1169,7 @@ class MyUser extends Entity
         property: 'last_attempt_logins',
         type: 'array',
         items: new SA\Items(ref: '#/components/schemas/app.entity.my_user.last_attempt_login'),
-        x: ['php_type' => '\App\Entity\MyUser\LastAttemptLogin[]']
+        x: ['php_type' => '\Jot\HfShield\Entity\MyUser\LastAttemptLogin[]']
     )]
     protected null|array $lastAttemptLogins = null;
 

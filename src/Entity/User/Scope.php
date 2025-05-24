@@ -17,6 +17,8 @@ use Jot\HfRepository\Entity;
 #[SA\Schema(schema: 'jot.shield.entity.user.scope')]
 class Scope extends Entity
 {
+    public const SEARCHABLE = [];
+
     #[SA\Property(
         property: 'id',
         type: 'string',
