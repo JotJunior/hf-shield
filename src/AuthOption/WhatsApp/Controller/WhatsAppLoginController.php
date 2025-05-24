@@ -81,7 +81,7 @@ class WhatsAppLoginController extends SessionTokenOauthController
 
         try {
             $cookie = $this->buildAccessTokenCookie(
-                accessToken: $this->createToken(),
+                accessToken: $this->createToken($body),
                 expiresIn: (new DateTime('+1 day'))->getTimestamp() - time()
             );
         } catch (\Throwable $th) {
@@ -110,13 +110,11 @@ class WhatsAppLoginController extends SessionTokenOauthController
             ]);
     }
 
-    private function createToken(): string
+    private function createToken(array $body): string
     {
         if (! in_array('whatsapp', $this->config['auth_options'])) {
             throw new UnauthorizedAccessException();
         }
-
-        $body = $this->request->getParsedBody();
 
         $validOtp = $this->otpService->validateCode($body);
 
