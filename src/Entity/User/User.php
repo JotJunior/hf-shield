@@ -192,4 +192,19 @@ class User extends Entity
     {
         return $this->password;
     }
+
+    public function getCustomers(string $tenantId): array
+    {
+        $tenant = current(
+            array_filter($this->tenants, function (Tenant $tenant) use ($tenantId) {
+                return $tenant->id === $tenantId;
+            })
+        );
+
+        if (empty($tenant)) {
+            return [];
+        }
+
+        return $tenant->customers;
+    }
 }

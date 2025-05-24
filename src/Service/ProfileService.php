@@ -14,6 +14,7 @@ namespace Jot\HfShield\Service;
 use Hyperf\Cache\Annotation\Cacheable;
 use Hyperf\Cache\Listener\DeleteListenerEvent;
 use Hyperf\Di\Annotation\Inject;
+use Jot\HfRepository\Entity\EntityInterface;
 use Jot\HfRepository\Exception\EntityValidationWithErrorsException;
 use Jot\HfRepository\Service\AbstractService;
 use Jot\HfShield\Dto\Profile\User\UserPasswordDto;
@@ -39,12 +40,16 @@ class ProfileService extends AbstractService
     protected Base64ImageHandler $imageHandler;
 
     #[Cacheable(prefix: self::CACHE_PREFIX_PROFILE, ttl: 600, listener: self::CACHE_PREFIX_PROFILE)]
-    public function getProfileData(string $id): array
+    public function getProfileData(string $id, string $tenantId): array
     {
         $entity = $this->repository->find($id);
+        $customers = $entity?->getCustomers($tenantId);
+
+        $data = $entity?->hide(['password', 'password_salt', '@version', '@timestamp', 'tenants'])?->toArray();
+        $data['customers'] = array_map(fn (EntityInterface $customer) => $customer->toArray(), $customers) ?? $customers;
 
         return [
-            'data' => $entity?->hide(['password', 'password_salt', '@version', '@timestamp', 'tenants'])?->toArray(),
+            'data' => $data,
             'result' => 'success',
             'message' => null,
         ];

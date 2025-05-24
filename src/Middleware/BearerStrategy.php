@@ -47,6 +47,10 @@ class BearerStrategy implements MiddlewareInterface
     {
         $this->validateBearerStrategy($request);
         $this->logRequest();
-        return $handler->handle($this->request);
+        return $handler->handle(
+            $this->request
+                ->withAttribute('oauth_session_user', $this->oauthUser)
+                ->withQueryParams([...$this->request->getQueryParams(), '_tenant_id' => $this->oauthUser['tenant']['id'], '_user_id' => $this->oauthUser['id']])
+        );
     }
 }

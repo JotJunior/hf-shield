@@ -39,26 +39,14 @@ class UserController
 
     #[RateLimit(create: 1, capacity: 2)]
     #[Middleware(middleware: BearerStrategy::class)]
-    #[Scope(allow: 'user:profile:session')]
-    #[GetMapping(path: 'session')]
-    public function getUserSessionData(): PsrResponseInterface
-    {
-        return $this->response->json(
-            $this->service->getSessionData(
-                $this->request->getAttribute('oauth_user_id')
-            )
-        );
-    }
-
-    #[RateLimit(create: 1, capacity: 2)]
-    #[Middleware(middleware: BearerStrategy::class)]
     #[Scope(allow: 'user:profile:profile')]
     #[GetMapping(path: 'me')]
     public function getUserProfileData(): PsrResponseInterface
     {
         return $this->response->json(
             $this->service->getProfileData(
-                $this->request->getAttribute('oauth_user_id')
+                $this->request->getAttribute('oauth_user_id'),
+                $this->request->query('_tenant_id')
             )
         );
     }
