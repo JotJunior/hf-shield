@@ -268,6 +268,12 @@ class ConfigProvider
                     'destination' => BASE_PATH . '/config/autoload/hf_openai.php',
                 ],
                 [
+                    'id' => 'twilio',
+                    'description' => 'The config for twilio.',
+                    'source' => __DIR__ . '/../publish/twilio.php',
+                    'destination' => BASE_PATH . '/config/autoload/twilio.php',
+                ],
+                [
                     'id' => 'migrations',
                     'description' => 'The elasticsearch migration files for hf_shield.',
                     'source' => __DIR__ . '/../migrations',

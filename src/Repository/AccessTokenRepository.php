@@ -246,7 +246,7 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
             $rootScopes = current(array_filter($tenant['scopes'], function ($scope) {
                 return $scope['id'] === 'root:all:all';
             }));
-            foreach ($tenant['groups'] as $group) {
+            foreach ($tenant['groups'] ?? [] as $group) {
                 $group = $this->queryBuilder
                     ->select(['scopes'])
                     ->from('groups')
