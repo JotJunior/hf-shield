@@ -20,7 +20,6 @@ use Jot\HfShield\Entity\ClientEntity;
 use Jot\HfShield\Entity\ScopeEntity;
 use Jot\HfShield\Repository\AccessTokenRepository;
 use League\OAuth2\Server\CryptKey;
-
 use function Hyperf\Support\make;
 
 trait AccessTokenHandler
@@ -33,9 +32,9 @@ trait AccessTokenHandler
         $user = $this->userRepository->find($data['user']['id']);
 
         $clientEntity = new ClientEntity();
-        $clientEntity->setIdentifier($data['client']['id']);
-        $clientEntity->setName($data['client']['name'] ?? '');
-        $clientEntity->setRedirectUri($data['client']['redirect_uri'] ?? '');
+        $clientEntity->setIdentifier($data['client_id']);
+        $clientEntity->setName('');
+        $clientEntity->setRedirectUri('');
         $clientEntity->setTenantId($user->tenant->id);
 
         $scopes = [];
@@ -74,7 +73,7 @@ trait AccessTokenHandler
                 'client' => [
                     'id' => $clientEntity->getIdentifier(),
                 ],
-                'scopes' => array_map(fn (ScopeEntity $scope) => ['id' => $scope->getIdentifier()], $accessToken->getScopes()),
+                'scopes' => array_map(fn(ScopeEntity $scope) => ['id' => $scope->getIdentifier()], $accessToken->getScopes()),
                 'tenant' => [
                     'id' => $clientEntity->getTenantId(),
                 ],
