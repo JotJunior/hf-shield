@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Jot\HfShield\AuthOption\WhatsApp\Controller;
 
+use DateTime;
 use Exception;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
@@ -42,7 +43,7 @@ class WhatsAppLoginController extends SessionTokenOauthController
     protected UserRepository $userRepository;
 
     #[PostMapping(path: 'start')]
-    public function webauthnAuth(): PsrResponseInterface
+    public function sendOtpCode(): PsrResponseInterface
     {
         if (! in_array('whatsapp', $this->config['auth_options'])) {
             throw new UnauthorizedAccessException();
@@ -54,8 +55,53 @@ class WhatsAppLoginController extends SessionTokenOauthController
             ->json($this->otpService->create($body));
     }
 
-    #[PostMapping(path: 'validate')]
-    public function validateOtp(): PsrResponseInterface
+    #[PostMapping(path: 'token')]
+    public function otpReturnsToken(): PsrResponseInterface
+    {
+        return $this->response
+            ->withAddedHeader('Content-Type', 'application/json')
+            ->json([
+                'access_token' => $this->createToken(),
+                'token_type' => 'Bearer',
+            ]);
+    }
+
+    #[PostMapping(path: 'cookie')]
+    public function otpReturnsCookie(): PsrResponseInterface
+    {
+        if (! in_array('whatsapp', $this->config['auth_options'])) {
+            throw new UnauthorizedAccessException();
+        }
+
+        $cookie = $this->buildAccessTokenCookie(
+            accessToken: $this->createToken(),
+            expiresIn: (new DateTime('+1 day'))->getTimestamp() - time()
+        );
+
+        $this->log('hf_shield.logged_in');
+
+        $sessionConfig = $this->configService->get('hf_session');
+
+        if (empty($sessionConfig)) {
+            throw new UnauthorizedAccessException();
+        }
+
+        return $this->response
+            ->withAddedHeader('Set-Cookie', (string) $cookie)
+            ->redirect($sessionConfig['redirect_uri']);
+    }
+
+    #[RequestMapping(path: '/whatsapp/login/start', methods: ['OPTIONS'])]
+    public function requestOptionsValue(): PsrResponseInterface
+    {
+        return $this->response
+            ->json([
+                'methods' => ['POST'],
+                'rate_limit' => 'Max 10 requests per second.',
+            ]);
+    }
+
+    private function createToken(): string
     {
         if (! in_array('whatsapp', $this->config['auth_options'])) {
             throw new UnauthorizedAccessException();
@@ -73,23 +119,6 @@ class WhatsAppLoginController extends SessionTokenOauthController
         $this->otpService->changeOtpStatus($otp, OtpService::OTP_STATUS_COMPLETE);
 
         $body['user'] = $otp->user->toArray();
-        $token = $this->issueTokenString($body);
-
-        return $this->response
-            ->withAddedHeader('Content-Type', 'application/json')
-            ->json([
-                'access_token' => $token,
-            ]);
+        return $this->issueTokenString($body);
     }
-
-    #[RequestMapping(path: '/whatsapp/login/start', methods: ['OPTIONS'])]
-    public function requestOptionsValue(): PsrResponseInterface
-    {
-        return $this->response
-            ->json([
-                'methods' => ['POST'],
-                'rate_limit' => 'Max 10 requests per second.',
-            ]);
-    }
-
 }
