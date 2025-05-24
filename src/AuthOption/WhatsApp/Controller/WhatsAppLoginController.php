@@ -15,6 +15,7 @@ use Exception;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\PostMapping;
+use Hyperf\HttpServer\Annotation\RequestMapping;
 use Jot\HfShield\AuthOption\SessionToken\Controller\SessionTokenOauthController;
 use Jot\HfShield\AuthOption\WhatsApp\Handler\AccessTokenHandler;
 use Jot\HfShield\Exception\UnauthorizedAccessException;
@@ -80,4 +81,15 @@ class WhatsAppLoginController extends SessionTokenOauthController
                 'access_token' => $token,
             ]);
     }
+
+    #[RequestMapping(path: '/whatsapp/login/start', methods: ['OPTIONS'])]
+    public function requestOptionsValue(): PsrResponseInterface
+    {
+        return $this->response
+            ->json([
+                'methods' => ['POST'],
+                'rate_limit' => 'Max 10 requests per second.',
+            ]);
+    }
+
 }
