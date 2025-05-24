@@ -9,12 +9,13 @@ declare(strict_types=1);
  * @license  MIT
  */
 
-namespace Jot\HfShield;
+namespace Jot\HfShield\Listener;
 
 use Hyperf\Di\Annotation\AnnotationCollector;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
+use Jot\HfShield\AllowedScopes;
 use Jot\HfShield\Annotation\Scope;
 use Psr\Container\ContainerInterface;
 

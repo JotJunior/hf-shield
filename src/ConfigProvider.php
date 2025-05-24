@@ -25,6 +25,8 @@ use Jot\HfShield\Command\SetupLoggerCommand;
 use Jot\HfShield\Exception\Handler\AuthExceptionHandler;
 use Jot\HfShield\Helper\CacheAnnotationManagerWrapper;
 use Jot\HfShield\Helper\ShieldElasticsearchFormatter;
+use Jot\HfShield\Listener\AllowedScopesListener;
+use Jot\HfShield\Listener\OtpServiceListener;
 use Jot\HfValidator\BootValidatorsListener;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\ResourceServer;
@@ -62,6 +64,7 @@ class ConfigProvider
             'listeners' => [
                 AllowedScopesListener::class,
                 BootValidatorsListener::class,
+                OtpServiceListener::class,
             ],
             'dependencies' => [
                 HttpServer::class => SwaggerHttpServer::class,

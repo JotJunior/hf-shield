@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Jot\HfShield\Service;
 
 use DateTime;
+use Hyperf\Amqp\Producer;
 use Hyperf\Cache\Annotation\Cacheable;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Di\Annotation\Inject;
@@ -41,6 +42,9 @@ class OtpService
     public const OTP_STATUS_COMPLETE = 'complete';
 
     public const OTP_STATUS_VALIDATED = 'validated';
+
+    #[Inject]
+    protected Producer $amqpProducer;
 
     #[Inject]
     protected UserRepository $userRepository;
