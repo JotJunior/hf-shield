@@ -175,7 +175,6 @@ class User extends Entity
     )]
     protected null|bool|int $deleted = null;
 
-
     public function addSalt(): User
     {
         $this->passwordSalt = Str::uuid()->toString();

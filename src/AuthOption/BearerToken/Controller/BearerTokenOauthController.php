@@ -91,6 +91,10 @@ class BearerTokenOauthController extends AbstractOauthController
     #[RateLimit(create: 1, capacity: 2)]
     public function issueToken(RequestInterface $request): PsrResponseInterface
     {
+        if (! in_array('bearer', $this->config['auth_options'])) {
+            throw new UnauthorizedAccessException();
+        }
+
         try {
             return $this->server->respondToAccessTokenRequest($request, $this->response);
         } catch (OAuthServerException $e) {

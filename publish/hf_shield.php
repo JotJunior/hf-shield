@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * This file is part of the hf_shield module, a package build for Hyperf framework that is responsible for OAuth2 authentication and access control.
  *
@@ -8,9 +9,17 @@ declare(strict_types=1);
  * @link     https://github.com/JotJunior/hf-shield
  * @license  MIT
  */
+
 use function Hyperf\Support\env;
 
 return [
+
+    /*
+     * The auth options available for the user.
+     * The default value is ['bearer', 'session', 'webauthn', 'whatsapp'].
+     */
+    'auth_options' => ['bearer', 'session', 'webauthn', 'whatsapp'],
+
     /*
      * Enables the OAuth endpoints in the project that imported this package.
      * Set this to false if the service is not responsible for user authentication.
@@ -87,13 +96,4 @@ return [
         'gk_profile:user:update',
         'gk_profile:user:view',
     ],
-
-    /*
-     * S3 bucket configuration
-     */
-    's3_bucket_url' => env('S3_BUCKET_URL', ''),
-    's3_bucket_name' => env('S3_BUCKET_NAME', ''),
-    's3_bucket_region' => env('S3_BUCKET_REGION', ''),
-    's3_bucket_access_key' => env('S3_BUCKET_ACCESS_KEY', ''),
-    's3_bucket_secret_key' => env('S3_BUCKET_SECRET_KEY', ''),
 ];

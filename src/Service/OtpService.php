@@ -36,6 +36,8 @@ class OtpService
 
     public const OTP_EXPIRATION_TIME = 300;
 
+    public const OTP_STATUS_PENDING = 'pending';
+
     public const OTP_STATUS_COMPLETE = 'complete';
 
     public const OTP_STATUS_VALIDATED = 'validated';
@@ -52,6 +54,11 @@ class OtpService
     public function __construct(private readonly ConfigInterface $config)
     {
         $this->setEncryptionKey($this->config->get('hf_shield.encryption_key', ''));
+    }
+
+    public function getOtp(string $otpId): ?EntityInterface
+    {
+        return $this->userCodeRepository->find($otpId);
     }
 
     #[Cacheable(prefix: 'otp:create', ttl: self::OTP_EXPIRATION_TIME)]
@@ -86,6 +93,13 @@ class OtpService
             'result' => 'success',
             'message' => __('hf-shield.otp_code_validated'),
         ];
+    }
+
+    public function changeOtpStatus(EntityInterface $otp, string $status): void
+    {
+        $this->userCodeRepository->update(
+            make(UserCode::class, ['data' => ['id' => $otp->id, 'status' => $status]])
+        );
     }
 
     /**
@@ -171,12 +185,5 @@ class OtpService
         }
 
         return $otp->status === $requiredStatus && $decrypted[1] === $code;
-    }
-
-    private function changeOtpStatus(EntityInterface $otp, string $status): void
-    {
-        $this->userCodeRepository->update(
-            make(UserCode::class, ['data' => ['id' => $otp->id, 'status' => $status]])
-        );
     }
 }

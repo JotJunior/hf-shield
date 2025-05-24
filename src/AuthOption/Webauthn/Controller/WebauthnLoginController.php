@@ -20,6 +20,7 @@ use Jot\HfShield\Annotation\Scope;
 use Jot\HfShield\AuthOption\SessionToken\Controller\SessionTokenOauthController;
 use Jot\HfShield\AuthOption\Webauthn\Handler\WebauthnLoginCollectCredentialsHandler;
 use Jot\HfShield\AuthOption\Webauthn\Handler\WebauthnLoginValidateCredentialsHandler;
+use Jot\HfShield\Exception\UnauthorizedAccessException;
 use Jot\HfShield\Exception\UnauthorizedUserException;
 use Jot\HfShield\Repository\AccessTokenRepository;
 use Psr\Http\Message\ResponseInterface;
@@ -57,6 +58,10 @@ class WebauthnLoginController extends SessionTokenOauthController
     #[PostMapping(path: 'validate')]
     public function webauthnAuth(): ResponseInterface
     {
+        if (! in_array('webauthn', $this->config['auth_options'])) {
+            throw new UnauthorizedAccessException();
+        }
+
         $body = $this->request->getParsedBody();
         $credentials = $this->serializer->serialize(
             data: $body['credentials'],

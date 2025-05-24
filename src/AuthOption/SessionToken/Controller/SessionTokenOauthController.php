@@ -19,6 +19,7 @@ use Hyperf\HttpServer\Contract\ResponseInterface;
 use Hyperf\RateLimit\Annotation\RateLimit;
 use Hyperf\Swagger\Annotation as SA;
 use Jot\HfShield\Controller\AbstractOauthController;
+use Jot\HfShield\Exception\UnauthorizedAccessException;
 use Jot\HfShield\Exception\UnauthorizedSessionException;
 use Jot\HfShield\LoggerContextCollector;
 use Jot\HfShield\Repository\AccessTokenRepository;
@@ -100,6 +101,10 @@ class SessionTokenOauthController extends AbstractOauthController
     #[RateLimit(create: 1, capacity: 2)]
     public function issueSessionToken(RequestInterface $request): PsrResponseInterface
     {
+        if (! in_array('session', $this->config['auth_options'])) {
+            throw new UnauthorizedAccessException();
+        }
+
         $sessionConfig = $this->configService->get('hf_session');
         $this->validateSessionConfig($sessionConfig);
 
