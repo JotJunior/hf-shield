@@ -144,7 +144,7 @@ class OtpService
         
         return $this->userRepository->first([
             // 'tenant_id' => $tenantId,
-            'federal_document' => $federalDocument,
+            'federal_document' => $this->applyFederalDocumentMask($federalDocument),
             'deleted' => false,
         ]);
     }
@@ -191,6 +191,10 @@ class OtpService
 
         return $otp->status === $requiredStatus && $decrypted[1] === $code;
     }
-    
-    
+
+    private function applyFederalDocumentMask(string $document): string
+    {
+        $document = preg_replace('/[^0-9]/', '', $document);
+        return preg_replace('/(\d{3})(\d{3})(\d{3})(\d{2})/', '$1.$2.$3-$4', $document);
+    }
 }
