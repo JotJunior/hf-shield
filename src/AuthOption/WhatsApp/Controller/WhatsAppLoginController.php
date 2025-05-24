@@ -15,7 +15,6 @@ use Exception;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\PostMapping;
-use Hyperf\HttpServer\Annotation\RequestMapping;
 use Jot\HfShield\AuthOption\SessionToken\Controller\SessionTokenOauthController;
 use Jot\HfShield\AuthOption\WhatsApp\Handler\AccessTokenHandler;
 use Jot\HfShield\Exception\UnauthorizedAccessException;
@@ -54,8 +53,8 @@ class WhatsAppLoginController extends SessionTokenOauthController
             ->json($this->otpService->create($body));
     }
 
-    #[RequestMapping(path: '/validate', methods: ['OPTIONS'])]
-    public function requestOptionsValue(): PsrResponseInterface
+    #[PostMapping(path: 'validate')]
+    public function validateOtp(): PsrResponseInterface
     {
         if (! in_array('whatsapp', $this->config['auth_options'])) {
             throw new UnauthorizedAccessException();
