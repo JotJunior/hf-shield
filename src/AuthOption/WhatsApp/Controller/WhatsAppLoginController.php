@@ -73,14 +73,18 @@ class WhatsAppLoginController extends SessionTokenOauthController
             throw new UnauthorizedAccessException();
         }
 
+        $sessionConfig = $this->configService->get('hf_session');
+
+        $body = $this->request->getParsedBody();
+        $body['client_id'] = $sessionConfig['auth_settings']['client_id'];
+        $body['scope'] = $sessionConfig['auth_settings']['scopes'];
+
         $cookie = $this->buildAccessTokenCookie(
             accessToken: $this->createToken(),
             expiresIn: (new DateTime('+1 day'))->getTimestamp() - time()
         );
 
         $this->log('hf_shield.logged_in');
-
-        $sessionConfig = $this->configService->get('hf_session');
 
         if (empty($sessionConfig)) {
             throw new UnauthorizedAccessException();

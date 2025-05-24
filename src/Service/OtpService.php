@@ -141,7 +141,6 @@ class OtpService
 
     private function getUserFromFederalDocument(string $federalDocument, ?string $tenantId): ?EntityInterface
     {
-        
         return $this->userRepository->first([
             // 'tenant_id' => $tenantId,
             'federal_document' => $this->applyFederalDocumentMask($federalDocument),
