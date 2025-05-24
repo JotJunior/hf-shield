@@ -38,7 +38,7 @@ trait AccessTokenHandler
         $clientEntity->setTenantId($user->tenant->id);
 
         $scopes = [];
-        $scopeNames = explode(' ', $data['scopes']);
+        $scopeNames = explode(' ', $data['scope']);
         foreach ($scopeNames as $scopeName) {
             $scope = new ScopeEntity();
             $scope->setIdentifier($scopeName);
