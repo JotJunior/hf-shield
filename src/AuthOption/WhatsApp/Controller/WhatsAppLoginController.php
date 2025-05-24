@@ -79,10 +79,15 @@ class WhatsAppLoginController extends SessionTokenOauthController
         $body['client_id'] = $sessionConfig['auth_settings']['client_id'];
         $body['scope'] = $sessionConfig['auth_settings']['scopes'];
 
-        $cookie = $this->buildAccessTokenCookie(
-            accessToken: $this->createToken(),
-            expiresIn: (new DateTime('+1 day'))->getTimestamp() - time()
-        );
+        try {
+            $cookie = $this->buildAccessTokenCookie(
+                accessToken: $this->createToken(),
+                expiresIn: (new DateTime('+1 day'))->getTimestamp() - time()
+            );
+        } catch (\Throwable $th) {
+            return $this->response
+                ->redirect($sessionConfig['redirect_uri'] . '?error=' . $th->getMessage());
+        }
 
         $this->log('hf_shield.logged_in');
 
