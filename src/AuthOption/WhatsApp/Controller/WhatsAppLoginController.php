@@ -61,16 +61,19 @@ class WhatsAppLoginController extends SessionTokenOauthController
             throw new UnauthorizedAccessException();
         }
 
-        $validOtp = $this->otpService->validateCode($this->request->getParsedBody());
+        $body = $this->request->getParsedBody();
 
-        if ($validOtp['result'] !== 'succes') {
+        $validOtp = $this->otpService->validateCode($body);
+
+        if ($validOtp['result'] !== 'success') {
             throw new Exception($validOtp['message'], 400);
         }
 
         $otp = $this->otpService->getOtp($validOtp['data']);
         $this->otpService->changeOtpStatus($otp, OtpService::OTP_STATUS_COMPLETE);
 
-        $token = $this->issueTokenString($otp->user->id);
+        $body['user'] = $otp->user->toArray();
+        $token = $this->issueTokenString($body);
 
         return $this->response
             ->withAddedHeader('Content-Type', 'application/json')
