@@ -61,11 +61,7 @@ class ConfigProvider
                     ],
                 ],
             ],
-            'listeners' => [
-                AllowedScopesListener::class,
-                BootValidatorsListener::class,
-                OtpServiceListener::class,
-            ],
+            'listeners' => [],
             'dependencies' => [
                 HttpServer::class => SwaggerHttpServer::class,
                 AuthorizationServer::class => AuthorizationServerFactory::class,
