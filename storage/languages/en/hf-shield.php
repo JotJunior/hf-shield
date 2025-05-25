@@ -90,4 +90,5 @@ return [
     'otp_code_validated' => 'OTP code validated.',
     'password_changed_successfully' => 'Password changed successfully.',
     'check_your_phone' => 'Check your phone with last numbers :phone.',
+    'scopes_synchronized_successfully' => 'Scopes synchronized successfully.',
 ];

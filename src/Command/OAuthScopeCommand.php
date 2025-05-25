@@ -44,6 +44,7 @@ class OAuthScopeCommand extends HyperfCommand
         parent::configure();
         $this->setDescription(__('hf-shield.oauth_scope_description'));
         $this->addArgument('action', InputArgument::REQUIRED, __('hf-shield.action_description'));
+        $this->addOption('verbose', 'V', InputArgument::OPTIONAL, 'verbose', false);
         $this->addUsage('oauth:scope list');
         $this->addUsage('oauth:scope sync');
         $this->addUsage('oauth:scope create scope.fqdn.name "Scope description"');
@@ -100,9 +101,7 @@ class OAuthScopeCommand extends HyperfCommand
                 $finalScope .= ':';
             }
 
-            if ($this->repository->exists($finalScope)) {
-                $this->warning(__('hf-shield.scope_already_registered', ['scope' => $scope]));
-            } else {
+            if (! $this->repository->exists($finalScope)) {
                 $description = match ($baseScope[2] ?? null) {
                     'list' => sprintf('List all %s', Str::plural($parts[1])),
                     'view' => sprintf('View a single %s', Str::singular($parts[1])),
@@ -117,13 +116,15 @@ class OAuthScopeCommand extends HyperfCommand
                     'data' => [
                         'id' => $finalScope,
                         'name' => $description,
-                        'domain' => __(sprintf('hf-shield.scopes.%s', $parts[0])),
-                        'resource' => empty($parts[1]) ? null : __(sprintf('hf-shield.scopes.%s', $parts[1])),
+                        'domain' => __(sprintf('%s.scopes.%s', $parts[0], $parts[0])),
+                        'resource' => empty($parts[1]) ? null : __(sprintf('%s.scopes.%s', $parts[0], $parts[1])),
                         'action' => empty($parts[2]) ? null : $parts[2],
                     ],
                 ]));
             }
         }
+
+        $this->success(__('hf-shield.scopes_synchronized_successfully'));
     }
 
     protected function create(): void

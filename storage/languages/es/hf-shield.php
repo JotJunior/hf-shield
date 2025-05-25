@@ -90,4 +90,5 @@ return [
     'otp_code_validated' => 'El código OTP es válido.',
     'password_changed_successfully' => 'Contraseña cambiada exitosamente.',
     'check_your_phone' => 'Verifique el código OTP en el telefono final :phone.',
+    'scopes_synchronized_successfully' => 'Escopos sincronizados con exito.',
 ];

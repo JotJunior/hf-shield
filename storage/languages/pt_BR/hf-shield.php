@@ -90,4 +90,5 @@ return [
     'otp_code_validated' => 'Código de verificação validado com sucesso.',
     'password_changed_successfully' => 'Senha alterada com sucesso.',
     'check_your_phone' => 'Verifique o código de verificação enviado por Whatsapp para o telefone de final :phone.',
+    'scopes_synchronized_successfully' => 'Escopos sincronizados com sucesso.',
 ];
