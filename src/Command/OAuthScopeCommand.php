@@ -122,8 +122,6 @@ class OAuthScopeCommand extends HyperfCommand
                 ]));
             }
         }
-
-        $this->success(__('hf-shield.scopes_synchronized_successfully'));
     }
 
     protected function create(): void
