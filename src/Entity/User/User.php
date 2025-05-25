@@ -191,6 +191,37 @@ class User extends Entity
         return $this->password;
     }
 
+    public function getCustomers(string $tenantId): ?array
+    {
+        if (empty($this->tenants)) {
+            return null;
+        }
+
+        $tenant = current(
+            array_filter($this->tenants, function ($tenant) use ($tenantId) {
+                return $tenant->id === $tenantId;
+            })
+        );
+
+        if (empty($tenant)) {
+            return null;
+        }
+
+        return $tenant->customers;
+    }
+
+    public function attachCustomer(string $tenantId, array $customer): self
+    {
+        foreach ($this->tenants as $tenant) {
+            if ($tenant->id === $tenantId) {
+                if (! $this->hasCompany($tenantId, $customer['id'])) {
+                    $tenant->customers[] = new Customer($customer);
+                }
+            }
+        }
+        return $this;
+    }
+
     public function hasCompany(string $tenantId, string $companyId): bool
     {
         if (empty($this->tenants)) {
@@ -217,10 +248,22 @@ class User extends Entity
         );
     }
 
-    public function getCustomers(string $tenantId): ?array
+    public function attachGroup(string $tenantId, array $group): self
+    {
+        foreach ($this->tenants as $tenant) {
+            if ($tenant->id === $tenantId) {
+                if (! $this->hasGroup($tenantId, $group['id'])) {
+                    $tenant->groups[] = new Customer($group);
+                }
+            }
+        }
+        return $this;
+    }
+
+    public function hasGroup(string $tenantId, string $groupId): bool
     {
         if (empty($this->tenants)) {
-            return null;
+            return false;
         }
 
         $tenant = current(
@@ -230,29 +273,16 @@ class User extends Entity
         );
 
         if (empty($tenant)) {
-            return null;
+            return false;
         }
 
-        return $tenant->customers;
-    }
-
-    public function attachCustomer(string $tenantId, array $customer): self
-    {
-        foreach ($this->tenants as $tenant) {
-            if ($tenant->id === $tenantId) {
-                $tenant->customers[] = new Customer($customer);
-            }
-        }
-        return $this;
-    }
-
-    public function attachGroup(string $tenantId, array $group): self
-    {
-        foreach ($this->tenants as $tenant) {
-            if ($tenant->id === $tenantId) {
-                $tenant->groups[] = new Customer($group);
-            }
-        }
-        return $this;
+        return boolval(
+            array_filter(
+                $tenant->groups,
+                function ($group) use ($groupId) {
+                    return $group->id === $groupId;
+                }
+            )
+        );
     }
 }
