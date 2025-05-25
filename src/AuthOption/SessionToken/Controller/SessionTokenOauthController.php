@@ -101,7 +101,7 @@ class SessionTokenOauthController extends AbstractOauthController
     #[RateLimit(create: 1, capacity: 2)]
     public function issueSessionToken(RequestInterface $request): PsrResponseInterface
     {
-        if (! in_array('session', $this->config['auth_options'])) {
+        if (! in_array('session', $this->configService->get('hf_shield.auth_options', []))) {
             throw new UnauthorizedAccessException();
         }
 

@@ -61,7 +61,7 @@ class WhatsAppLoginController extends SessionTokenOauthController
         return $this->response
             ->withAddedHeader('Content-Type', 'application/json')
             ->json([
-                'access_token' => $this->createToken(),
+                'access_token' => $this->createToken($this->request->getParsedBody()),
                 'token_type' => 'Bearer',
             ]);
     }
