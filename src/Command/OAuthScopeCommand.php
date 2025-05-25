@@ -44,7 +44,6 @@ class OAuthScopeCommand extends HyperfCommand
         parent::configure();
         $this->setDescription(__('hf-shield.oauth_scope_description'));
         $this->addArgument('action', InputArgument::REQUIRED, __('hf-shield.action_description'));
-        $this->addOption('verbose', 'V', InputArgument::OPTIONAL, 'verbose', false);
         $this->addUsage('oauth:scope list');
         $this->addUsage('oauth:scope sync');
         $this->addUsage('oauth:scope create scope.fqdn.name "Scope description"');
