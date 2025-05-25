@@ -24,6 +24,7 @@ use Jot\HfShield\Repository\AccessTokenRepository;
 use Jot\HfShield\Repository\UserRepository;
 use Jot\HfShield\Service\OtpService;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
+use Throwable;
 
 #[Controller(prefix: '/whatsapp/login')]
 class WhatsAppLoginController extends SessionTokenOauthController
@@ -84,7 +85,7 @@ class WhatsAppLoginController extends SessionTokenOauthController
                 accessToken: $this->createToken($body),
                 expiresIn: (new DateTime('+1 day'))->getTimestamp() - time()
             );
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             return $this->response
                 ->redirect($sessionConfig['redirect_uri'] . '?error=' . $th->getMessage());
         }

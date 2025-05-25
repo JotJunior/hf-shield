@@ -235,4 +235,14 @@ class User extends Entity
 
         return $tenant->customers;
     }
+
+    public function attachCustomer(string $tenantId, array $customer): self
+    {
+        foreach ($this->tenants as &$tenant) {
+            if ($tenant->id === $tenantId) {
+                $tenant->customers[] = new Customer($customer);
+            }
+        }
+        return $this;
+    }
 }
