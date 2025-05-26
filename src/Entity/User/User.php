@@ -35,15 +35,6 @@ class User extends Entity
     protected ?string $id = null;
 
     #[SA\Property(
-        property: 'legacy_id',
-        description: 'An alias of legacy id',
-        type: 'string',
-        readOnly: true,
-        example: ''
-    )]
-    protected ?string $legacyId = null;
-
-    #[SA\Property(
         property: 'name',
         type: 'string',
         example: ''
@@ -141,15 +132,6 @@ class User extends Entity
         x: ['php_type' => '\Jot\HfShield\Entity\User\Tenant[]']
     )]
     protected ?array $tenants = null;
-
-    #[SA\Property(
-        property: 'user_id',
-        description: 'An alias of user id',
-        type: 'string',
-        readOnly: true,
-        example: ''
-    )]
-    protected ?string $userId = null;
 
     #[SA\Property(
         property: 'created_at',
