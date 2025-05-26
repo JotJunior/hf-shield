@@ -213,10 +213,10 @@ class User extends Entity
     public function attachCustomer(string $tenantId, array $customer): self
     {
         foreach ($this->tenants as $tenant) {
-            if ($tenant->id === $tenantId) {
-                if (! $this->hasCompany($tenantId, $customer['id'])) {
-                    $tenant->customers[] = new Customer($customer);
-                }
+            if ($tenant->id === $tenantId && ! $this->hasCompany($tenantId, $customer['id'])) {
+                $customers = $tenant->customers;
+                $customers[] = new Customer($customer);
+                $tenant->customers = $customers;
             }
         }
         return $this;
@@ -251,10 +251,10 @@ class User extends Entity
     public function attachGroup(string $tenantId, array $group): self
     {
         foreach ($this->tenants as $tenant) {
-            if ($tenant->id === $tenantId) {
-                if (! $this->hasGroup($tenantId, $group['id'])) {
-                    $tenant->groups[] = new Group($group);
-                }
+            if ($tenant->id === $tenantId && ! $this->hasGroup($tenantId, $group['id'])) {
+                $groups = $tenant->groups ?? [];
+                $groups[] = new Group($group);
+                $tenant->groups = $groups;
             }
         }
         return $this;
