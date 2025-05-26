@@ -253,7 +253,7 @@ class User extends Entity
         foreach ($this->tenants as $tenant) {
             if ($tenant->id === $tenantId) {
                 if (! $this->hasGroup($tenantId, $group['id'])) {
-                    $tenant->groups[] = new Customer($group);
+                    $tenant->groups[] = new Group($group);
                 }
             }
         }
