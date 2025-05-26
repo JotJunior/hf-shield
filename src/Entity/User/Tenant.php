@@ -56,4 +56,16 @@ class Tenant extends Entity
         x: ['php_type' => '\Jot\HfShield\Entity\User\Customer[]']
     )]
     protected ?array $customers = null;
+
+    public function setGroups(array $groups): self
+    {
+        $this->groups = $groups;
+        return $this;
+    }
+
+    public function setCustomers(array $customers): self
+    {
+        $this->customers = $customers;
+        return $this;
+    }
 }
