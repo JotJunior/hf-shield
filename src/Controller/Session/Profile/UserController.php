@@ -58,7 +58,8 @@ class UserController
     {
         return $this->response->json(
             $this->service->getProfileData(
-                $this->request->getAttribute('oauth_user_id')
+                $this->request->getAttribute('oauth_user_id'),
+                $this->request->query('_tenant_id')
             )
         );
     }
