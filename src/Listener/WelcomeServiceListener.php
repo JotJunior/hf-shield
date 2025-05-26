@@ -16,7 +16,7 @@ use Hyperf\Contract\ConfigInterface;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
 use Jot\HfShield\Amqp\Producer\Welcome;
-use Jot\HfShield\Event\OtpEvent;
+use Jot\HfShield\Event\WelcomeEvent;
 use Psr\Container\ContainerInterface;
 
 #[Listener]
@@ -32,7 +32,7 @@ class WelcomeServiceListener implements ListenerInterface
     public function listen(): array
     {
         return [
-            OtpEvent::class,
+            WelcomeEvent::class,
         ];
     }
 
