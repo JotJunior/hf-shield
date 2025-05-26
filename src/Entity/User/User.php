@@ -216,7 +216,7 @@ class User extends Entity
             if ($tenant->id === $tenantId && ! $this->hasCompany($tenantId, $customer['id'])) {
                 $customers = $tenant->customers;
                 $customers[] = new Customer($customer);
-                $tenant->customers = $customers;
+                $tenant->setCustomers($customers);
             }
         }
         return $this;
@@ -254,7 +254,7 @@ class User extends Entity
             if ($tenant->id === $tenantId && ! $this->hasGroup($tenantId, $group['id'])) {
                 $groups = $tenant->groups ?? [];
                 $groups[] = new Group($group);
-                $tenant->groups = $groups;
+                $tenant->setGroups($groups);
             }
         }
         return $this;
