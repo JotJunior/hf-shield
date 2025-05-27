@@ -108,6 +108,10 @@ class ProfileService extends AbstractService
             $userData['tags'] = array_values(array_filter($userData['tags'], function ($tag) {
                 return $tag !== 'require_password_change';
             }));
+
+            if($userData['tags'] === null) {
+                $userData['tags'] = [];
+            }
         }
 
         $entity = make(UserPasswordDto::class, ['data' => $userData]);
