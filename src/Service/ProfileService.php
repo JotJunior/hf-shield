@@ -46,7 +46,7 @@ class ProfileService extends AbstractService
         $customers = $entity?->getCustomers($tenantId);
 
         $data = $entity?->hide(['password', 'password_salt', '@version', '@timestamp', 'tenants'])?->toArray();
-        $data['customers'] = array_map(fn (EntityInterface $customer) => $customer->toArray(), $customers) ?? $customers;
+        $data['customers'] = array_map(fn (EntityInterface $customer) => $customer->toArray(), $customers ?? []) ?? $customers;
 
         return [
             'data' => $data,
