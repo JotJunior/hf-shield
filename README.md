@@ -8,12 +8,16 @@ scope hierarchy and authentication flow.
 ## TL/DR
 
 Build for:
-- OAuth2 authentication 
-- Cookie-based authentication over OAuth2 JWT Token 
-- Passkey registration and authentication 
+
+- OAuth2 authentication
+- Cookie-based authentication over OAuth2 JWT Token
+- Passkey registration and authentication
 - WhatsApp authentication with OTP
 - Automatic Swagger documentation
 - Easy-to-use code generators
+
+Copy the `docker-compose.yml` file to your project directory and replace the values in the .env file and start the
+environment.
 
 ```bash
 # create your project
@@ -44,6 +48,107 @@ php bin/hyperf.php oauth:user create
 
 # be happy
 php bin/hyperf.php start
+```
+
+### Authenticating
+
+**JWT Bearer token**
+
+```
+POST /oauth/token
+{
+    "grant_type": "password",
+    "client_id": "client_id",
+    "username": "username",
+    "password": "password",
+    "scope": "oauth: user: settings:"
+}
+```
+
+**Start a new session**
+
+See .env HF_SESSION settings
+
+```
+POST /oauth/session
+{
+    "username": "username",
+    "password": "password"
+}
+```
+
+**Registering a passkey**
+
+Client challenging
+
+```
+GET /web-auth/challenge
+```
+
+Registering authenticator
+
+```
+POST /web-auth/register
+{
+   "credentials": {}
+}
+```
+
+**Authenticate a passkey**
+
+Start challenge
+
+```
+POST /web-auth/login/collect
+{
+   "userId": "optional"
+}
+```
+
+Authenticate
+
+```
+POST /web-auth/login/validate
+{
+    "credentials": {}
+}
+```
+
+This will redirect user for HF_SESSION redirect_uri configuration
+
+**Authenticate a WhatsApp number**
+
+```
+POST /whatsapp/login/start
+{
+    "federal_document": "A registered user CPF"
+}
+```
+
+You will receive the otp id in response and a `code` on your whatsapp that you must enter in the next step.
+
+**Validating the OTP**
+
+For a JWT token
+```
+POST /whatsapp/login/token
+{
+    "code": "OTP CODE",
+    "otp_id": "OTP ID",
+    "client_id": "CLIENT ID",
+    "scope": "user: oauth: settings:"
+}
+```
+
+To start a new session
+```
+POST /whatsapp/login/cookie
+{
+    "code": "OTP CODE",
+    "otp_id": "OTP ID",
+    "client_id": "CLIENT ID",
+    "scope": "user: oauth: settings:"
+}
 ```
 
 
@@ -1120,7 +1225,8 @@ class MyUserController extends AbstractController
 
 ### Entities, Services, and Repositories
 
-The commands for entities, services, and repositories don't require additional questions, only creating their files in their respective directories.
+The commands for entities, services, and repositories don't require additional questions, only creating their files in
+their respective directories.
 
 For entities, additional classes will be created according to the index structure if it has sub-objects or collections.
 
