@@ -7,6 +7,14 @@ scope hierarchy and authentication flow.
 
 ## TL/DR
 
+Build for:
+- OAuth2 authentication 
+- Cookie-based authentication over OAuth2 JWT Token 
+- Passkey registration and authentication 
+- WhatsApp authentication with OTP
+- Automatic Swagger documentation
+- Easy-to-use code generators
+
 ```bash
 # create your project
 composer create-project hyperf/hyperf-skeleton my-project
