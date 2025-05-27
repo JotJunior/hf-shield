@@ -5,6 +5,40 @@
 A module for authentication and authorization management using OAuth 2.0, with robust support for
 scope hierarchy and authentication flow.
 
+## TL/DR
+
+```bash
+# create your project
+composer create-project hyperf/hyperf-skeleton my-project
+cd my-project
+
+# install hf-shield
+composer require jot/hf-shield
+php bin/hyperf.php vendor:publish jot/hf-shield
+php bin/hyperf.php vendor:publish jot/hf-repository
+php bin/hyperf.php vendor:publish jot/hf-elastic
+php bin/hyperf.php vendor:publish jot/hf-validator
+php bin/hyperf.php vendor:publish hyperf/swagger
+php bin/hyperf.php vendor:publish hyperf/rate-limit
+php bin/hyperf.php vendor:publish hyperf/translation
+
+# prepare your environment
+cp .env.shield .env
+
+# prepare your database
+php bin/hyperf.php elastic:migrate
+
+# configure your tenant
+php bin/hyperf.php oauth:scope sync
+php bin/hyperf.php oauth:tenant create
+php bin/hyperf.php oauth:client create
+php bin/hyperf.php oauth:user create
+
+# be happy
+php bin/hyperf.php start
+```
+
+
 ## Table of Contents
 
 1. [Introduction](#introduction)
