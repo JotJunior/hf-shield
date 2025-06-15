@@ -222,7 +222,7 @@ class User extends Entity
 
         return boolval(
             array_filter(
-                $tenant->customers,
+                $tenant->customers ?? [],
                 function ($company) use ($companyId) {
                     return $company->id === $companyId;
                 }
@@ -260,7 +260,7 @@ class User extends Entity
 
         return boolval(
             array_filter(
-                $tenant->groups,
+                $tenant->groups ?? [],
                 function ($group) use ($groupId) {
                     return $group->id === $groupId;
                 }
