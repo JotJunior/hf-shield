@@ -18,6 +18,7 @@ use Jot\HfShield\AllowedScopes;
 use Jot\HfShield\Exception\MissingResourceScopeException;
 use Jot\HfShield\Exception\UnauthorizedAccessException;
 use Jot\HfShield\Exception\UnauthorizedClientException;
+use Jot\HfShield\Exception\UnauthorizedScopeException;
 use Jot\HfShield\Exception\UnauthorizedUserException;
 use Jot\HfShield\LoggerContextCollector;
 use League\OAuth2\Server\Exception\OAuthServerException;
@@ -164,7 +165,7 @@ trait BearerTrait
         $this->assertRequestAttribute(self::ATTR_ACCESS_TOKEN_ID, UnauthorizedAccessException::class);
 
         if (! $this->tokenHasRequiredScopes()) {
-            throw new UnauthorizedAccessException($this->metadata());
+            throw new UnauthorizedScopeException($this->metadata());
         }
 
         $client = $this->repository->isClientValid(

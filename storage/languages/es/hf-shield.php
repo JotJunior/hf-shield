@@ -91,4 +91,6 @@ return [
     'password_changed_successfully' => 'Contraseña cambiada exitosamente.',
     'check_your_phone' => 'Verifique el código OTP en el telefono final :phone.',
     'scopes_synchronized_successfully' => 'Escopos sincronizados con exito.',
+    'missing_access_token' => 'Token de acceso ausente.',
+    'unauthorized_scope' => 'Escopo no autorizado.',
 ];

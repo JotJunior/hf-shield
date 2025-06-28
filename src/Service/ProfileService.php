@@ -109,7 +109,7 @@ class ProfileService extends AbstractService
                 return $tag !== 'require_password_change';
             }));
 
-            if($userData['tags'] === null) {
+            if ($userData['tags'] === null) {
                 $userData['tags'] = [];
             }
         }

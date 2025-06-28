@@ -91,4 +91,6 @@ return [
     'password_changed_successfully' => 'Password changed successfully.',
     'check_your_phone' => 'Check your phone with last numbers :phone.',
     'scopes_synchronized_successfully' => 'Scopes synchronized successfully.',
+    'missing_access_token' => 'Missing access token.',
+    'unauthorized_scope' => 'Unauthorized scope.',
 ];

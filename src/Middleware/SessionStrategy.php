@@ -13,7 +13,7 @@ namespace Jot\HfShield\Middleware;
 
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Logger\LoggerFactory;
-use Jot\HfShield\Exception\UnauthorizedAccessException;
+use Jot\HfShield\Exception\MissingAccessTokenException;
 use Jot\HfShield\Repository\AccessTokenRepository;
 use League\OAuth2\Server\CryptTrait;
 use League\OAuth2\Server\ResourceServer;
@@ -48,7 +48,7 @@ class SessionStrategy implements MiddlewareInterface
 
         if (! $token) {
             $this->logger->warning('Access token not found in cookie', $this->collectMetadata());
-            throw new UnauthorizedAccessException();
+            throw new MissingAccessTokenException();
         }
 
         $token = $this->decrypt($token);

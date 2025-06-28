@@ -155,7 +155,7 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
 
         $this->addScopeConditions($query, $tenantId, $scope);
 
-        return $query->count() === 1;
+        return boolval($query->count());
     }
 
     /**
