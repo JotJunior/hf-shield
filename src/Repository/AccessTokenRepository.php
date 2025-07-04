@@ -247,6 +247,9 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
             $rootScopes = current(array_filter($tenant['scopes'] ?? [], function ($scope) {
                 return $scope['id'] === 'root:all:all';
             }));
+
+            $validGroups = [];
+
             foreach ($tenant['groups'] ?? [] as $group) {
                 $group = $this->queryBuilder
                     ->select(['scopes'])
@@ -255,6 +258,10 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
                     ->andWhere('deleted', false)
                     ->andWhere('status', 'active')
                     ->execute()['data'];
+                if (empty($group[0])) {
+                    continue;
+                }
+                $validGroups[] = $group;
                 $scopes = array_merge($scopes, $group[0]['scopes']);
             }
             $scopes = array_unique($scopes, SORT_REGULAR);
@@ -262,6 +269,7 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
                 $scopes[] = $rootScopes;
             }
             $tenant['scopes'] = $scopes;
+            $tenant['groups'] = $validGroups;
         }
 
         $this->queryBuilder->update($userId, $user);
