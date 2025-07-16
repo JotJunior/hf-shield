@@ -38,17 +38,17 @@ trait LoggerContextCollector
             }
             $metadata['scopes'] = $this->request?->getAttribute('oauth_scopes');
         }
-        if (property_exists($this, 'oauthUser') && $this->oauthUser) {
-            $metadata['user']['id'] = $this->oauthUser['id'];
-            $metadata['user']['name'] = $this->oauthUser['name'];
-            $metadata['user']['picture'] = $this->oauthUser['picture'] ?? null;
+        if (method_exists($this, 'getOauthUser') && $this->getOauthUser()) {
+            $metadata['user']['id'] = $this->getOauthUser()['id'];
+            $metadata['user']['name'] = $this->getOauthUser()['name'];
+            $metadata['user']['picture'] = $this->getOauthUser()['picture'] ?? null;
         }
         if (property_exists($this, 'oauthTokenId') && $this->oauthTokenId) {
             $metadata['access']['token'] = $this->oauthTokenId;
         }
-        if (property_exists($this, 'oauthClient') && $this->oauthClient) {
-            $metadata['access']['client'] = $this->oauthClient['id'];
-            $metadata['access']['tenant'] = $this->oauthClient['tenant']['id'];
+        if (method_exists($this, 'getOauthClient') && $this->getOauthClient()) {
+            $metadata['access']['client'] = $this->getOauthClient()['id'];
+            $metadata['access']['tenant'] = $this->getOauthClient()['tenant']['id'];
         }
 
         return $metadata;

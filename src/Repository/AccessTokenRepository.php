@@ -187,7 +187,7 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
         $user = $this->queryBuilder
             ->select()
             ->from('users')
-            ->where('id', $id)
+            ->where('id', '=', $id)
             ->andWhere('status', 'active')
             ->andWhere('deleted', false)
             ->execute();

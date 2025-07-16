@@ -38,11 +38,18 @@ trait BearerTrait
 
     public const ATTR_SCOPES = 'oauth_scopes';
 
-    protected array $oauthClient = [];
-
-    protected array $oauthUser = [];
-
     protected ?string $oauthTokenId = null;
+
+    public function getOauthClient(): array
+    {
+        $client = $this->repository->isClientValid(
+            $this->request->getAttribute(self::ATTR_CLIENT_ID)
+        );
+        if (! $client) {
+            throw new UnauthorizedClientException($this->metadata());
+        }
+        return $client;
+    }
 
     /**
      * Generates a descriptive message based on the provided content and the current resource scope.
@@ -51,9 +58,9 @@ trait BearerTrait
      * other operations on a resource. The generated message dynamically incorporates the user's name,
      * the action performed, the type of resource, and the resource's name, depending on the context.
      *
-     * @param array $content An associative array containing details about the user, resource, and context.
-     *                       Expected keys include:
-     *                       - 'user' => ['name'] (string): The name of the user performing the action.
+     * @param array $content An associative array contain
+     *                       - 'user' => ['name'] (string): The name of the user ping details about the user, resource, and context.
+     *                       Expected keys include:erforming the action.
      *                       - 'context' => ['request' => ['body' => ['name']]] (string): The name of the resource.
      * @return string a string message describing the user action on the resource
      */
@@ -94,6 +101,11 @@ trait BearerTrait
         return $message;
     }
 
+    public function getOauthUser(): array
+    {
+        return $this->repository->getUserSessionData($this->request->getAttribute(self::ATTR_USER_ID));
+    }
+
     /**
      * Validates the bearer authentication strategy for the incoming request and ensures the presence of required scopes.
      *
@@ -118,24 +130,6 @@ trait BearerTrait
             throw new MissingResourceScopeException();
         }
         $this->validateRequestAttributes();
-    }
-
-    /**
-     * Collects and structures metadata including user details, server parameters, and request data.
-     *
-     * This method organizes metadata into a structured array containing information about the user,
-     * server parameters, and request specifics. It also generates an additional message based on the
-     * collected metadata.
-     *
-     * @return array an associative array containing organized metadata
-     */
-    protected function metadata(): array
-    {
-        $this->oauthTokenId = $this->request->getAttribute(self::ATTR_ACCESS_TOKEN_ID);
-        $metadata = $this->collectMetadata();
-        $metadata['message'] = $this->generateMessage($metadata);
-
-        return $metadata;
     }
 
     /**
@@ -168,22 +162,15 @@ trait BearerTrait
             throw new UnauthorizedScopeException($this->metadata());
         }
 
-        $client = $this->repository->isClientValid(
-            $this->request->getAttribute(self::ATTR_CLIENT_ID)
-        );
-        if (! $client) {
-            throw new UnauthorizedClientException($this->metadata());
-        }
-        $this->oauthClient = $client;
+        $client = $this->getOauthClient();
 
         $userId = $this->request->getAttribute(self::ATTR_USER_ID);
 
         if (! $this->repository->isUserValid($userId, $client['tenant']['id'], $this->resourceScopes)) {
             throw new UnauthorizedUserException($this->metadata());
         }
-        $this->oauthUser = $this->repository->getUserSessionData($userId);
 
-        $this->request->withAttribute('oauth_user_session', $this->oauthUser);
+        $this->request->withAttribute('oauth_user_session', $this->getOauthUser());
     }
 
     /**
@@ -227,6 +214,24 @@ trait BearerTrait
         }
 
         return false;
+    }
+
+    /**
+     * Collects and structures metadata including user details, server parameters, and request data.
+     *
+     * This method organizes metadata into a structured array containing information about the user,
+     * server parameters, and request specifics. It also generates an additional message based on the
+     * collected metadata.
+     *
+     * @return array an associative array containing organized metadata
+     */
+    protected function metadata(): array
+    {
+        $this->oauthTokenId = $this->request->getAttribute(self::ATTR_ACCESS_TOKEN_ID);
+        $metadata = $this->collectMetadata();
+        $metadata['message'] = $this->generateMessage($metadata);
+
+        return $metadata;
     }
 
     protected function logRequest(): void
