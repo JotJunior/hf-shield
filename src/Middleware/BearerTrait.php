@@ -40,17 +40,6 @@ trait BearerTrait
 
     protected ?string $oauthTokenId = null;
 
-    public function getOauthClient(): array
-    {
-        $client = $this->repository->isClientValid(
-            $this->request->getAttribute(self::ATTR_CLIENT_ID)
-        );
-        if (! $client) {
-            throw new UnauthorizedClientException($this->metadata());
-        }
-        return $client;
-    }
-
     /**
      * Generates a descriptive message based on the provided content and the current resource scope.
      *
@@ -70,6 +59,9 @@ trait BearerTrait
         if (empty($scope)) {
             return '';
         }
+
+        $scopeData = $this->repository->fetchEntityReference(index: 'scopes', id: $scope, fields: ['id', 'name', 'domain', 'domain_name', 'resource', 'resource_name', 'action']);
+
         $parts = explode(':', $scope);
 
         $resource = Str::singular($parts[1]);
@@ -79,26 +71,54 @@ trait BearerTrait
         // Recupera os valores do array com valores padrão
         $user = $content['user']['name'] ?? 'hf-shield.session_actions.undefined_user';
         $action = $action ? __(sprintf('hf-shield.session_actions.%s', $action)) : '';
-        $resourceType = $resource ? __(sprintf('messages.scopes.%s', $resource)) : '';
+        $resourceType = $scopeData['resource_name'] ?? $resource ? __(sprintf('messages.scopes.%s', $resource)) : '';
         $pluralResourceType = __(sprintf('messages.scopes.%s', $resources));
         $resourceName = $content['request']['body']['name'] ?? '';
 
-        // Define a mensagem baseada na ação
-        if ($parts[2] === 'create') {
-            $message = __('hf-shield.log_messages.user_create_new', ['resource' => $resourceType, 'name' => $resourceName]);
-        } elseif ($parts[2] === 'list') {
-            $message = __('hf-shield.log_messages.user_list_resources', ['resources' => $pluralResourceType]);
-        } elseif ($parts[2] === 'pairs') {
-            $message = __('hf-shield.log_messages.system_list_resources', ['resources' => $pluralResourceType]);
-        } elseif ($parts[2] === 'session') {
-            $message = __('hf-shield.log_messages.system_view_user', ['user' => $user]);
-        } elseif (empty($resourceName)) {
-            $message = __('hf-shield.log_messages.user_action_resource', ['action' => $action, 'resource' => $resourceType]);
-        } else {
-            $message = __('hf-shield.log_messages.user_action_resource_name', ['action' => $action, 'resource' => $resourceType, 'name' => $resourceName]);
+        switch ($action) {
+            case 'create':
+                $message = __('hf-shield.log_messages.user_create_new', [
+                    'resource' => $scopeData['domain_name'] ?? $resourceType,
+                    'name' => $scopeData['resource_name'] ?? $resourceName,
+                ]);
+                break;
+            case 'list':
+            case 'pairs':
+                $message = __('hf-shield.log_messages.user_list_resources', [
+                    'resources' => $scopeData['resource_name'] ?? $pluralResourceType,
+                ]);
+                break;
+            case 'session':
+                $message = __('hf-shield.log_messages.system_view_user', ['user' => $user]);
+                break;
+            case 'update':
+            case 'delete':
+                $message = __('hf-shield.log_messages.user_action_resource_name', [
+                    'action' => $action,
+                    'resource' => $scopeData['domain_name'] ?? $resourceType,
+                    'name' => $scopeData['resource_name'] ?? $resourceName,
+                ]);
+                break;
+            default:
+                $message = __('hf-shield.log_messages.user_action_resource', [
+                    'action' => $action,
+                    'resource' => $scopeData['resource_name'] ?? $resourceType,
+                ]);
+                break;
         }
 
         return $message;
+    }
+
+    public function getOauthClient(): array
+    {
+        $client = $this->repository->isClientValid(
+            $this->request->getAttribute(self::ATTR_CLIENT_ID)
+        );
+        if (! $client) {
+            throw new UnauthorizedClientException($this->metadata());
+        }
+        return $client;
     }
 
     public function getOauthUser(): array
@@ -134,6 +154,24 @@ trait BearerTrait
             throw new MissingResourceScopeException();
         }
         $this->validateRequestAttributes();
+    }
+
+    /**
+     * Collects and structures metadata including user details, server parameters, and request data.
+     *
+     * This method organizes metadata into a structured array containing information about the user,
+     * server parameters, and request specifics. It also generates an additional message based on the
+     * collected metadata.
+     *
+     * @return array an associative array containing organized metadata
+     */
+    protected function metadata(): array
+    {
+        $this->oauthTokenId = $this->request->getAttribute(self::ATTR_ACCESS_TOKEN_ID);
+        $metadata = $this->collectMetadata();
+        $metadata['message'] = $this->generateMessage($metadata);
+
+        return $metadata;
     }
 
     /**
@@ -218,24 +256,6 @@ trait BearerTrait
         }
 
         return false;
-    }
-
-    /**
-     * Collects and structures metadata including user details, server parameters, and request data.
-     *
-     * This method organizes metadata into a structured array containing information about the user,
-     * server parameters, and request specifics. It also generates an additional message based on the
-     * collected metadata.
-     *
-     * @return array an associative array containing organized metadata
-     */
-    protected function metadata(): array
-    {
-        $this->oauthTokenId = $this->request->getAttribute(self::ATTR_ACCESS_TOKEN_ID);
-        $metadata = $this->collectMetadata();
-        $metadata['message'] = $this->generateMessage($metadata);
-
-        return $metadata;
     }
 
     protected function logRequest(): void
