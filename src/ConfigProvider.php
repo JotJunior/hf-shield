@@ -35,7 +35,6 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Webauthn\AttestationStatement\AttestationStatementSupportManager;
 use Webauthn\AttestationStatement\NoneAttestationStatementSupport;
 use Webauthn\Denormalizer\WebauthnSerializerFactory;
-
 use function Hyperf\Support\env;
 use function Hyperf\Support\make;
 
@@ -149,8 +148,8 @@ class ConfigProvider
                                             'request_method' => ['type' => 'keyword'],
                                             'request_uri' => ['type' => 'keyword'],
                                             'path_info' => ['type' => 'keyword'],
-                                            'request_time' => 'long',
-                                            'request_time_float' => 'double',
+                                            'request_time' => ['type' => 'long'],
+                                            'request_time_float' => ['type' => 'double'],
                                             'server_protocol' => ['type' => 'keyword'],
                                             'server_port' => ['type' => 'long'],
                                             'remote_port' => ['type' => 'long'],
