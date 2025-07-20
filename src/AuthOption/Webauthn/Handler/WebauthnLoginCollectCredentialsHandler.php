@@ -61,7 +61,12 @@ trait WebauthnLoginCollectCredentialsHandler
         if (! empty($user)) {
             $users = $this->userRepository->search($user['userId'] ?? $user['username'], ['id', 'email'], ['id', 'name']);
             foreach ($users as $user) {
-                $credential = $this->userCredentialRepository->first(['user.id' => $user->getId(), '_sort' => 'created_at:desc']);
+                $credential = $this->userCredentialRepository->first(
+                    [
+                        'user.id' => $user->getId(),
+                        'host' => $this->request->getUri()->getHost(),
+                        '_sort' => 'created_at:desc']
+                );
                 if (! empty($credential)) {
                     $credentials[] = $credential->toArray();
                 }
