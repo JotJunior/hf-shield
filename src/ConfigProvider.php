@@ -160,6 +160,23 @@ class ConfigProvider
                                         'type' => 'object',
                                         'dynamic' => true,
                                     ],
+                                    'server_params' => [
+                                        'properties' => [
+                                            'query_string' => 'keyword',
+                                            'request_method' => 'keyword',
+                                            'request_uri' => 'keyword',
+                                            'path_info' => 'keyword',
+                                            'request_time' => 'long',
+                                            'request_time_float' => 'double',
+                                            'server_protocol' => 'keyword',
+                                            'server_port' => 'long',
+                                            'remote_port' => 'long',
+                                            'remote_addr' => 'ip',
+                                            'server_addr' => 'ip',
+                                            'server_name' => 'keyword',
+                                            'server_software' => 'keyword',
+                                        ],
+                                    ],
                                     'request' => [
                                         'properties' => [
                                             'request_method' => [
