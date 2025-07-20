@@ -86,6 +86,13 @@ class UserCredential extends Entity
     protected ?string $type = null;
 
     #[SA\Property(
+        property: 'type',
+        type: 'string',
+        example: ''
+    )]
+    protected ?string $host = null;
+
+    #[SA\Property(
         property: 'updated_at',
         type: 'string',
         format: 'date-time',
