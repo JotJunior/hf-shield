@@ -26,6 +26,7 @@ return new class(ApplicationContext::getContainer()) extends Migration {
         $index->addField('keyword', 'name')->normalizer('normalizer_ascii_lower')->searchable();
         $index->addField('keyword', 'host');
         $index->addField('text', 'content');
+        $index->addField('keyword', 'status');
 
         $user = new Migration\ElasticType\ObjectType('user');
         $user->addField('keyword', 'id');
