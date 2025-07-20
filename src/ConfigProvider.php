@@ -134,110 +134,59 @@ class ConfigProvider
                             ],
                             'mappings' => [
                                 'properties' => [
-                                    '@timestamp' => [
-                                        'type' => 'date_nanos',
-                                    ],
-                                    'datetime' => [
-                                        'type' => 'date',
-                                        'format' => 'strict_date_optional_time||epoch_millis',
-                                    ],
-                                    'channel' => [
-                                        'type' => 'keyword',
-                                    ],
-                                    'level' => [
-                                        'type' => 'integer',
-                                    ],
-                                    'level_name' => [
-                                        'type' => 'keyword',
-                                    ],
-                                    'message' => [
-                                        'type' => 'text',
-                                    ],
-                                    'context' => [
-                                        'type' => 'text',
-                                    ],
-                                    'extra' => [
-                                        'type' => 'object',
-                                        'dynamic' => true,
+                                    '@timestamp' => ['type' => 'date_nanos'],
+                                    'datetime' => ['type' => 'date', 'format' => 'strict_date_optional_time||epoch_millis'],
+                                    'channel' => ['type' => 'keyword'],
+                                    'level' => ['type' => 'integer'],
+                                    'level_name' => ['type' => 'keyword'],
+                                    'message' => ['type' => 'text'],
+                                    'context' => ['type' => 'text'],
+                                    'extra' => ['type' => 'object', 'dynamic' => true,
                                     ],
                                     'server_params' => [
                                         'properties' => [
-                                            'query_string' => 'keyword',
-                                            'request_method' => 'keyword',
-                                            'request_uri' => 'keyword',
-                                            'path_info' => 'keyword',
+                                            'query_string' => ['type' => 'keyword'],
+                                            'request_method' => ['type' => 'keyword'],
+                                            'request_uri' => ['type' => 'keyword'],
+                                            'path_info' => ['type' => 'keyword'],
                                             'request_time' => 'long',
                                             'request_time_float' => 'double',
-                                            'server_protocol' => 'keyword',
-                                            'server_port' => 'long',
-                                            'remote_port' => 'long',
-                                            'remote_addr' => 'ip',
-                                            'server_addr' => 'ip',
-                                            'server_name' => 'keyword',
-                                            'server_software' => 'keyword',
+                                            'server_protocol' => ['type' => 'keyword'],
+                                            'server_port' => ['type' => 'long'],
+                                            'remote_port' => ['type' => 'long'],
+                                            'remote_addr' => ['type' => 'ip'],
+                                            'server_addr' => ['type' => 'ip'],
+                                            'server_name' => ['type' => 'keyword'],
+                                            'server_software' => ['type' => 'keyword'],
                                         ],
                                     ],
                                     'request' => [
                                         'properties' => [
-                                            'request_method' => [
-                                                'type' => 'keyword',
-                                            ],
-                                            'request_uri' => [
-                                                'type' => 'keyword',
-                                            ],
-                                            'path_info' => [
-                                                'type' => 'keyword',
-                                            ],
-                                            'request_time' => [
-                                                'type' => 'long',
-                                            ],
-                                            'request_time_float' => [
-                                                'type' => 'double',
-                                            ],
-                                            'server_protocol' => [
-                                                'type' => 'keyword',
-                                            ],
-                                            'server_port' => [
-                                                'type' => 'long',
-                                            ],
-                                            'remote_port' => [
-                                                'type' => 'long',
-                                            ],
-                                            'remote_addr' => [
-                                                'type' => 'ip',
-                                            ],
-                                            'master_time' => [
-                                                'type' => 'long',
-                                            ],
+                                            'request_method' => ['type' => 'keyword'],
+                                            'request_uri' => ['type' => 'keyword'],
+                                            'path_info' => ['type' => 'keyword'],
+                                            'request_time' => ['type' => 'long'],
+                                            'request_time_float' => ['type' => 'double'],
+                                            'server_protocol' => ['type' => 'keyword'],
+                                            'server_port' => ['type' => 'long'],
+                                            'remote_port' => ['type' => 'long'],
+                                            'remote_addr' => ['type' => 'ip'],
+                                            'master_time' => ['type' => 'long'],
                                         ],
                                     ],
                                     'user' => [
                                         'properties' => [
-                                            'id' => [
-                                                'type' => 'keyword',
-                                            ],
-                                            'name' => [
-                                                'type' => 'keyword',
-                                            ],
-                                            'picture' => [
-                                                'type' => 'keyword',
-                                            ],
+                                            'id' => ['type' => 'keyword'],
+                                            'name' => ['type' => 'keyword'],
+                                            'picture' => ['type' => 'keyword'],
                                         ],
                                     ],
                                     'access' => [
                                         'properties' => [
-                                            'token_id' => [
-                                                'type' => 'keyword',
-                                            ],
-                                            'scope' => [
-                                                'type' => 'keyword',
-                                            ],
-                                            'client' => [
-                                                'type' => 'keyword',
-                                            ],
-                                            'tenant' => [
-                                                'type' => 'keyword',
-                                            ],
+                                            'token_id' => ['type' => 'keyword'],
+                                            'scope' => ['type' => 'keyword'],
+                                            'client' => ['type' => 'keyword'],
+                                            'tenant' => ['type' => 'keyword'],
                                         ],
                                     ],
                                 ],
