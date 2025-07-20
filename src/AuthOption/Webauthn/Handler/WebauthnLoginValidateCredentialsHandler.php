@@ -61,6 +61,7 @@ trait WebauthnLoginValidateCredentialsHandler
         $userId = $publicKeyCredential->response->userHandle;
 
         $credentialData = $this->userCredentialRepository->first([
+            'host' => $this->request->getUri()->getHost(),
             'user.id' => $userId,
             '_sort' => 'created_at:desc',
         ])?->toArray();

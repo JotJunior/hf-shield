@@ -70,6 +70,7 @@ trait WebauthnRegisterCredentialsHandler
                     'id' => $user['id'],
                     'name' => $user['name'],
                 ],
+                'host' => $this->request->getUri()->getHost(),
                 'content' => $this->encrypt(serialize($publicKeyCredential)),
             ],
         ]);

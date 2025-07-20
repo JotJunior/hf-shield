@@ -23,6 +23,7 @@ use Jot\HfShield\Exception\UnauthorizedUserException;
 use Jot\HfShield\LoggerContextCollector;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ServerRequestInterface;
+
 use function Hyperf\Translation\__;
 
 trait BearerTrait
@@ -38,6 +39,76 @@ trait BearerTrait
     public const ATTR_SCOPES = 'oauth_scopes';
 
     protected ?string $oauthTokenId = null;
+
+    public function getOauthClient(): array
+    {
+        $client = $this->repository->isClientValid(
+            $this->request->getAttribute(self::ATTR_CLIENT_ID)
+        );
+        if (! $client) {
+            throw new UnauthorizedClientException($this->metadata());
+        }
+        return $client;
+    }
+
+    /**
+     * Generates a descriptive message based on the provided content and the current resource scope.
+     *
+     * This method constructs a message that describes the user's action, such as creating or performing
+     * other operations on a resource. The generated message dynamically incorporates the user's name,
+     * the action performed, the type of resource, and the resource's name, depending on the context.
+     *
+     * @param array $content An associative array contain
+     *                       - 'user' => ['name'] (string): The name of the user ping details about the user, resource, and context.
+     *                       Expected keys include:erforming the action.
+     *                       - 'context' => ['request' => ['body' => ['name']]] (string): The name of the resource.
+     * @return string a string message describing the user action on the resource
+     */
+    public function generateMessage(array $content): string
+    {
+        $scope = current($this->resourceScopes);
+        if (empty($scope)) {
+            return '';
+        }
+        $parts = explode(':', $scope);
+
+        $resource = Str::singular($parts[1]);
+        $resources = Str::plural($parts[1]);
+        $action = $parts[2] ?? '';
+
+        // Recupera os valores do array com valores padrão
+        $user = $content['user']['name'] ?? 'hf-shield.session_actions.undefined_user';
+        $action = $action ? __(sprintf('hf-shield.session_actions.%s', $action)) : '';
+        $resourceType = $resource ? __(sprintf('messages.scopes.%s', $resource)) : '';
+        $pluralResourceType = __(sprintf('messages.scopes.%s', $resources));
+        $resourceName = $content['request']['body']['name'] ?? '';
+
+        // Define a mensagem baseada na ação
+        if ($parts[2] === 'create') {
+            $message = __('hf-shield.log_messages.user_create_new', ['resource' => $resourceType, 'name' => $resourceName]);
+        } elseif ($parts[2] === 'list') {
+            $message = __('hf-shield.log_messages.user_list_resources', ['resources' => $pluralResourceType]);
+        } elseif ($parts[2] === 'pairs') {
+            $message = __('hf-shield.log_messages.system_list_resources', ['resources' => $pluralResourceType]);
+        } elseif ($parts[2] === 'session') {
+            $message = __('hf-shield.log_messages.system_view_user', ['user' => $user]);
+        } elseif (empty($resourceName)) {
+            $message = __('hf-shield.log_messages.user_action_resource', ['action' => $action, 'resource' => $resourceType]);
+        } else {
+            $message = __('hf-shield.log_messages.user_action_resource_name', ['action' => $action, 'resource' => $resourceType, 'name' => $resourceName]);
+        }
+
+        return $message;
+    }
+
+    public function getOauthUser(): array
+    {
+        $userId = $this->request->getAttribute(self::ATTR_USER_ID);
+        if (empty($userId)) {
+            throw new UnauthorizedUserException($this->metadata());
+        }
+        return $this->repository->getUserSessionData($userId);
+    }
 
     /**
      * Validates the bearer authentication strategy for the incoming request and ensures the presence of required scopes.
@@ -76,7 +147,7 @@ trait BearerTrait
             if ($routeHandler instanceof Handler) {
                 $controller = $routeHandler->callback[0];
                 $method = $routeHandler->callback[1];
-                $this->resourceScopes = (array)AllowedScopes::get($controller, $method)->allow;
+                $this->resourceScopes = (array) AllowedScopes::get($controller, $method)->allow;
             }
         }
     }
@@ -149,17 +220,6 @@ trait BearerTrait
         return false;
     }
 
-    public function getOauthClient(): array
-    {
-        $client = $this->repository->isClientValid(
-            $this->request->getAttribute(self::ATTR_CLIENT_ID)
-        );
-        if (! $client) {
-            throw new UnauthorizedClientException($this->metadata());
-        }
-        return $client;
-    }
-
     /**
      * Collects and structures metadata including user details, server parameters, and request data.
      *
@@ -176,65 +236,6 @@ trait BearerTrait
         $metadata['message'] = $this->generateMessage($metadata);
 
         return $metadata;
-    }
-
-    /**
-     * Generates a descriptive message based on the provided content and the current resource scope.
-     *
-     * This method constructs a message that describes the user's action, such as creating or performing
-     * other operations on a resource. The generated message dynamically incorporates the user's name,
-     * the action performed, the type of resource, and the resource's name, depending on the context.
-     *
-     * @param array $content An associative array contain
-     *                       - 'user' => ['name'] (string): The name of the user ping details about the user, resource, and context.
-     *                       Expected keys include:erforming the action.
-     *                       - 'context' => ['request' => ['body' => ['name']]] (string): The name of the resource.
-     * @return string a string message describing the user action on the resource
-     */
-    public function generateMessage(array $content): string
-    {
-        $scope = current($this->resourceScopes);
-        if (empty($scope)) {
-            return '';
-        }
-        $parts = explode(':', $scope);
-
-        $resource = Str::singular($parts[1]);
-        $resources = Str::plural($parts[1]);
-        $action = $parts[2] ?? '';
-
-        // Recupera os valores do array com valores padrão
-        $user = $content['user']['name'] ?? 'hf-shield.session_actions.undefined_user';
-        $action = $action ? __(sprintf('hf-shield.session_actions.%s', $action)) : '';
-        $resourceType = $resource ? __(sprintf('messages.scopes.%s', $resource)) : '';
-        $pluralResourceType = __(sprintf('messages.scopes.%s', $resources));
-        $resourceName = $content['request']['body']['name'] ?? '';
-
-        // Define a mensagem baseada na ação
-        if ($parts[2] === 'create') {
-            $message = __('hf-shield.log_messages.user_create_new', ['resource' => $resourceType, 'name' => $resourceName]);
-        } elseif ($parts[2] === 'list') {
-            $message = __('hf-shield.log_messages.user_list_resources', ['resources' => $pluralResourceType]);
-        } elseif ($parts[2] === 'pairs') {
-            $message = __('hf-shield.log_messages.system_list_resources', ['resources' => $pluralResourceType]);
-        } elseif ($parts[2] === 'session') {
-            $message = __('hf-shield.log_messages.system_view_user', ['user' => $user]);
-        } elseif (empty($resourceName)) {
-            $message = __('hf-shield.log_messages.user_action_resource', ['action' => $action, 'resource' => $resourceType]);
-        } else {
-            $message = __('hf-shield.log_messages.user_action_resource_name', ['action' => $action, 'resource' => $resourceType, 'name' => $resourceName]);
-        }
-
-        return $message;
-    }
-
-    public function getOauthUser(): array
-    {
-        $userId = $this->request->getAttribute(self::ATTR_USER_ID);
-        if (empty($userId)) {
-            throw new UnauthorizedUserException($this->metadata());
-        }
-        return $this->repository->getUserSessionData($userId);
     }
 
     protected function logRequest(): void
