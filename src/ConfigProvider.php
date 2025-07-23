@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Jot\HfShield;
 
+use Aws\S3\S3Client;
+use Aws\S3\S3ClientInterface;
 use Hyperf\Cache\AnnotationManager;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\ContainerInterface;
@@ -35,6 +37,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Webauthn\AttestationStatement\AttestationStatementSupportManager;
 use Webauthn\AttestationStatement\NoneAttestationStatementSupport;
 use Webauthn\Denormalizer\WebauthnSerializerFactory;
+
 use function Hyperf\Support\env;
 use function Hyperf\Support\make;
 
@@ -91,6 +94,18 @@ class ConfigProvider
                     ]);
 
                     return $factory->create();
+                },
+                S3ClientInterface::class => function (ContainerInterface $container) {
+                    return new S3Client([
+                        'version' => 'latest',
+                        'region' => $container->get(ConfigInterface::class)->get('s3_bucket_region'),
+                        'endpoint' => $container->get(ConfigInterface::class)->get('s3_bucket_url'),
+                        'credentials' => [
+                            'key' => $container->get(ConfigInterface::class)->get('s3_bucket_access_key'),
+                            'secret' => $container->get(ConfigInterface::class)->get('s3_bucket_secret_key'),
+                        ],
+                        'use_path_style_endpoint' => true,
+                    ]);
                 },
             ],
             'commands' => [
