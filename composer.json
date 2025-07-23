@@ -40,7 +40,8 @@
     "hyperf/cache": "^3.1",
     "web-auth/webauthn-lib": "^5.2",
     "twilio/sdk": "^8.6",
-    "hyperf/amqp": "^3.1"
+    "hyperf/amqp": "^3.1",
+    "ext-fileinfo": "*"
   },
   "extra": {
     "hyperf": {

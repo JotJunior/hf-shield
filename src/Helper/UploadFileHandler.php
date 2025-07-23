@@ -29,7 +29,45 @@ class UploadFileHandler
     ) {
     }
 
-    public function upload(RequestInterface $request, ?string $customFilename = null): array
+    public function fromPath(string $path, ?string $customFilename = null): array
+    {
+        if (! file_exists($path)) {
+            return ['url' => null, 'message' => 'File not found.'];
+        }
+
+        $file = explode('/', $path);
+        $extension = explode('.', end($file))[1] ?? '';
+
+        try {
+            $filename = $customFilename ?? $this->generateUniqueFilename($extension);
+            $directoryPath = $this->generateDirectoryPath();
+            $s3Path = $directoryPath . '/' . $filename;
+            $config = $this->config->get('hf_shield', []);
+            $bucketName = $config['s3_bucket_name'] ?? '';
+            $bucketUrl = $config['s3_bucket_nurl'] ?? '';
+
+            $this->s3->putObject([
+                'Bucket' => $bucketName,
+                'Key' => $s3Path,
+                'Body' => file_get_contents($path),
+                'ACL' => 'public-read',
+                'ContentType' => mime_content_type($path),
+            ]);
+
+            $imageUrl = sprintf('%s/%s/%s', $bucketUrl, $bucketName, $s3Path);
+
+            return [
+                'url' => $imageUrl,
+                'path' => $s3Path,
+            ];
+        } catch (S3Exception $e) {
+            throw new Exception('Error uploading image to S3: ' . $e->getMessage());
+        } catch (Exception $e) {
+            throw new Exception('Error processing image: ' . $e->getMessage());
+        }
+    }
+
+    public function fromUpload(RequestInterface $request, ?string $customFilename = null): array
     {
         if (! $request->hasFile('file')) {
             return ['url' => null, 'message' => 'No file found.'];
