@@ -39,7 +39,7 @@ class ShieldElasticsearchFormatter extends ElasticsearchFormatter
             $record['context']['access']
         );
 
-        foreach ($record['context']['headers'] as $key => &$header) {
+        foreach ($record['context']['headers'] ?? [] as $key => &$header) {
             if (str_starts_with(strtolower($header[0]), 'bearer')) {
                 $header[0] = 'Bearer ******';
             }
@@ -59,7 +59,7 @@ class ShieldElasticsearchFormatter extends ElasticsearchFormatter
 
     private function anonymizeData(array $data, bool &$shouldEncrypt = false): array|string
     {
-        foreach ($data as $key => $value) {
+        foreach ($data ?? [] as $key => $value) {
             if ($this->isBase64Image($value)) {
                 $data[$key] = $this->truncateString((string) $value);
             }
@@ -161,13 +161,13 @@ class ShieldElasticsearchFormatter extends ElasticsearchFormatter
         $phone = preg_replace('/\D/', '', $phone);
         $chars = mb_str_split($phone);
         $digitIndexes = [];
-        foreach ($chars as $index => $char) {
+        foreach ($chars ?? [] as $index => $char) {
             if (ctype_digit($char)) {
                 $digitIndexes[] = $index;
             }
         }
         $totalDigits = count($digitIndexes);
-        foreach ($digitIndexes as $seq => $charIndex) {
+        foreach ($digitIndexes ?? [] as $seq => $charIndex) {
             $posFromRight = $totalDigits - $seq;
             if ($posFromRight >= 1 && $posFromRight <= 2) {
                 continue;
