@@ -125,7 +125,7 @@ trait BearerTrait
     {
         $userId = $this->request->getAttribute(self::ATTR_USER_ID);
         if (empty($userId)) {
-            throw new UnauthorizedUserException($this->metadata());
+            throw new UnauthorizedUserException([]);
         }
         return $this->repository->getUserSessionData($userId);
     }
