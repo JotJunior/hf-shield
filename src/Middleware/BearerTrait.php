@@ -116,7 +116,7 @@ trait BearerTrait
             $this->request->getAttribute(self::ATTR_CLIENT_ID)
         );
         if (! $client) {
-            throw new UnauthorizedClientException($this->metadata());
+            throw new UnauthorizedClientException([]);
         }
         return $client;
     }
@@ -125,7 +125,7 @@ trait BearerTrait
     {
         $userId = $this->request->getAttribute(self::ATTR_USER_ID);
         if (empty($userId)) {
-            throw new UnauthorizedUserException([]);
+            return [];
         }
         return $this->repository->getUserSessionData($userId);
     }

@@ -20,6 +20,7 @@ use Jot\HfShield\Exception\MissingAccessTokenException;
 use Jot\HfShield\Exception\MissingResourceScopeException;
 use Jot\HfShield\Exception\UnauthorizedAccessException;
 use Jot\HfShield\Exception\UnauthorizedClientException;
+use Jot\HfShield\Exception\UnauthorizedScopeException;
 use Jot\HfShield\Exception\UnauthorizedSessionException;
 use Jot\HfShield\Exception\UnauthorizedUserException;
 use Jot\HfShield\LoggerContextCollector;
@@ -58,6 +59,7 @@ class AuthExceptionHandler extends ExceptionHandler
             || $throwable instanceof ForbiddenAccessException
             || $throwable instanceof InvalidOtpCodeException
             || $throwable instanceof UnauthorizedAccessException
+            || $throwable instanceof UnauthorizedScopeException
             || $throwable instanceof UnauthorizedSessionException
             || $throwable instanceof UnauthorizedUserException
             || $throwable instanceof UnauthorizedClientException) {

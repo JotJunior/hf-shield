@@ -204,8 +204,11 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
      * @return null|array client data if the client is valid and active, null otherwise
      */
     #[Cacheable(prefix: 'oauth:client', ttl: 84600)]
-    public function isClientValid(string $clientId): ?array
+    public function isClientValid(?string $clientId): ?array
     {
+        if(empty($clientId)) {
+            return null;
+        }
         return current(
             $this->queryBuilder
                 ->select(['id', 'name', 'tenant'])
