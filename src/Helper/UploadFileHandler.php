@@ -44,7 +44,7 @@ class UploadFileHandler
             $s3Path = $directoryPath . '/' . $filename;
             $config = $this->config->get('hf_shield', []);
             $bucketName = $config['s3_bucket_name'] ?? '';
-            $bucketUrl = $config['s3_bucket_nurl'] ?? '';
+            $bucketUrl = $config['s3_bucket_url'] ?? '';
 
             $this->s3->putObject([
                 'Bucket' => $bucketName,

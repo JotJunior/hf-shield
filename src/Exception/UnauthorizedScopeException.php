@@ -18,7 +18,7 @@ class UnauthorizedScopeException extends AbstractException
     public function __construct(array $metadata = [])
     {
         $this->metadata = $metadata;
-        $this->message = __('hf-shield.unauthorized_scope');
+        $this->message = __('hf-shield.unauthorized_scope', ['scope' => $metadata['scope'] ?? '']);
         $this->code = 401;
 
         parent::__construct($this->message, $this->code);

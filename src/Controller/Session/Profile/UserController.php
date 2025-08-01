@@ -113,8 +113,38 @@ class UserController
         return $this->response->withStatus($exists ? 204 : 404)->raw('');
     }
 
-    #[RequestMapping(path: '[(me|session|password|settings)]', methods: ['OPTIONS'])]
-    public function requestProfileOptions(): PsrResponseInterface
+    #[RequestMapping(path: 'me', methods: ['OPTIONS'])]
+    public function requestProfileOptionsMe(): PsrResponseInterface
+    {
+        return $this->response
+            ->json([
+                'methods' => ['GET', 'POST', 'PUT', 'HEAD'],
+                'rate_limit' => 'Max 2 requests per second.',
+            ]);
+    }
+
+    #[RequestMapping(path: 'session', methods: ['OPTIONS'])]
+    public function requestProfileOptionsSession(): PsrResponseInterface
+    {
+        return $this->response
+            ->json([
+                'methods' => ['GET', 'POST', 'PUT', 'HEAD'],
+                'rate_limit' => 'Max 2 requests per second.',
+            ]);
+    }
+
+    #[RequestMapping(path: 'password', methods: ['OPTIONS'])]
+    public function requestProfileOptionsPassword(): PsrResponseInterface
+    {
+        return $this->response
+            ->json([
+                'methods' => ['GET', 'POST', 'PUT', 'HEAD'],
+                'rate_limit' => 'Max 2 requests per second.',
+            ]);
+    }
+
+    #[RequestMapping(path: 'settings', methods: ['OPTIONS'])]
+    public function requestProfileOptionsSettings(): PsrResponseInterface
     {
         return $this->response
             ->json([
