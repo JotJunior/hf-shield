@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Jot\HfShield\Middleware;
 
+use Hyperf\Contract\ConfigInterface;
 use Hyperf\HttpServer\Router\Dispatched;
 use Hyperf\HttpServer\Router\Handler;
 use Hyperf\Stringable\Str;
@@ -113,7 +114,7 @@ trait BearerTrait
     public function getOauthClient(): array
     {
         $client = $this->repository->isClientValid(
-            $this->request->getAttribute(self::ATTR_CLIENT_ID)
+            $this->container->get(ConfigInterface::class)->get('hf_session.auth_settings.client_id', null)
         );
         if (! $client) {
             throw new UnauthorizedClientException([]);

@@ -46,7 +46,6 @@ class WhatsappService
             );
             $this->logger?->info(sprintf('OTP sent to %s', $to), $result->toArray());
         } catch (TwilioException $th) {
-            echo $th->getMessage();
             $this->logger?->error($th->getMessage());
         }
     }
