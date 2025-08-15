@@ -14,6 +14,7 @@ return [
     'redirect_login' => env('HF_SESSION_REDIRECT_LOGIN', '/sign-in'),
     'redirect_error' => env('HF_SESSION_REDIRECT_ERROR'),
     'redirect_uri' => env('HF_SESSION_REDIRECT_URI'),
+    'enable_unsecure_cookie' => env('HF_SESSION_ENABLE_UNSECURE_COOKIE', false),
     'auth_settings' => [
         'client_id' => env('HF_SESSION_CLIENT_ID'),
         'client_secret' => env('HF_SESSION_CLIENT_SECRET'),

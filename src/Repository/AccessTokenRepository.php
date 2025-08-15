@@ -206,7 +206,7 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
     #[Cacheable(prefix: 'oauth:client', ttl: 84600)]
     public function isClientValid(?string $clientId): ?array
     {
-        if(empty($clientId)) {
+        if (empty($clientId)) {
             return null;
         }
         return current(

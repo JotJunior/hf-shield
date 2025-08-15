@@ -190,7 +190,7 @@ class SessionTokenOauthController extends AbstractOauthController
             value: $this->encrypt($accessToken),
             expire: time() + $expiresIn,
             path: '/',
-            secure: true,
+            secure: $this->configService->get('hf_session.enable_unsecure_cookie', false),
             httpOnly: true,
             sameSite: 'Strict'
         );
