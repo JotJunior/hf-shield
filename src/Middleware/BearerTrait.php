@@ -24,7 +24,6 @@ use Jot\HfShield\Exception\UnauthorizedUserException;
 use Jot\HfShield\LoggerContextCollector;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ServerRequestInterface;
-
 use function Hyperf\Translation\__;
 
 trait BearerTrait
@@ -40,6 +39,50 @@ trait BearerTrait
     public const ATTR_SCOPES = 'oauth_scopes';
 
     protected ?string $oauthTokenId = null;
+
+    /**
+     * Validates the bearer authentication strategy for the incoming request and ensures the presence of required scopes.
+     *
+     * This method authenticates the request using the OAuth server, collects the resource-specific scopes,
+     * and verifies the request attributes. If authentication fails, an exception is thrown. Additionally,
+     * it checks for the presence of required resource scopes and throws an exception if they are missing.
+     *
+     * @param ServerRequestInterface $request the incoming server request to be validated
+     */
+    protected function validateBearerStrategy(ServerRequestInterface $request): void
+    {
+        try {
+            $this->request = $this->server->validateAuthenticatedRequest($request);
+        } catch (OAuthServerException $e) {
+            echo $e->getMessage(), PHP_EOL;
+            throw new UnauthorizedAccessException($this->metadata());
+        }
+
+        $this->collectResourceScopes();
+        if (empty($this->resourceScopes)) {
+            $this->logger->error('Missing resource scope', $this->metadata());
+            throw new MissingResourceScopeException();
+        }
+        $this->validateRequestAttributes();
+    }
+
+    /**
+     * Collects and structures metadata including user details, server parameters, and request data.
+     *
+     * This method organizes metadata into a structured array containing information about the user,
+     * server parameters, and request specifics. It also generates an additional message based on the
+     * collected metadata.
+     *
+     * @return array an associative array containing organized metadata
+     */
+    protected function metadata(): array
+    {
+        $this->oauthTokenId = $this->request->getAttribute(self::ATTR_ACCESS_TOKEN_ID);
+        $metadata = $this->collectMetadata();
+        $metadata['message'] = $this->generateMessage($metadata);
+
+        return $metadata;
+    }
 
     /**
      * Generates a descriptive message based on the provided content and the current resource scope.
@@ -111,70 +154,6 @@ trait BearerTrait
         return $message;
     }
 
-    public function getOauthClient(): array
-    {
-        $client = $this->repository->isClientValid(
-            $this->container->get(ConfigInterface::class)->get('hf_session.auth_settings.client_id', null)
-        );
-        if (! $client) {
-            throw new UnauthorizedClientException([]);
-        }
-        return $client;
-    }
-
-    public function getOauthUser(): array
-    {
-        $userId = $this->request->getAttribute(self::ATTR_USER_ID);
-        if (empty($userId)) {
-            return [];
-        }
-        return $this->repository->getUserSessionData($userId);
-    }
-
-    /**
-     * Validates the bearer authentication strategy for the incoming request and ensures the presence of required scopes.
-     *
-     * This method authenticates the request using the OAuth server, collects the resource-specific scopes,
-     * and verifies the request attributes. If authentication fails, an exception is thrown. Additionally,
-     * it checks for the presence of required resource scopes and throws an exception if they are missing.
-     *
-     * @param ServerRequestInterface $request the incoming server request to be validated
-     */
-    protected function validateBearerStrategy(ServerRequestInterface $request): void
-    {
-        try {
-            $this->request = $this->server->validateAuthenticatedRequest($request);
-        } catch (OAuthServerException $e) {
-            echo $e->getMessage(), PHP_EOL;
-            throw new UnauthorizedAccessException($this->metadata());
-        }
-
-        $this->collectResourceScopes();
-        if (empty($this->resourceScopes)) {
-            $this->logger->error('Missing resource scope', $this->metadata());
-            throw new MissingResourceScopeException();
-        }
-        $this->validateRequestAttributes();
-    }
-
-    /**
-     * Collects and structures metadata including user details, server parameters, and request data.
-     *
-     * This method organizes metadata into a structured array containing information about the user,
-     * server parameters, and request specifics. It also generates an additional message based on the
-     * collected metadata.
-     *
-     * @return array an associative array containing organized metadata
-     */
-    protected function metadata(): array
-    {
-        $this->oauthTokenId = $this->request->getAttribute(self::ATTR_ACCESS_TOKEN_ID);
-        $metadata = $this->collectMetadata();
-        $metadata['message'] = $this->generateMessage($metadata);
-
-        return $metadata;
-    }
-
     /**
      * Gathers and assigns the resource scopes based on the dispatched route handler.
      */
@@ -186,7 +165,7 @@ trait BearerTrait
             if ($routeHandler instanceof Handler) {
                 $controller = $routeHandler->callback[0];
                 $method = $routeHandler->callback[1];
-                $this->resourceScopes = (array) AllowedScopes::get($controller, $method)->allow;
+                $this->resourceScopes = (array)AllowedScopes::get($controller, $method)->allow;
             }
         }
     }
@@ -257,6 +236,27 @@ trait BearerTrait
         }
 
         return false;
+    }
+
+    public function getOauthClient(): array
+    {
+        $client = $this->repository->isClientValid(
+            $this->request->getAttribute(self::ATTR_CLIENT_ID) ??
+            $this->container->get(ConfigInterface::class)->get('hf_session.auth_settings.client_id', null)
+        );
+        if (! $client) {
+            throw new UnauthorizedClientException([]);
+        }
+        return $client;
+    }
+
+    public function getOauthUser(): array
+    {
+        $userId = $this->request->getAttribute(self::ATTR_USER_ID);
+        if (empty($userId)) {
+            return [];
+        }
+        return $this->repository->getUserSessionData($userId);
     }
 
     protected function logRequest(): void
