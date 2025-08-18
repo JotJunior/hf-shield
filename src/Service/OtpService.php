@@ -65,7 +65,6 @@ class OtpService
         return $this->userCodeRepository->find($otpId);
     }
 
-    #[Cacheable(prefix: 'otp:create', ttl: self::OTP_EXPIRATION_TIME)]
     public function create(array $data): array
     {
         $user = $this->getUserFromFederalDocument($data['federal_document'], $data['_tenant_id'] ?? null);

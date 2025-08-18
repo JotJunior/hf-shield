@@ -144,7 +144,7 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
      * @return bool returns true if the user is valid, false otherwise
      * @throws ReflectionException
      */
-    #[Cacheable(prefix: 'scope-validated-user', ttl: 120)]
+    #[Cacheable(prefix: 'scope-validated-user', ttl: 120, skipCacheResults: [null, ''])]
     public function isUserValid(string $userId, string $tenantId, array|string $scope): bool
     {
         $query = $this->queryBuilder
@@ -181,7 +181,7 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
      * @return array an associative array containing the user's session data
      * @throws ReflectionException
      */
-    #[Cacheable(prefix: 'user-session', ttl: 120)]
+    #[Cacheable(prefix: 'user-session', ttl: 120, skipCacheResults: [null, false, ''])]
     public function getUserSessionData(string $id): array
     {
         $user = $this->queryBuilder
@@ -203,7 +203,7 @@ class AccessTokenRepository extends AbstractRepository implements AccessTokenRep
      * @param string $clientId the unique identifier of the client
      * @return null|array client data if the client is valid and active, null otherwise
      */
-    #[Cacheable(prefix: 'oauth:client', ttl: 84600)]
+    #[Cacheable(prefix: 'oauth:client', ttl: 3600, skipCacheResults: [null, false, ''])]
     public function isClientValid(?string $clientId): ?array
     {
         if (empty($clientId)) {

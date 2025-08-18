@@ -31,7 +31,7 @@ class BasicOptionService extends AbstractService
      * @return array an associative array containing the entity data, a result status, and an error message if applicable
      * @throws RuntimeException
      */
-    #[Cacheable(prefix: self::CACHE_PREFIX, ttl: 600, listener: self::CACHE_PREFIX)]
+    #[Cacheable(prefix: self::CACHE_PREFIX, ttl: 600, listener: self::CACHE_PREFIX, skipCacheResults: [null, false, ''])]
     public function getData(string $id): array
     {
         return parent::getData($id);

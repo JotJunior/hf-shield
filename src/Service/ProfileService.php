@@ -39,7 +39,7 @@ class ProfileService extends AbstractService
     #[Inject]
     protected Base64ImageHandler $imageHandler;
 
-    #[Cacheable(prefix: self::CACHE_PREFIX_PROFILE, ttl: 600, listener: self::CACHE_PREFIX_PROFILE)]
+    #[Cacheable(prefix: self::CACHE_PREFIX_PROFILE, ttl: 600, listener: self::CACHE_PREFIX_PROFILE, skipCacheResults: [null, false, ''])]
     public function getProfileData(string $id, string $tenantId): array
     {
         $entity = $this->repository->find($id);
